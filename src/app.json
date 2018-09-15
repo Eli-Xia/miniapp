@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/index/main",
+    "pages/add/main",
+    "pages/my/main",
+    "pages/my-comment/main"
+    
+  ],
+  "window": {
+    "backgroundTextStyle": "white",
+    "navigationBarBackgroundColor": "#f3f5f9",
+    "navigationBarTitleText": "首页",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+  }
+}
