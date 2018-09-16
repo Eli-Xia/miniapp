@@ -3,8 +3,8 @@
     "pages/index/main",
     "pages/add/main",
     "pages/my/main",
-    "pages/my-comment/main"
-    
+    "pages/my-comment/main",
+    "pages/detail/main"
   ],
   "window": {
     "backgroundTextStyle": "white",

@@ -6,7 +6,7 @@
       <div class="text">首页 </div>
     </div>
 
-    <div class="nav-li add"><div class="add-btn"></div></div>
+    <div class="nav-li add"  @click="goto('/pages/add/main')"><div class="add-btn"></div></div>
 
      <div class="nav-li my" @click="goto('/pages/my/main')" :class="pageName == 'my' ? 'active': ''">
       <div class="icon"></div>
