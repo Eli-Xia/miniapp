@@ -1,44 +1,69 @@
 <template>
   <div>
+    <login-btn v-if="showLogin" :cb="callback" :checkLogin="checkLogin"  @setLogin="setLogin"> </login-btn>
     <div class="layer" v-if="adding"></div>
-    <post-item></post-item>
+
+    <post-item :item="detail"></post-item>
     <div class="status">
+
       <div class="zheng-fan-vs">
-        <div class="zheng">是</div>
-        <div class="fan">不是</div>
+        <div class="zheng" @click="support(id,leftId)">{{leftText}}</div>
+        <div class="fan" @click="support(id,rightId)">{{rightText}}</div>
         <div class="vs">VS</div>
       </div>
       <div class="bili">
-        <div class="zhengbi">40%</div>
-        <div class="fanbi">50%</div>
-        <div class="mid-bar"></div>
+        <div :class="selectedType == 1 ? 'selected' : ''" class="zhengbi" :style="'width:'+leftBi+'%'">{{leftBi}}%</div>
+        <div :class="selectedType == 2 ? 'selected' : ''" class="fanbi" :style="'width:'+rightBi+'%'">{{rightBi}}%</div>
+        <div class="mid-bar" :style="'left:'+(leftBi-2)+'%'"></div>
       </div>
+
     </div>
 
     <div class="comment-box">
       <zheng-item></zheng-item>
       <fan-item></fan-item>
-       <zheng-item></zheng-item>
+      <zheng-item></zheng-item>
       <fan-item></fan-item>
     </div>
+
     <div class="add-box">
-         <div class="submit">发表</div>
-   <input type="text" name="content" class="content" placeholder="我在得你的神评论" id="">
-  
+
+      <div class="submit">发表</div>
+      <input type="text" name="content"  class="content" placeholder="我在得你的神评论" id="">
+
     </div>
+
   </div>
 </template>
 
 <script>
+  import fly from '../../utils/fly'
   import card from '@/components/card'
   import postItem from '@/components/post-item'
   import zhengItem from '@/components/zheng-item'
   import fanItem from '@/components/fan-item'
+  import utils from '../../utils'
+  import '../../utils/Login'
+  import LoginBtn from '@/components/login'
+  import { isLogin, login } from '../../utils/Login';
+  import { setTimeout } from 'timers';
   export default {
     data() {
       return {
         pageName: 'detail',
-        adding:false
+        adding: false,
+        detail: {},
+        id: 0,
+        leftText: null,
+        rightText: null,
+        leftBi: 50,
+        rightBi: 50,
+        leftId: 0,
+        rightId: 0,
+        selectedType: 0,
+        checkLogin: false,
+        showLogin: false,
+        callback:function(){}
       }
     },
 
@@ -46,32 +71,108 @@
       card,
       postItem,
       zhengItem,
-      fanItem
+      fanItem,
+      LoginBtn
     },
 
     methods: {
-      bindViewTap() {
-        const url = '../logs/main'
-        wx.navigateTo({
-          url
+      get_detail(id) {
+        let data = {
+          debateTopicId: id
+        }
+        let url = '/api/app/debate-view/info'
+        fly.post(url, data).then(res => {
+          if (res.retCode == 0) {
+            this.detail['headImgUrl'] = res.result.sponsorHeadImgUrl
+            this.detail['nickname'] = res.result.sponsorNickname
+            this.detail['debateTopic'] = res.result.debateTopic
+            this.detail['createTime'] = utils.formatTime(new Date(res.result.createTime))
+            this.detail['forwardCount'] = res.result.forwardCount || '转发'
+            this.detail['commentCount'] = res.result.commentCount || '评论'
+
+            this.leftText = res.result.leftViewContent
+            this.rightText = res.result.rightViewContent
+            this.leftBi = res.result.leftViewProportion
+            this.rightBi = res.result.rightViewProportion
+            this.leftId = res.result.leftViewId
+            this.rightId = res.result.rightViewId
+            this.selectedType = res.result.selectedType
+
+          } else {
+            wx.showToast({
+              title: '数据异常',
+              icon: 'none'
+            })
+          }
+        }).catch(e => {
+          console.log(e)
         })
       },
-      onGotUserInfo(e) {
-        // 调用登录接口
-        console.log(1)
-        console.log(e.mp.detail.rawData)
-        this.userInfo = JSON.parse(e.mp.detail.rawData)
-        this.nihao = e.mp.detail.rawData['nikcName']
-        console.log(this.userInfo)
+      get_comment(id) {
+        let url = '/api/app/comment/list'
+        let data = {
+          debateTopicId: id,
+          page: 1,
+          pageSize: 13
+        }
+        fly.post(url, data).then(res => {
+          if (res.retCode == 0) {
+
+          }
+          console.log(res)
+        }).catch(e => {
+          console.log(e)
+        })
       },
-      clickHandle(msg, ev) {
-        console.log('clickHandle:', msg, ev)
+      support(did, sid) {
+
+
+        let data = {
+          debateTopicId: did,
+          debateViewId: sid,
+        }
+
+        let url = '/api/app/debate-view/support-view'
+        fly.post(url, data).then(res => {
+          if (res.retCode == 0) {
+            console.log(res, '=====')
+            wx.showToast({
+              title: '支持成功！',
+              icon: 'right'
+            })
+          } else {
+            wx.setStorageSync('token', null)
+            wx.setStorageSync('isLogin', false)
+            this.showLogin = true
+            this.checkLogin = true
+            this.callback = ()=>{
+              this.support(did, sid)
+            }
+            console.log(res)
+          }
+
+        }).catch(e => {
+          console.log(e)
+        })
+
+      },
+      setLogin() {
+
       }
     },
 
     created() {
 
       console.log(this.$mp)
+
+    },
+    onShow() {
+      this.checkLogin = false
+      this.showLogin = false
+      console.log(this.$root.$mp.query.id)
+      this.id = this.$root.$mp.query.id
+      this.get_detail(this.$root.$mp.query.id)
+      // this.get_comment(this.$root.$mp.query.id)
 
     }
   }
@@ -121,6 +222,14 @@
 
   }
 
+  div.zheng.selected {
+    background: url(../../../static/img/正方实.png) 0rpx 0rpx no-repeat;
+  }
+
+  div.fan.selected {
+    background: url(../../../static/img/反方实@2x.png) 0rpx 0rpx no-repeat;
+  }
+
   div.fan {
     width: 280rpx;
     height: 100rpx;
@@ -144,7 +253,7 @@
 
   .zhengbi {
     position: absolute;
-    width: 49%;
+
     height: 30rpx;
     background: red;
     color: #FFF;
@@ -159,7 +268,7 @@
 
   .fanbi {
     position: absolute;
-    width: 49%;
+
     height: 30rpx;
     background: blue;
     color: #FFF;
@@ -178,7 +287,6 @@
     background: rgb(68, 68, 69);
     width: 4rpx;
     position: absolute;
-    left: 48%;
     border-radius: 4rpx;
     top: -8rpx;
     border: 6rpx solid #fff;
@@ -189,45 +297,50 @@
     background: #FFF;
     padding-bottom: 80rpx;
   }
+
   .layer {
-      background: #666;
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      z-index: 99;
+    background: #666;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 99;
   }
+
   .add-box {
-      height: 98rpx;
-      background: rgb(247, 247, 250);
-      border-top:1rpx solid #eee;
-      position:fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
+    height: 98rpx;
+    background: rgb(247, 247, 250);
+    border-top: 1rpx solid #eee;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
   }
+
   .add-box .content {
-      width: 590rpx;
-      padding-left: 25rpx;
-      height: 72rpx;
-      border-radius: 35rpx;
-      background: #FFF;
-      line-height: 72rpx;
-      font-size: 28rpx;
-      margin: 10rpx 100rpx 10rpx 30rpx;
-      
+    width: 590rpx;
+    padding-left: 25rpx;
+    height: 72rpx;
+    border-radius: 35rpx;
+    background: #FFF;
+    line-height: 72rpx;
+    font-size: 28rpx;
+    margin: 10rpx 100rpx 10rpx 30rpx;
+
   }
-  ::-webkit-input-placeholder{
-      color: #EEE;
+
+  ::-webkit-input-placeholder {
+    color: #EEE;
   }
-  .add-box .submit{
-      float: right;
-      height: 72rpx;
-      line-height: 72rpx;
-      font-size: 28rpx;
-      color: rgb(26, 26, 28);
-      margin: 10rpx 27rpx 10rpx 27rpx;
+
+  .add-box .submit {
+    float: right;
+    height: 72rpx;
+    line-height: 72rpx;
+    font-size: 28rpx;
+    color: rgb(26, 26, 28);
+    margin: 10rpx 27rpx 10rpx 27rpx;
   }
 </style>

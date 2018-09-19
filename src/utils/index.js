@@ -1,9 +1,10 @@
-function formatNumber (n) {
+function formatNumber(n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
 }
 
-export function formatTime (date) {
+export function formatTime(date) {
+  // console.log(date)
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()
@@ -14,8 +15,14 @@ export function formatTime (date) {
 
   const t1 = [year, month, day].map(formatNumber).join('/')
   const t2 = [hour, minute, second].map(formatNumber).join(':')
-
-  return `${t1} ${t2}`
+  const now_day = new Date().getDate()
+  let time = ''
+  if (day == now_day) {
+    time = [hour, minute].map(formatNumber).join(':')
+  } else {
+    time = [month, day].map(formatNumber).join('/')
+  }
+  return time
 }
 
 export default {

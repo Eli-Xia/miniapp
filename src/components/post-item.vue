@@ -1,27 +1,28 @@
 <template>
   <div class="item-box">
     <div class="item-top">
-      <div class="face"><img  src="../../static/img/face-1.png" /></div>
+      <div class="face"><img  :src="item.headImgUrl" /></div>
       <div class="name-date">
-        <div class="nickname">神奇的大蘑菇</div>
-        <div class="add-date">09/12</div>
+        <div class="nickname">{{item.nickname}}</div>
+        <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div class="item-mid">
-      <p>不给别人添麻烦是不是一种美德啊到底是谁不是呢，我现在很想知道？</p>
+    <div class="item-mid" @click="goto(item.id)">
+      <p>{{item.debateTopic}}</p>
 
     </div>
     <div class="item-bottom">
       <div class="comment_count btn">
         <div class="btn-group">
           <div class="icon"></div>
-          <div class="count">122</div>
+          <div class="count">{{item.commentCount}}</div>
         </div>
+
       </div>
       <div class="share_count btn">
         <div class="btn-group">
           <div class="icon"></div>
-          <div class="count">1225</div>
+          <div class="count">{{item.forwardCount}}</div>
         </div>
       </div>
     </div>
@@ -30,7 +31,16 @@
 
 <script>
   export default {
-    props: ['item']
+    props: ['item'],
+    methods: {
+      goto(id) {
+        let url = '/pages/detail/main?id='+id
+         wx.navigateTo({url})
+      }
+    },
+    onShow() {
+      // console.log(this.item)
+    }
   }
 </script>
 

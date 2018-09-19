@@ -2,12 +2,12 @@
   <div class="counter-warp">
     <div class="my-card">
       <div class="like">
-        <div class="like-count">4566</div>
+        <div class="like-count">{{info.supportCount}}</div>
         <div class="like-icon">获赞</div>
       </div>
       <div class="face-name">
-        <div class="face"><img src="../../../static/img/face-1.png" alt=""></div>
-        <div class="name">神奇的大蘑菇</div>
+        <div class="face"><img :src="info.headImgUrl" alt=""></div>
+        <div class="name">{{info.nickname}}</div>
       </div>
 
     </div>
@@ -22,23 +22,46 @@
       <div class="my-post-icon"></div>
       <div class="my-comment-title">我的评论</div>
     </div>
-
+    <login-btn @setLogin="setLogin"> </login-btn>
     <nav-bar :pageName="pageName"></nav-bar>
   </div>
 </template>
 
 <script>
+  import fly from '../../utils/fly'
   import navBar from '@/components/nav-bar'
+  import LoginBtn from '@/components/login'
+  import { isLogin, login } from '../../utils/Login';
   export default {
     data() {
       return {
-        pageName: 'my'
+        pageName: 'my',
+        info:{
+
+        }
       }
     },
 
     components: {
-      navBar
+      navBar,
+      LoginBtn
     },
+    methods: {
+      get_user() {
+
+        fly.post('/api/app/user/info', {}).then(res => {
+          if(res.retCode == 0) {
+            this.info = res.result
+          }
+        }).catch(e => {
+          console.log(e)
+        })
+
+      }
+    },
+    onShow() {
+      this.get_user()
+    }
 
 
   }

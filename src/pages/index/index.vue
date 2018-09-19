@@ -1,65 +1,66 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-    <post-item></post-item>
-
+    <div v-for="(item,index) in lists" :key="index">
+      <post-item :item="item"></post-item>
+    </div>
     <nav-bar :pageName="pageName"></nav-bar>
   </div>
 </template>
 
 <script>
-  import card from '@/components/card'
+  import fly from '../../utils/fly'
+  import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import postItem from '@/components/post-item'
   export default {
+
     data() {
       return {
-        motto: 'Hello World',
-        userInfo: {},
-        nihao: 'haha',
-        pageName: 'home'
+        pageName: 'home',
+        lists:null
       }
     },
 
     components: {
-      card,
       navBar,
       postItem
     },
 
     methods: {
-      bindViewTap() {
-        const url = '../logs/main'
-        wx.navigateTo({
-          url
-        })
-      },
-      onGotUserInfo(e) {
-        // 调用登录接口
-        console.log(1)
-        console.log(e.mp.detail.rawData)
-        this.userInfo = JSON.parse(e.mp.detail.rawData)
-        this.nihao = e.mp.detail.rawData['nikcName']
-        console.log(this.userInfo)
-      },
+    
       clickHandle(msg, ev) {
         console.log('clickHandle:', msg, ev)
+      },
+      get_index_list() {
+        const self = this
+        fly.post('/api/app/dabate-topic/list', {
+            page: 1,
+            pageSize: 30
+          })
+          .then(function (response) {
+            if (response.retCode === 0) {
+              //渲染列表
+              self.lists = response.result
+              self.lists.map(item => {
+                if (!item.forwardCount) {
+                  item.forwardCount = '转发'
+                }
+                if (!item.commentCount) {
+                  item.commentCount = '评论'
+                }
+                item.createTime = utils.formatTime(new Date(item.createTime))
+                return item
+              })
+              console.log(self.lists)
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     },
-
-    created() {
-
-      console.log(this.$mp)
-
+    onShow() {
+      this.get_index_list()
     }
   }
 </script>

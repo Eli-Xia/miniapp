@@ -4,7 +4,8 @@
     "pages/add/main",
     "pages/my/main",
     "pages/my-comment/main",
-    "pages/detail/main"
+    "pages/detail/main",
+    "pages/login/main"
   ],
   "window": {
     "backgroundTextStyle": "white",
