@@ -17,7 +17,8 @@
       <div v-if="allowSend" class="submit nosend" @click="sendPost">发表</div>
       <div v-if="!allowSend" class="submit" >发表</div>
     </div>
-    <!-- <login-btn :checkLogin="true"  @setLogin="setLogin"> </login-btn> -->
+    <login-btn  :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
+    
   </div>
     
 </template>
@@ -39,7 +40,10 @@ import { setTimeout } from 'timers';
           right:null,
           content:null
         },
-        allowSend:false
+        allowSend:false,
+        checkLogin:false,
+        showLogin:false,
+        callback:function(){}
         
       }
     },
@@ -58,6 +62,9 @@ import { setTimeout } from 'timers';
     },
     methods: {
       sendPost() {
+        this.callback = ()=>{
+          this.sendPost()
+        }
         let postData= {
           debateTopic: this.sendData.content,
           addDebateViewList: [
@@ -79,19 +86,20 @@ import { setTimeout } from 'timers';
                 title: '发表成功',
                 icon: 'right'
                })
+               this.showLogin = false
+               this.checkLogin = false
               //发布成功跳转首页
               setTimeout(()=>{
-                 wx.navigateTo({
-                   url: '/pages/index/main',
-                 })
+                 wx.navigateBack()
               },2000)
              
             }
             if(data.retCode == 2) {
               //重新登陆
-              login(()=>{
-                this.sendPost()
-              })
+              console.log('重新登录区哦')
+                wx.setStorageSync('token', null)
+                wx.setStorageSync('isLogin', false)
+                this.checkLogin = true
             }
           })
 
@@ -103,7 +111,12 @@ import { setTimeout } from 'timers';
       }
     },
     onShow() {
-     
+     //清空数据
+     this.sendData={
+          left:null,
+          right:null,
+          content:null
+        }
     }
    
   }

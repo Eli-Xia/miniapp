@@ -1,7 +1,7 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
     <div v-for="(item,index) in lists" :key="index">
-      <post-item :item="item"></post-item>
+      <post-item :item="item" pageName="index"></post-item>
     </div>
     <nav-bar :pageName="pageName"></nav-bar>
   </div>
@@ -17,7 +17,7 @@
     data() {
       return {
         pageName: 'home',
-        lists:null
+        lists: null
       }
     },
 
@@ -27,7 +27,7 @@
     },
 
     methods: {
-    
+
       clickHandle(msg, ev) {
         console.log('clickHandle:', msg, ev)
       },
@@ -61,6 +61,27 @@
     },
     onShow() {
       this.get_index_list()
+    },
+    created() {
+      this.get_index_list()
+    },
+    onPullDownRefresh() {
+
+      this.get_index_list()
+      wx.stopPullDownRefresh();
+    },
+    onShareAppMessage: function (data) {
+     console.log(data.target)
+      return {
+
+        title: data.target.dataset.te,
+
+        desc: '分享页面的内容',
+
+        path: '/page/user?id='+data.target.id // 路径，传递参数到指定页面。
+
+      }
+
     }
   }
 </script>

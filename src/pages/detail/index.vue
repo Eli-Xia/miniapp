@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <login-btn v-if="showLogin" :cb="callback" :checkLogin="checkLogin"  @setLogin="setLogin"> </login-btn>
+  <div v-if="loading">
+    <login-btn  :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
     <div class="layer" v-if="adding"></div>
 
-    <post-item :item="detail"></post-item>
+    <post-item :item="detail" pageName="detail"></post-item>
     <div class="status">
 
       <div class="zheng-fan-vs">
@@ -29,7 +29,7 @@
     <div class="add-box">
 
       <div class="submit">发表</div>
-      <input type="text" name="content"  class="content" placeholder="我在得你的神评论" id="">
+      <input type="text" name="content" class="content" placeholder="我在得你的神评论" id="">
 
     </div>
 
@@ -63,7 +63,8 @@
         selectedType: 0,
         checkLogin: false,
         showLogin: false,
-        callback:function(){}
+        callback: function () {},
+        loading:false
       }
     },
 
@@ -97,6 +98,7 @@
             this.leftId = res.result.leftViewId
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
+            this.loading = true
 
           } else {
             wx.showToast({
@@ -125,7 +127,9 @@
         })
       },
       support(did, sid) {
-
+        this.callback = () => {
+          this.support(did, sid)
+        }
 
         let data = {
           debateTopicId: did,
@@ -140,14 +144,15 @@
               title: '支持成功！',
               icon: 'right'
             })
+            this.showLogin = false
+            this.checkLogin = false
           } else {
             wx.setStorageSync('token', null)
             wx.setStorageSync('isLogin', false)
-            this.showLogin = true
+            // this.showLogin = true
             this.checkLogin = true
-            this.callback = ()=>{
-              this.support(did, sid)
-            }
+           
+
             console.log(res)
           }
 
@@ -156,8 +161,8 @@
         })
 
       },
-      setLogin() {
-
+      setLogin(status) {
+        this.showLogin = status
       }
     },
 
@@ -167,12 +172,26 @@
 
     },
     onShow() {
+      this.loading = false
       this.checkLogin = false
       this.showLogin = false
       console.log(this.$root.$mp.query.id)
       this.id = this.$root.$mp.query.id
       this.get_detail(this.$root.$mp.query.id)
       // this.get_comment(this.$root.$mp.query.id)
+
+    },
+    onShareAppMessage: function () {
+     
+      return {
+
+        title: '弹出分享时显示的分享标题',
+
+        desc: '分享页面的内容',
+
+        path: '/page/user?id=123' // 路径，传递参数到指定页面。
+
+      }
 
     }
   }

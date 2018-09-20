@@ -1,7 +1,7 @@
 <template>
   <div class="item-box">
     <div class="item-top">
-      <div class="face"><img  :src="item.headImgUrl" /></div>
+      <div class="face"><img :src="item.headImgUrl" /></div>
       <div class="name-date">
         <div class="nickname">{{item.nickname}}</div>
         <div class="add-date">{{item.createTime}}</div>
@@ -15,10 +15,11 @@
       <div class="comment_count btn">
         <div class="btn-group">
           <div class="icon"></div>
-          <div class="count">{{item.commentCount}}</div>
+          <div class="count" >{{item.commentCount}}</div>
         </div>
 
       </div>
+      <button open-type='share' :id="item.id" :data-te="item.debateTopic">分享</button>
       <div class="share_count btn">
         <div class="btn-group">
           <div class="icon"></div>
@@ -31,16 +32,33 @@
 
 <script>
   export default {
-    props: ['item'],
+    data(){
+      return {
+        shareId:0
+      }
+    },
+    props: ['item','pageName'],
     methods: {
+      setID(id){
+        this.shareId = id
+        console.log('0000')
+      },
       goto(id) {
-        let url = '/pages/detail/main?id='+id
-         wx.navigateTo({url})
+       
+        if (this.pageName !== 'detail') {
+          let url = '/pages/detail/main?id=' + id
+          wx.navigateTo({ url })
+        }
       }
     },
     onShow() {
       // console.log(this.item)
-    }
+      console.log(this.pageName,1111)
+    },
+    created() {
+      // console.log(this.pageName,1111)
+    },
+    
   }
 </script>
 
@@ -88,7 +106,7 @@
   .nickname {
     font-size: 24rpx;
     color: rgb(158, 160, 181);
-  
+
   }
 
   .add-date {
@@ -132,30 +150,36 @@
     height: 32rpx;
     line-height: 32rpx;
   }
-  .btn-group { text-align: center}
+
+  .btn-group {
+    text-align: center
+  }
+
   .comment_count .icon {
-      width: 37rpx;
-      height: 35rpx;
-      background-image: url(../../static/img/评论@2x.png);
-      background-size: 100% 100%;
-      float: left;
+    width: 37rpx;
+    height: 35rpx;
+    background-image: url(../../static/img/评论@2x.png);
+    background-size: 100% 100%;
+    float: left;
   }
 
   .share_count .icon {
-      width: 37rpx;
-      height: 32rpx;
-      background-image: url(../../static/img/转发@2x.png);
-      background-size: 100% 100%;
-      float: left;
+    width: 37rpx;
+    height: 32rpx;
+    background-image: url(../../static/img/转发@2x.png);
+    background-size: 100% 100%;
+    float: left;
   }
- .item-bottom .count{
-      font-size:24rpx;
-      color:rgb(176, 178, 196);
-      float: left;
-      margin-left: 10rpx;
+
+  .item-bottom .count {
+    font-size: 24rpx;
+    color: rgb(176, 178, 196);
+    float: left;
+    margin-left: 10rpx;
   }
+
   .btn-group {
-      width: 110rpx;
-      margin: 0 auto;
+    width: 110rpx;
+    margin: 0 auto;
   }
 </style>

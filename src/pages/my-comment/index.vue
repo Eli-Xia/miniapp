@@ -24,7 +24,17 @@
       navBar,
       myCommentItem
     },
+    methods:{
+      get_list() {
+        fly.post('/api/app/comment/list', {
+            page: 1,
+            pageSize: 30
+          })
+      }
+    },
+    onShow(){
 
+    }
 
   }
 </script>

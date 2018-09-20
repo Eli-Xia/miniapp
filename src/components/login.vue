@@ -1,7 +1,10 @@
 <template>
-  <div v-if="show">
-    {{ck}}
-    <button open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">您需要授权登陆</button>
+  <div :style="showLogin ? 'display:block' : 'display:none'"  di="ck" class="login-layer">
+    
+    <div class="window-box">
+      <div class="info">您需要登陆才完成操作哦 {{showLogin}}</div>
+      <div class="close-btn" @click="close()">关闭</div><button class="login-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">点击授权登陆</button>
+    </div>
   </div>
 </template>
 
@@ -9,7 +12,7 @@
   import fly from '../utils/fly'
   import { isLogin } from '../utils/Login';
   export default {
-    props: ['checkLogin', 'cb'],
+    props: ['checkLogin', 'cb','showLogin'],
     data() {
       return {
         too: null,
@@ -22,14 +25,17 @@
     },
     computed: {
       ck() {
-        return this.checkLogin
+        if(this.checkLogin){
+           this.getSetting()
+        }
+        return  this.checkLogin
       }
     },
     mounted() {
       // 一进来看看用户是否授权过
-      if (this.checkLogin) {
-        this.getSetting()
-      }
+     
+       
+      
     },
     created() {
 
@@ -57,7 +63,7 @@
             } else {
               console.log('用户还未授权过')
               // 显示组件
-              self.show = true
+              self.showLogin= true
             }
           }
         })
@@ -97,6 +103,7 @@
       },
       getUserInfo1() {
         console.log('click事件首先触发')
+        this.showLogin  =false
         // 判断小程序的API，回调，参数，组件等是否在当前版本可用。  为false 提醒用户升级微信版本
         // console.log(wx.canIUse('button.open-type.getUserInfo'))
         if (wx.canIUse('button.open-type.getUserInfo')) {
@@ -118,7 +125,8 @@
             // wx.hideLoading()
             wx.setStorageSync('isLogin', true)
             wx.setStorageSync('token', res.result.token)
-            this.show = false
+            this.checkLogin = false
+            // this.show = false
             callback && callback()
           } else {
             console.log(res)
@@ -150,14 +158,14 @@
         // console.log(e.mp.detail.rawData)
         if (e.mp.detail.rawData) {
           //用户按了允许授权按钮
-
+           
           console.log('用户按了允许授权按钮', e.mp.detail.rawData, '去登陆')
-          this.login(function () {
-            self.$emit('setLogin', true)
-          })
+           wx.showLoading()
+          this.login(this.cb)
         } else {
           //用户按了拒绝按钮
           console.log('用户按了拒绝按钮')
+         
         }
       },
       isLogin() {
@@ -167,7 +175,77 @@
         } else {
           return false
         }
+      },
+      close() {
+        this.checkLogin = false
+        this.showLogin = false
+        
       }
     }
   }
 </script>
+
+<style scoped>
+  .login-layer {
+    position: absolute;
+    top: 0rpx;
+    left: 0rpx;
+    right: 0rpx;
+    bottom: 0rpx;
+    z-index: 3000;
+    background: rgba(0, 0, 0, .7)
+  }
+
+  .login-btn {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    font-size: 30rpx;
+    color: #333;
+    border: 1rpx solid #ddd!important;
+    height: 90rpx;
+    border-radius: 0;
+    background: #FFF;
+    line-height: 90rpx;
+    z-index: 3000;
+    color: green;
+ 
+  }
+
+  button::after {
+    border: none;
+  }
+
+  .window-box {
+    background: #FFF;
+    border-radius: 10rpx;
+    margin: 0 60rpx;
+    margin-top: 260rpx;
+    position: relative;
+    height: 300rpx;
+    z-index: 2000;
+    overflow: hidden;
+  }
+
+  .window-box .info {
+    height: 200rpx;
+    line-height: 200rpx;
+    font-size: 30rpx;
+    text-align: center;
+    color: #222;
+  }
+
+  .close-btn {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    color: #333;
+    text-align: center;
+    height: 87rpx;
+    line-height: 87rpx;
+    font-size: 30rpx;
+    border: 1rpx solid #ddd;
+  }
+</style>
