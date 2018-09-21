@@ -43,7 +43,7 @@
               self.lists = response.result
               self.lists.map(item => {
                 if (!item.forwardCount) {
-                  item.forwardCount = '转发'
+                  item.forwardCount = '分享'
                 }
                 if (!item.commentCount) {
                   item.commentCount = '评论'

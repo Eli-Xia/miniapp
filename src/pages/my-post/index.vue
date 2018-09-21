@@ -3,7 +3,7 @@
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="index"></post-item>
     </div>
-    <nav-bar :pageName="pageName"></nav-bar>
+    <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
 
@@ -38,7 +38,7 @@
       },
       get_index_list() {
         const self = this
-        fly.post('/api/app/dabate-topic/list', {
+        fly.post('/api/app/dabate-topic/list-my', {
             page: 1,
             pageSize: 30
           })

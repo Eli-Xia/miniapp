@@ -41,7 +41,7 @@
 
         },
         callback:function(){},
-        showLogin:true,
+        showLogin:false,
         checkLogin:false,
       }
     },

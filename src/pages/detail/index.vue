@@ -47,7 +47,7 @@
     <div class="add-box">
 
       <div class="submit" @click="sendComment">发表</div>
-      <input @focus="showForm" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在得你的神评论" id="">
+      <input @focus="showForm" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评论" id="">
 
     </div>
 
@@ -113,7 +113,7 @@
             this.detail['nickname'] = res.result.sponsorNickname
             this.detail['debateTopic'] = res.result.debateTopic
             this.detail['createTime'] = utils.formatTime(new Date(res.result.createTime))
-            this.detail['forwardCount'] = res.result.forwardCount || '转发'
+            this.detail['forwardCount'] = res.result.forwardCount || '分享'
             this.detail['commentCount'] = res.result.commentCount || '评论'
             this.detail['id'] = res.result.debateTopicId
 
@@ -221,6 +221,7 @@
               icon: 'right'
             })
             this.get_comment(this.$root.$mp.query.id)
+             this.get_detail(this.$root.$mp.query.id)
             this.closeForm()
             this.showLogin = false
             this.checkLogin = false
@@ -269,10 +270,12 @@
               id.likeCount -= 1
 
             } else {
+
               wx.showToast({
                 title: '点赞成功！',
                 icon: 'right'
               })
+               this.get_detail(this.$root.$mp.query.id)
               id.likeState = 1
               id.likeCount += 1
             }
@@ -280,6 +283,8 @@
             this.closeForm()
             this.showLogin = false
             this.checkLogin = false
+            this.get_detail(this.$root.$mp.query.id)
+            // this.get_comment(this.$root.$mp.query.id)
           }
           if (res.retCode == 2) {
             wx.setStorageSync('token', null)
@@ -320,6 +325,7 @@
       this.loading = false
       this.checkLogin = false
       this.showLogin = false
+      this.closeForm()
       console.log(this.$root.$mp.query.id)
       this.commentData.debateTopicId = this.$root.$mp.query.id
       this.id = this.$root.$mp.query.id
@@ -358,7 +364,20 @@
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
-    }
+    },
+    onPullDownRefresh() {
+
+       this.loading = false
+      this.checkLogin = false
+      this.showLogin = false
+      this.closeForm()
+      console.log(this.$root.$mp.query.id)
+      this.commentData.debateTopicId = this.$root.$mp.query.id
+      this.id = this.$root.$mp.query.id
+      this.get_detail(this.$root.$mp.query.id)
+      this.get_comment(this.$root.$mp.query.id)
+      wx.stopPullDownRefresh();
+    },
 
 
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
     <my-comment-item :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
-    <nav-bar :pageName="pageName"></nav-bar>
+    <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
 
@@ -29,7 +29,9 @@
           pageSize: 30
         }).then(res => {
           if (res.retCode == 0) {
-
+            res.result.map(item=>{
+              item.createTime = utils.formatTime(new Date(item.createTime))
+            })
             this.lists = res.result
 
           } else if (retCode == 2) {
