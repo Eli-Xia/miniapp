@@ -117,6 +117,11 @@ import { setTimeout } from 'timers';
           right:null,
           content:null
         }
+    },
+    onLoad() {
+      wx.setNavigationBarTitle({
+        title: '发表辩题'
+      })
     }
    
   }

@@ -1,21 +1,21 @@
 <template>
   <div class="item-box">
     <div class="item-top">
-      <div class="face"><img src="../../static/img/face-1.png" /></div>
+      <div class="face"><img :src="item.headImgUrl" /></div>
       <div class="like-btn">
-        344
+        {{item.likeCount}}
       </div>
       <div class="name-date">
-        <div class="nickname">神奇的大蘑菇</div>
-        <div class="add-date">09/12</div>
+        <div class="nickname">{{item.nickname}}</div>
+        <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
     <div class="item-mid">
-      <p>不给别人添麻烦是不是一种美德啊到底是谁不是呢，我现在很想知道？</p>
+      <p>{{item.content}}</p>
 
     </div>
     <div class="item-bottom">
-      <p>这里是别人说的话</p>
+      <p>{{item.debateTopic}}</p>
     </div>
   </div>
 </template>

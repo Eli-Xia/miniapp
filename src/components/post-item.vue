@@ -12,14 +12,14 @@
 
     </div>
     <div class="item-bottom">
-      <div class="comment_count btn">
+      <div class="comment_count btn" @click="goto(item.id)">
         <div class="btn-group">
           <div class="icon"></div>
           <div class="count" >{{item.commentCount}}</div>
         </div>
 
       </div>
-      <button open-type='share' :id="item.id" :data-te="item.debateTopic">分享</button>
+      <button  class="share-btn" open-type='share' :id="item.id" :data-share="item">分享</button>
       <div class="share_count btn">
         <div class="btn-group">
           <div class="icon"></div>
@@ -181,5 +181,12 @@
   .btn-group {
     width: 110rpx;
     margin: 0 auto;
+  }
+  .share-btn {
+    width: 30%;
+    position: absolute;
+    right: 20%;
+    height: 40rpx;
+    opacity: 0;
   }
 </style>

@@ -2,7 +2,7 @@
   <div :style="showLogin ? 'display:block' : 'display:none'"  di="ck" class="login-layer">
     
     <div class="window-box">
-      <div class="info">您需要登陆才完成操作哦 {{showLogin}}</div>
+      <div class="info">您需要登陆才完成操作哦</div>
       <div class="close-btn" @click="close()">关闭</div><button class="login-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">点击授权登陆</button>
     </div>
   </div>

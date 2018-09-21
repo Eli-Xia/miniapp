@@ -1,22 +1,20 @@
 <template>
-  <div class="counter-warp">
-    
-    <my-comment-item></my-comment-item>
-    <my-comment-item></my-comment-item>
-    <my-comment-item></my-comment-item>
-    <my-comment-item></my-comment-item>
-    
+  <div class="counter-warp" style="padding-bottom:120rpx">
+    <my-comment-item :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
     <nav-bar :pageName="pageName"></nav-bar>
   </div>
 </template>
 
 <script>
+  import fly from '../../utils/fly'
+  import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import myCommentItem from '@/components/my-comment-item'
   export default {
     data() {
       return {
-        pageName: 'my-comment'
+        pageName: 'my-comment',
+        lists: []
       }
     },
 
@@ -24,16 +22,34 @@
       navBar,
       myCommentItem
     },
-    methods:{
+    methods: {
       get_list() {
-        fly.post('/api/app/comment/list', {
-            page: 1,
-            pageSize: 30
-          })
+        fly.post('/api/app/comment/list-my', {
+          page: 1,
+          pageSize: 30
+        }).then(res => {
+          if (res.retCode == 0) {
+
+            this.lists = res.result
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
       }
     },
-    onShow(){
+    onShow() {
+      this.get_list()
+    },
+    created() {
 
+    },
+    onLoad() {
+      wx.setNavigationBarTitle({
+        title: '我的评论'
+      })
     }
 
   }

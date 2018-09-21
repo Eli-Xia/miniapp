@@ -1,5 +1,6 @@
 <template>
   <div class="counter-warp">
+     <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
     <div class="my-card">
       <div class="like">
         <div class="like-count">{{info.supportCount}}</div>
@@ -13,12 +14,12 @@
     </div>
 
 
-    <div class="my-post">
+    <div class="my-post" @click="goto('/pages/my-post/main')">
       <div class="my-post-icon"></div>
       <div class="my-post-title">我的辩题</div>
     </div>
 
-    <div class="my-post">
+    <div class="my-post" @click="goto('/pages/my-comment/main')">
       <div class="my-post-icon"></div>
       <div class="my-comment-title">我的评论</div>
     </div>
@@ -38,7 +39,10 @@
         pageName: 'my',
         info:{
 
-        }
+        },
+        callback:function(){},
+        showLogin:true,
+        checkLogin:false,
       }
     },
 
@@ -48,19 +52,41 @@
     },
     methods: {
       get_user() {
-
+        this.callback = ()=>{
+          this.get_user()
+        }
         fly.post('/api/app/user/info', {}).then(res => {
           if(res.retCode == 0) {
             this.info = res.result
+            this.showLogin = false
+            this.checkLogin = false
+          }
+          if(res.retCode == 2) {
+            wx.setStorageSync('token', null)
+            wx.setStorageSync('isLogin', false)
+            // this.showLogin = true
+            this.checkLogin = true
           }
         }).catch(e => {
           console.log(e)
         })
 
+      },
+      setLogin() {
+
+      },
+      goto(url) {
+          wx.navigateTo({ url })
+        
       }
     },
     onShow() {
       this.get_user()
+    },
+    onLoad() {
+      wx.setNavigationBarTitle({
+        title: '个人中心'
+      })
     }
 
 

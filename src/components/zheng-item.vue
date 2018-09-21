@@ -2,28 +2,32 @@
   <div class="item-box">
     <div class="item-top">
       <div class="face">
-          <div class="zheng-icon"></div>
-          <img src="../../static/img/face-1.png" />
-          </div>
-      <div class="like-btn">
-        344
+        <div class="zheng-icon"></div>
+        <img :src="item.headImgUrl" />
       </div>
-      <div class="name-date">
-        <div class="nickname">神奇的大蘑菇</div>
-        <div class="add-date">09/12</div>
+      <div class="like-btn" :class="item.likeState == 1 ? 'liked': ''"  @click="like(item)">
+        {{ item.likeCount}}
       </div>
+        <div class="name-date">
+          <div class="nickname">{{item.nickname}}</div>
+          <div class="add-date">{{item.createTime}}</div>
+        </div>
+      </div>
+      <div class="item-bottom">
+        <p>{{item.content}}</p>
+      </div>
+      <div class="line"></div>
     </div>
-    <div class="item-bottom">
-      <p>诚实，谦虚是我们众所周知的美德，而
-        这些美德的目标是“不给别人添麻烦。”</p>
-    </div>
-    <div class="line"></div>
-  </div>
 </template>
 
 <script>
   export default {
-    props: ['item']
+    props: ['item'],
+    methods: {
+      like(id) {
+        this.$emit('doLike',id)
+      }
+    }
   }
 </script>
 
@@ -32,10 +36,11 @@
     margin: 10rpx 0rpx;
     border-radius: 0rpx;
     background: none;
+    margin-top: 0rpx;
 
     padding-bottom: 0rpx;
-   
-    
+
+
   }
 
   .item-box .item-top {
@@ -89,7 +94,7 @@
     padding: 22rpx;
     border-radius: 10rpx;
     margin-left: 100rpx;
-     margin-right: 81rpx;
+    margin-right: 81rpx;
     margin-top: 18rpx;
     font-size: 26rpx;
     line-height: 38rpx;
@@ -103,25 +108,32 @@
     text-align: right;
     padding-left: 40rpx;
     font-size: 24rpx;
-     margin-right: 81rpx;
+    margin-right: 81rpx;
     margin-top: 30rpx;
     background: url(../../static/img/空心赞@2x.png) no-repeat;
     background-size: auto 100%;
     color: rgb(176, 178, 196);
   }
-.line {
+  
+   .like-btn.liked {
+
+    background: url(../../static/img/正赞@2x.png) no-repeat;
+     background-size: auto 100%;
+  }
+  .line {
     height: 10rpx;
-    /* border-top: 1rpx solid rgb(239, 239, 244); */
+    border-top: 1rpx solid rgb(239, 239, 244);
     margin: 30rpx;
     margin-bottom: 0;
-}
-.zheng-icon {
+  }
+
+  .zheng-icon {
     position: absolute;
     width: 30rpx;
     height: 30rpx;
     left: -8rpx;
-    top:-8rpx;
+    top: -8rpx;
     background: url(../../static/img/小正.png) no-repeat;
     background-size: 100% 100%;
-}
+  }
 </style>
