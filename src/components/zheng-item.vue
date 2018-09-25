@@ -119,6 +119,7 @@
 
     background: url(../../static/img/正赞@2x.png) no-repeat;
      background-size: auto 100%;
+     color: rgb( 255, 55, 56);
   }
   .line {
     height: 10rpx;

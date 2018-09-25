@@ -1,14 +1,15 @@
 <template>
   <div class="item-box">
     <div class="item-top">
+      <div class="click-box"  @click="goto(item.id)">我也可以点</div>
       <div class="face"><img :src="item.headImgUrl" /></div>
       <div class="name-date">
         <div class="nickname">{{item.nickname}}</div>
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div class="item-mid" @click="goto(item.id)">
-      <p>{{item.debateTopic}}</p>
+    <div class="item-mid" @click="goto(item.id)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+      {{item.debateTopic}}
 
     </div>
     <div class="item-bottom">
@@ -99,6 +100,14 @@
     color: rgb(26, 26, 28);
     padding: 24rpx;
     line-height: 37rpx;
+
+    overflow-y: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    max-height:120rpx;
+   
   }
 
 
@@ -111,7 +120,7 @@
 
   .add-date {
     font-size: 22rpx;
-    color: rgb(158, 160, 181);
+    color: rgb(215, 217,225);
   }
 
   .item-bottom {
@@ -166,8 +175,8 @@
   .share_count .icon {
     width: 37rpx;
     height: 32rpx;
-    background-image: url(../../static/img/转发@2x.png);
-    background-size: 100% 100%;
+    background: url(../../static/img/转发@2x.png) 0 3rpx no-repeat;
+    background-size: 100% auto;
     float: left;
   }
 
@@ -187,6 +196,13 @@
     position: absolute;
     right: 20%;
     height: 40rpx;
+    opacity: 0;
+  }
+  .click-box {
+    width: 60%;
+    position: absolute;
+    right: 0;
+    height: 72rpx;
     opacity: 0;
   }
 </style>

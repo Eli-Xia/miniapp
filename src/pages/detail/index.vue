@@ -4,20 +4,7 @@
     <div class="layer" @click="closeForm" v-if="adding">
 
     </div>
-    <div class="form-post" v-if="adding">
-      <div class="f-title">
-        请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
-        <div class="status">
-
-          <div class="zheng-fan-vs" style="margin:0; margin-top: 25rpx;">
-            <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
-            <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
-            <div class="vs">VS</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
+  
     <post-item :item="detail" pageName="detail"></post-item>
     <div class="status">
 
@@ -28,8 +15,8 @@
       </div>
       <div class="bili">
         <div class="zhengbi" :style="'width:'+leftBi+'%'">{{leftBi}}%</div>
-        <div :class="selectedType == 2 ? 'selected' : ''" class="fanbi" :style="'width:'+rightBi+'%'">{{rightBi}}%</div>
-        <div class="mid-bar" :style="'left:'+(leftBi-2)+'%'"></div>
+        <div class="fanbi" :style="'width:'+(rightBi)+'%'">{{rightBi}}%</div>
+        <div class="mid-bar" :style="'left:'+(leftBi)+'%'"></div>
       </div>
 
     </div>
@@ -44,11 +31,39 @@
       </div>
     </div>
 
-    <div class="add-box">
+    <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
+       <div class="form-post" v-if="adding" :style="'bottom:'+(bottom+90)+'rpx'">
+      <div class="f-title">
+        请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
+        <div class="status">
 
+          <div class="zheng-fan-vs" style="margin:0; margin-top: 25rpx;">
+            <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
+            <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
+            <div class="vs">VS</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="text-box">
+      <div class="text">
+       asdasdasdaasdasdasdasdasdasdsdasdasd
+
+       sAsdasasdads
+        asdasdasdaasdasdasdasdasdasdsdasdasd
+
+       sAsdasasdads
+        asdasdasdaasdasdasdasdasdasdsdasdasd
+
+       sAsdasasdads
+        asdasdasdaasdasdasdasdasdasdsdasdasd
+
+       sAsdasasdads
+      </div>
       <div class="submit" @click="sendComment">发表</div>
-      <input @focus="showForm" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评论" id="">
-
+      <textarea @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="" />
+  </div>
     </div>
 
   </div>
@@ -89,7 +104,9 @@
           content: null
         },
         tips: false,
-        commentList: []
+        commentList: [],
+        bottom: 0,
+        nowPage: 1
       }
     },
 
@@ -140,8 +157,8 @@
         let url = '/api/app/comment/list'
         let data = {
           debateTopicId: id,
-          page: 1,
-          pageSize: 13
+          page: this.nowPage,
+          pageSize: 30
         }
         fly.post(url, data).then(res => {
           if (res.retCode == 0) {
@@ -149,9 +166,13 @@
               item.createTime = utils.formatTime(new Date(item.createTime))
               item.headImgUrl = item.userHeadImgUrl
               item.nickname = item.userNickname
-
+              if (this.nowPage > 1) {
+                this.commentList.push(item)
+              }
             })
-            this.commentList = res.result
+            if (this.nowPage == 1) {
+              this.commentList = res.result
+            }
           } else if (ret.retCode == 2) {
 
           }
@@ -220,8 +241,9 @@
               title: '评论成功！',
               icon: 'right'
             })
+            this.nowPage = 1
             this.get_comment(this.$root.$mp.query.id)
-             this.get_detail(this.$root.$mp.query.id)
+            this.get_detail(this.$root.$mp.query.id)
             this.closeForm()
             this.showLogin = false
             this.checkLogin = false
@@ -275,7 +297,7 @@
                 title: '点赞成功！',
                 icon: 'right'
               })
-               this.get_detail(this.$root.$mp.query.id)
+              this.get_detail(this.$root.$mp.query.id)
               id.likeState = 1
               id.likeCount += 1
             }
@@ -283,8 +305,9 @@
             this.closeForm()
             this.showLogin = false
             this.checkLogin = false
+            this.nowPage += 1
             this.get_detail(this.$root.$mp.query.id)
-            // this.get_comment(this.$root.$mp.query.id)
+            this.get_comment(this.$root.$mp.query.id)
           }
           if (res.retCode == 2) {
             wx.setStorageSync('token', null)
@@ -322,6 +345,7 @@
 
     },
     onShow() {
+      this.nowPage = 1
       this.loading = false
       this.checkLogin = false
       this.showLogin = false
@@ -364,10 +388,17 @@
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
+
+
+    },
+    created() {
+      if (wx.getSystemInfoSync().windowHeight > 720) {
+        this.bottom = 50
+      }
     },
     onPullDownRefresh() {
 
-       this.loading = false
+      this.loading = false
       this.checkLogin = false
       this.showLogin = false
       this.closeForm()
@@ -378,6 +409,11 @@
       this.get_comment(this.$root.$mp.query.id)
       wx.stopPullDownRefresh();
     },
+
+    onReachBottom: function () {
+      this.nowPage += 1
+      this.get_comment(this.$root.$mp.query.id)
+    }
 
 
   }
@@ -392,7 +428,7 @@
   .vs {
     font-size: 34rpx;
     font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
+    font-weight: 400;
     color: #000;
     width: 44rpx;
     height: 26rpx;
@@ -496,7 +532,8 @@
     position: absolute;
 
     height: 30rpx;
-    background: blue;
+    background: linear-gradient(rgb(60, 126, 214), rgb(67, 112, 239));
+    /* 标准的语法 */
     color: #FFF;
     font-size: 26rpx;
     right: 0;
@@ -505,24 +542,28 @@
     border-top-right-radius: 15rpx;
     border-bottom-right-radius: 15rpx;
     top: 5rpx;
-    padding-right: 1%;
+    overflow: hidden;
+    padding-right: 0%;
   }
 
   .mid-bar {
     height: 44rpx;
-    background: rgb(68, 68, 69);
-    width: 4rpx;
+    /* background: rgb(39, 39, 43); */
+    width: 10rpx;
     position: absolute;
     border-radius: 4rpx;
-    top: -8rpx;
-    border: 6rpx solid #fff;
+    top: -3rpx;
+    overflow: hidden;
+    background: url(../../../static/img/mid-bar.png);
+    background-size: 100% 100%;
+    /* border: 4rpx solid #fff; */
 
   }
 
   .comment-box {
     background: #FFF;
     padding-bottom: 80rpx;
-    /* min-height: 600rpx; */
+    min-height: 800rpx;
     clear: both;
   }
 
@@ -537,9 +578,9 @@
   }
 
   .add-box {
-    height: 98rpx;
+    min-height: 98rpx;
     background: rgb(247, 247, 250);
-    border-top: 1rpx solid #eee;
+    /* border-top: 1rpx solid #eee; */
     position: fixed;
     bottom: 0;
     left: 0;
@@ -550,12 +591,12 @@
   .add-box .content {
     width: 590rpx;
     padding-left: 25rpx;
-    height: 72rpx;
     border-radius: 35rpx;
     background: #FFF;
-    line-height: 72rpx;
+    line-height: 32rpx;
     font-size: 28rpx;
     margin: 10rpx 100rpx 10rpx 30rpx;
+   
 
   }
 
@@ -582,13 +623,16 @@
   }
 
   .form-post {
-    padding: 31rpx;
+    /* padding: 31rpx;
     background: #FFF;
     position: fixed;
     bottom: 100rpx;
     left: 0;
     right: 0;
-    z-index: 1500;
+    z-index: 1500; */
+    padding: 31rpx;
+    background: #FFF;
+
   }
 
   .f-title {
@@ -613,5 +657,57 @@
     /* margin-top: 90rpx!important; */
 
     text-align: center;
+
   }
+
+  .phcolor {
+    /* color: rgb(176, 178, 196) */
+    color: red;
+  }
+
+  ::input-placeholder {
+    color: red;
+  }
+  .text-box{
+    display: block;
+    position:relative;
+    bottom: 0rpx;
+  
+    min-height:98rpx;
+}
+
+.text{
+  color: #000;
+  z-index: 300;width: 590rpx;
+    padding-left: 25rpx;
+    border-radius: 35rpx;
+    background: #FFF;
+    line-height: 32rpx;
+    font-size: 28rpx;
+    margin: 10rpx 100rpx 10rpx 30rpx;
+    word-break:break-all;
+    word-wrap:break-word;
+  position:relative;
+
+
+}
+.text-box .weui-textarea{
+    height:100%;
+    position: absolute;
+    left:0;
+    top:0;
+    overflow-y: hidden;
+    word-break:break-all;
+    word-wrap:break-word;
+}
+textarea {
+  height: auto;
+  min-height: 72rpx;
+    position: absolute;
+    left:0;
+    bottom:0;
+    overflow-y: hidden;
+    word-break:break-all;
+    word-wrap:break-word;
+}
 </style>

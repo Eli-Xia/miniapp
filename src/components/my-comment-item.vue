@@ -10,11 +10,11 @@
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div class="item-mid">
+    <div class="item-mid" @click="goto(item.debateTopicId)">
       <p>{{item.content}}</p>
 
     </div>
-    <div class="item-bottom">
+    <div class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
       <p>{{item.debateTopic}}</p>
     </div>
   </div>
@@ -22,7 +22,13 @@
 
 <script>
   export default {
-    props: ['item']
+    props: ['item'],
+    methods:{
+      goto(id) {
+          let url = "/pages/detail/main?id="+id
+          wx.navigateTo({ url })
+      }
+    }
   }
 </script>
 
@@ -84,8 +90,15 @@
     border-radius: 10rpx;
     margin: 0 30rpx;
     font-size: 30rpx;
+    line-height: 37rpx;
     background: rgb(245, 246, 248);
     color: rgb(176, 178, 196);
+     overflow-y: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    max-height:128rpx;
   }
 
   .like-btn {

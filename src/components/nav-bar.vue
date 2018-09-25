@@ -1,5 +1,5 @@
 <template>
-  <div class="nav">
+  <div class="nav" :style="'padding-bottom:'+bottom">
 
     <div class="nav-li home" @click="goto('/pages/index/main')" :class="pageName == 'home' ? 'active': ''">
       <div class="icon"></div>
@@ -21,6 +21,11 @@
 <script>
   export default {
     props: ['pageName'],
+    data() {
+        return {
+            bottom:'0rpx'
+        }
+    },
     methods: {
       goto(url) {
         if (url =='/pages/add/main') {
@@ -32,6 +37,11 @@
         }
 
       }
+    },
+    created() {
+       if(wx.getSystemInfoSync().windowHeight > 720) {
+           this.bottom = '50rpx'
+       } 
     }
   }
 </script>
@@ -67,6 +77,7 @@
     text-align: center;
 
     box-orient: horizontal;
+    
 
   }
 

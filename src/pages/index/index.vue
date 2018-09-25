@@ -17,7 +17,8 @@
     data() {
       return {
         pageName: 'home',
-        lists: null
+        lists: [],
+        nowPage: 1
       }
     },
 
@@ -34,14 +35,14 @@
       get_index_list() {
         const self = this
         fly.post('/api/app/dabate-topic/list', {
-            page: 1,
+            page: this.nowPage,
             pageSize: 30
           })
-          .then(function (response) {
+          .then((response) => {
             if (response.retCode === 0) {
               //渲染列表
-              self.lists = response.result
-              self.lists.map(item => {
+
+              response.result.map((item, index) => {
                 if (!item.forwardCount) {
                   item.forwardCount = '分享'
                 }
@@ -49,9 +50,13 @@
                   item.commentCount = '评论'
                 }
                 item.createTime = utils.formatTime(new Date(item.createTime))
-                return item
+                if (this.nowPage > 1) {
+                  self.lists.push(item)
+                }
               })
-              console.log(self.lists)
+              if (this.nowPage == 1) {
+                self.lists = response.result
+              }
             }
           })
           .catch(function (error) {
@@ -60,13 +65,17 @@
       }
     },
     onShow() {
+      this.lists = []
+      this.nowPage = 1
       this.get_index_list()
+
     },
     created() {
       // this.get_index_list()
     },
     onPullDownRefresh() {
-
+      console.log(1)
+      this.nowPage = 1
       this.get_index_list()
       wx.stopPullDownRefresh();
     },
@@ -84,7 +93,7 @@
           let data = {
             debateTopicId: shareData.id
           }
-          fly.post(url,data)
+          fly.post(url, data)
 
         },
         fail: function (e) {
@@ -94,6 +103,10 @@
 
       }
 
+    },
+    onReachBottom: function () {
+      this.nowPage += 1
+      this.get_index_list()
     }
   }
 </script>
@@ -101,6 +114,6 @@
 <style scoped>
   .page-main {
     background: rgb(245, 246, 248);
-    margin-bottom: 150rpx;
+    margin-bottom: 250rpx;
   }
 </style>

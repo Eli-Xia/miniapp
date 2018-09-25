@@ -136,7 +136,7 @@
     font-size: 60rpx;
     color: rgb(117, 122, 151);
     font-family: Arial, Helvetica, sans-serif;
-    text-align: right;
+    text-align: center;
     font-weight: bold;
 
   }
@@ -145,11 +145,11 @@
     height: 32rpx;
     color: rgb(176, 178, 196);
     font-size: 28rpx;
-    width: 78rpx;
-    padding-left: 32rpx;
+    width: 76rpx;
+    padding-left: 30rpx;
     text-align: right;
     padding-top: 12rpx;
-    background: url(../../../static/img/灰赞@2x.png) 10rpx 13rpx no-repeat;
+    background: url(../../../static/img/灰赞@2x.png) 5rpx 14rpx no-repeat;
     background-size: auto 80%;
   }
 

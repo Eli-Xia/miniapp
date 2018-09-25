@@ -118,6 +118,7 @@
   .like-btn.liked {
     background: url(../../static/img/反赞@2x.png) no-repeat;
      background-size: auto 100%;
+     color: rgb(67, 112, 239);
   }
   .line {
     height: 10rpx;

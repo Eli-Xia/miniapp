@@ -90,7 +90,8 @@ import { setTimeout } from 'timers';
                this.checkLogin = false
               //发布成功跳转首页
               setTimeout(()=>{
-                 wx.navigateBack()
+                let url ="/pages/index/main"
+                 wx.navigateTo({url})
               },2000)
              
             }
@@ -207,4 +208,5 @@ import { setTimeout } from 'timers';
   .submit.nosend {
     background: rgb(25, 25, 26);
   }
+
 </style>

@@ -14,7 +14,8 @@
     data() {
       return {
         pageName: 'my-comment',
-        lists: []
+        lists: [],
+        nowPage:1
       }
     },
 
@@ -25,7 +26,7 @@
     methods: {
       get_list() {
         fly.post('/api/app/comment/list-my', {
-          page: 1,
+          page: this.nowPage,
           pageSize: 30
         }).then(res => {
           if (res.retCode == 0) {
@@ -52,6 +53,10 @@
       wx.setNavigationBarTitle({
         title: '我的评论'
       })
+    },
+    onReachBottom: function () {
+      this.nowPage += 1
+      this.get_list()
     }
 
   }
