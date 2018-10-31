@@ -5,7 +5,7 @@
         <div class="zheng-icon"></div>
         <img :src="item.headImgUrl" />
       </div>
-      <div class="like-btn" :class="item.likeState == 1 ? 'liked': ''"  @click="like(item)">
+      <div class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
         {{ item.likeCount}}
       </div>
         <div class="name-date">
@@ -59,6 +59,7 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 50%;
+    border: 1rpx solid #9ea0b5;
   }
 
   .item-top .name-date {
@@ -114,12 +115,13 @@
     background-size: auto 100%;
     color: rgb(176, 178, 196);
   }
-  
+
   .like-btn.liked {
     background: url(../../static/img/反赞@2x.png) no-repeat;
-     background-size: auto 100%;
-     color: rgb(67, 112, 239);
+    background-size: auto 100%;
+    color: rgb(67, 112, 239);
   }
+
   .line {
     height: 10rpx;
     border-top: 1rpx solid rgb(239, 239, 244);

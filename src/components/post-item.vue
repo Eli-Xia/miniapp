@@ -8,7 +8,7 @@
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div class="item-mid" @click="goto(item.id)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+    <div class="item-mid" :class="pageName == 'detail' ? 'detail' : ''" @click="goto(item.id)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
       {{item.debateTopic}}
 
     </div>
@@ -85,6 +85,7 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 50%;
+    border:1rpx solid #9ea0b5;
   }
 
   .item-top .name-date {
@@ -108,6 +109,13 @@
     -webkit-box-orient: vertical;
     max-height:120rpx;
    
+  }
+  .item-mid.detail {
+    max-height: 370rpx!important;
+    overflow:auto;
+    padding-bottom: 30rpx;
+     -webkit-line-clamp: 5;
+    /* background: #000; */
   }
 
 

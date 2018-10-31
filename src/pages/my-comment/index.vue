@@ -15,7 +15,7 @@
       return {
         pageName: 'my-comment',
         lists: [],
-        nowPage:1
+        nowPage: 1
       }
     },
 
@@ -30,10 +30,15 @@
           pageSize: 30
         }).then(res => {
           if (res.retCode == 0) {
-            res.result.map(item=>{
+            res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
+              if(this.nowPage < 1) {
+                 self.lists.push(item)
+              }
             })
-            this.lists = res.result
+            if (this.nowPage == 1) {
+              this.lists = res.result
+            }
 
           } else if (retCode == 2) {
 
@@ -57,7 +62,14 @@
     onReachBottom: function () {
       this.nowPage += 1
       this.get_list()
-    }
+    },
+    onPullDownRefresh() {
+      console.log(1)
+      this.nowPage = 1
+      this.get_list()
+      wx.stopPullDownRefresh();
+    },
+  
 
   }
 </script>

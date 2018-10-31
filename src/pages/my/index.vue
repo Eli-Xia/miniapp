@@ -80,6 +80,9 @@
         
       }
     },
+    onPullDownRefresh() {
+      wx.stopPullDownRefresh();
+    },
     onShow() {
       this.get_user()
     },

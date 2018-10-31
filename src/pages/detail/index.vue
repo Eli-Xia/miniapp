@@ -1,69 +1,59 @@
 <template>
-  <div v-if="loading">
-    <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
-    <div class="layer" @click="closeForm" v-if="adding">
+  <div>
+    <!-- <canvas canvas-id='customCanvas'></canvas> -->
+    <div v-if="loading">
+      <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
+      <div class="layer" @click="closeForm" v-if="adding">
 
-    </div>
-  
-    <post-item :item="detail" pageName="detail"></post-item>
-    <div class="status">
-
-      <div class="zheng-fan-vs">
-        <div :class="selectedType == 1 ? 'zheng-selected' : 'zheng'" @click="support(id,leftId)">{{leftText}}</div>
-        <div class="fan" :class="selectedType == 2 ? 'fan-selected' : 'fan'" @click="support(id,rightId)">{{rightText}}</div>
-        <div class="vs">VS</div>
       </div>
-      <div class="bili">
-        <div class="zhengbi" :style="'width:'+leftBi+'%'">{{leftBi}}%</div>
-        <div class="fanbi" :style="'width:'+(rightBi)+'%'">{{rightBi}}%</div>
-        <div class="mid-bar" :style="'left:'+(leftBi)+'%'"></div>
-      </div>
+      <div class="form-post" v-if="adding" :style="'bottom:'+(bottom+99)+'rpx'">
+        <div class="f-title">
+          请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
+          <div class="status">
 
-    </div>
-
-    <div class="comment-box">
-      <div class="no-comment" v-if="commentList.length < 1">
-        <h2>暂时还没有人评论</h2>
-      </div>
-      <div v-for="(item,index) in commentList" :key="index">
-        <zheng-item @doLike="doLike" :item="item" v-if="item.debateViewType == 1"></zheng-item>
-        <fan-item @doLike="doLike" :item="item" v-if="item.debateViewType == 2"></fan-item>
-      </div>
-    </div>
-
-    <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
-       <div class="form-post" v-if="adding" :style="'bottom:'+(bottom+90)+'rpx'">
-      <div class="f-title">
-        请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
-        <div class="status">
-
-          <div class="zheng-fan-vs" style="margin:0; margin-top: 25rpx;">
-            <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
-            <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
-            <div class="vs">VS</div>
+            <div class="zheng-fan-vs" style="margin:0; margin-top: 25rpx;">
+              <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
+              <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
+              <div class="vs">VS</div>
+            </div>
           </div>
+
+        </div>
+      </div>
+
+      <post-item :item="detail" pageName="detail"></post-item>
+      <div class="status">
+
+        <div class="zheng-fan-vs">
+          <div :class="selectedType == 1 ? 'zheng-selected' : 'zheng'" @click="support(id,leftId)">{{leftText}}</div>
+          <div class="fan" :class="selectedType == 2 ? 'fan-selected' : 'fan'" @click="support(id,rightId)">{{rightText}}</div>
+          <div class="vs">VS</div>
+        </div>
+        <div class="bili">
+          <div class="zhengbi" :style="'width:'+leftBi+'%'">{{leftBi}}%</div>
+          <div class="fanbi" :style="'width:'+(rightBi)+'%'">{{rightBi}}%</div>
+          <div class="mid-bar" :style="'left:'+(leftBi)+'%'"></div>
         </div>
 
       </div>
-    </div>
-    <div class="text-box">
-      <div class="text">
-       asdasdasdaasdasdasdasdasdasdsdasdasd
 
-       sAsdasasdads
-        asdasdasdaasdasdasdasdasdasdsdasdasd
-
-       sAsdasasdads
-        asdasdasdaasdasdasdasdasdasdsdasdasd
-
-       sAsdasasdads
-        asdasdasdaasdasdasdasdasdasdsdasdasd
-
-       sAsdasasdads
+      <div class="comment-box">
+        <div class="no-comment" v-if="commentList.length < 1">
+          <h2>暂时还没有人评论</h2>
+        </div>
+        <div v-for="(item,index) in commentList" :key="index">
+          <zheng-item @doLike="doLike" :item="item" v-if="item.debateViewType == 1"></zheng-item>
+          <fan-item @doLike="doLike" :item="item" v-if="item.debateViewType == 2"></fan-item>
+        </div>
       </div>
-      <div class="submit" @click="sendComment">发表</div>
-      <textarea @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="" />
-  </div>
+
+      <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
+
+        <div class="submit" @click="sendComment">发表</div>
+        <input @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="">
+
+      </div>
+
     </div>
 
   </div>
@@ -106,7 +96,8 @@
         tips: false,
         commentList: [],
         bottom: 0,
-        nowPage: 1
+        nowPage: 1,
+        share_img: ''
       }
     },
 
@@ -142,6 +133,7 @@
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
             this.loading = true
+            this.get_share_img()
 
           } else {
             wx.showToast({
@@ -336,15 +328,57 @@
         this.tips = false
         this.commentData.debatViewType = 0
         this.commentData.content = null
-      }
+      },
+      get_share_img() {
+        const self = this
+        let ctx = wx.createCanvasContext('customCanvas')
+        ctx.setFillStyle('#5F6FEE') //文字颜色：默认黑色
+        ctx.setFontSize(60) //设置字体大小，默认10
+        ctx.fillText("LXT", 60, 60) //绘制文本
+        //调用draw()开始绘制
+        let imgPath = '../../../static/img/反方实@2x.png'
+        // ctx.drawImage(imgPath,0,0,width,height)    
+        ctx.draw(false, () => {
+          
+        })
+
+        wx.canvasToTempFilePath({
+            canvasId: 'customCanvas',
+            success: function (res) {
+              // console.log(res.tempFilePath)
+              let temp_path = res.tempFilePath
+              // 小程序读取文件管理器 api
+              let fileSystemManager = wx.getFileSystemManager()
+              fileSystemManager.readFile({
+                filePath: temp_path,
+                encoding: 'base64',
+                success: (data) => {
+                  // console.log(data)
+                  let base64 = 'data:image/png;base64,' + data.data
+                  console.log(data)
+                  self.share_img = temp_path
+                }
+              })
+            }
+          })
+
+        // wx.canvasToTempFilePath({
+        //   canvasId: 'customCanvas',
+        //   success(res) {
+        //     console.log(res.tempFilePath, 99999)
+        //     self.share_img = res.tempFilePath
+
+        //   },
+        //   fail(e) {
+        //     console.log(e)
+        //   }
+        // })
+
+      },
     },
 
-    created() {
-
-      console.log(this.$mp)
-
-    },
     onShow() {
+
       this.nowPage = 1
       this.loading = false
       this.checkLogin = false
@@ -359,13 +393,13 @@
     },
     onShareAppMessage: function (opts) {
       let shareData = opts.target.dataset.share
-      console.log(shareData, "000000")
+      console.log(this.share_img)
       return {
 
         title: shareData.debateTopic,
 
-        path: '/pages/detail/main?id=' + shareData.id,
-        imageUrl: shareData.headImgUrl,
+        path: '/pages/index/main?id=' + shareData.id,
+        imageUrl: this.share_img,
         success: function (res) {
           let url = '/api/app/dabate-topic/forward'
           let data = {
@@ -392,10 +426,12 @@
 
     },
     created() {
+
       if (wx.getSystemInfoSync().windowHeight > 720) {
         this.bottom = 50
       }
     },
+
     onPullDownRefresh() {
 
       this.loading = false
@@ -449,7 +485,7 @@
   }
 
   div.zheng {
-    width: 280rpx;
+    width: 282rpx;
     height: 100rpx;
     position: absolute;
     line-height: 120rpx;
@@ -464,14 +500,14 @@
   }
 
   div.zheng-selected {
-    width: 280rpx;
+    width: 282rpx;
     height: 100rpx;
     position: absolute;
     line-height: 120rpx;
     left: 0rpx;
     top: 0rpx;
     font-size: 30rpx;
-    background-image: url(../../../static/img/11@2x.png);
+    background: url(../../../static/img/11@2x.png) no-repeat;
     background-size: auto 100%;
     text-align: center;
     color: #FFF;
@@ -480,7 +516,7 @@
 
 
   div.fan {
-    width: 280rpx;
+    width: 282rpx;
     height: 100rpx;
     position: absolute;
     right: 0rpx;
@@ -495,14 +531,14 @@
   }
 
   div.fan-selected {
-    width: 280rpx;
+    width: 282rpx;
     height: 100rpx;
     position: absolute;
     line-height: 120rpx;
     right: 0rpx;
     top: 0rpx;
     font-size: 30rpx;
-    background-image: url(../../../static/img/反方实@2x.png);
+    background: url(../../../static/img/反方实@2x.png) no-repeat;
     background-size: auto 100%;
     text-align: center;
     color: #FFF;
@@ -562,7 +598,7 @@
 
   .comment-box {
     background: #FFF;
-    padding-bottom: 80rpx;
+    padding-bottom: 160rpx;
     min-height: 800rpx;
     clear: both;
   }
@@ -580,7 +616,7 @@
   .add-box {
     min-height: 98rpx;
     background: rgb(247, 247, 250);
-    /* border-top: 1rpx solid #eee; */
+    border-top: 1rpx solid #eee;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -591,12 +627,12 @@
   .add-box .content {
     width: 590rpx;
     padding-left: 25rpx;
+    height: 72rpx;
     border-radius: 35rpx;
     background: #FFF;
-    line-height: 32rpx;
+    line-height: 72rpx;
     font-size: 28rpx;
     margin: 10rpx 100rpx 10rpx 30rpx;
-   
 
   }
 
@@ -623,14 +659,13 @@
   }
 
   .form-post {
-    /* padding: 31rpx;
+    padding: 20rpx 30rpx;
     background: #FFF;
     position: fixed;
-    bottom: 100rpx;
+    bottom: 10rpx;
     left: 0;
     right: 0;
-    z-index: 1500; */
-    padding: 31rpx;
+    z-index: 1500;
     background: #FFF;
 
   }
@@ -649,7 +684,7 @@
     clear: both;
     border-radius: 10rpx;
     padding: 10rpx;
-    background: #F5f5f5;
+    background: none;
     margin: 40rpx;
     height: 90rpx;
     line-height: 90rpx;
@@ -668,46 +703,28 @@
   ::input-placeholder {
     color: red;
   }
-  .text-box{
+
+  .text-box {
+    width: 100%;
+    position: relative;
+    min-height: 80rpx;
+    margin-top: 17rpx;
+  }
+
+  .text-box .text {
     display: block;
-    position:relative;
-    bottom: 0rpx;
-  
-    min-height:98rpx;
-}
+    visibility: hidden;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
 
-.text{
-  color: #000;
-  z-index: 300;width: 590rpx;
-    padding-left: 25rpx;
-    border-radius: 35rpx;
-    background: #FFF;
-    line-height: 32rpx;
-    font-size: 28rpx;
-    margin: 10rpx 100rpx 10rpx 30rpx;
-    word-break:break-all;
-    word-wrap:break-word;
-  position:relative;
-
-
-}
-.text-box .weui-textarea{
-    height:100%;
+  .text-box .weui-textarea {
+    height: 100%;
     position: absolute;
-    left:0;
-    top:0;
+    left: 0;
+    top: 0;
     overflow-y: hidden;
-    word-break:break-all;
-    word-wrap:break-word;
-}
-textarea {
-  height: auto;
-  min-height: 72rpx;
-    position: absolute;
-    left:0;
-    bottom:0;
-    overflow-y: hidden;
-    word-break:break-all;
-    word-wrap:break-word;
-}
+    word-break: break-all;
+    word-wrap: break-word;
+  }
 </style>

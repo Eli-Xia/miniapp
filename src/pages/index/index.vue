@@ -1,5 +1,6 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
+ 
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="index"></post-item>
     </div>
@@ -12,13 +13,15 @@
   import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import postItem from '@/components/post-item'
+  import { setTimeout } from 'timers';
   export default {
 
     data() {
       return {
         pageName: 'home',
         lists: [],
-        nowPage: 1
+        nowPage: 1,
+        share_img:''
       }
     },
 
@@ -32,6 +35,7 @@
       clickHandle(msg, ev) {
         console.log('clickHandle:', msg, ev)
       },
+
       get_index_list() {
         const self = this
         fly.post('/api/app/dabate-topic/list', {
@@ -65,13 +69,21 @@
       }
     },
     onShow() {
+      
+
+    },
+    onLoad() {
+      if(this.$root.$mp.query.id) {
+        //跳走
+        let url = '/pages/detail/main?id=' + this.$root.$mp.query.id
+          wx.navigateTo({ url })
+      }
+    },
+
+    created() {
       this.lists = []
       this.nowPage = 1
       this.get_index_list()
-
-    },
-    created() {
-      // this.get_index_list()
     },
     onPullDownRefresh() {
       console.log(1)
@@ -81,27 +93,30 @@
     },
     onShareAppMessage: function (opts) {
       let shareData = opts.target.dataset.share
-      console.log(shareData)
-      return {
+     
 
-        title: shareData.debateTopic,
+        return {
 
-        path: '/pages/detail/main?id=' + shareData.id,
-        imageUrl: shareData.headImgUrl,
-        success: function (res) {
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: shareData.id
+          title: shareData.debateTopic,
+
+          path: '/pages/detail/main?id=' + shareData.id,
+          // imageUrl: self.share_img,
+          success: function (res) {
+            let url = '/api/app/dabate-topic/forward'
+            let data = {
+              debateTopicId: shareData.id
+            }
+            fly.post(url, data)
+
+          },
+          fail: function (e) {
+            console.log(e)
           }
-          fly.post(url, data)
 
-        },
-        fail: function (e) {
-          console.log(e)
+
         }
+      
 
-
-      }
 
     },
     onReachBottom: function () {
@@ -115,5 +130,7 @@
   .page-main {
     background: rgb(245, 246, 248);
     margin-bottom: 250rpx;
+    padding-bottom: 200rpx;
+    opacity: 1;
   }
 </style>
