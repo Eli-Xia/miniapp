@@ -1,7 +1,6 @@
-
 <template>
   <div>
-    <canvas canvas-id='myCanvas' style="display:none1"></canvas>
+    <canvas width="500" height="300" canvas-id='myCanvasr'></canvas>
    <div id="canvas-container"></div>
 
     <h1 @click="mkhaibao">生成海报</h1>
@@ -138,7 +137,7 @@
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
             this.loading = true
-            
+            this.get_share_img()
 
           } else {
             wx.showToast({
@@ -335,26 +334,20 @@
         this.commentData.content = null
       },
       get_share_img() {
-       
-
-      },
-      mkhaibao() {
         const self = this
-        console.log(111)
-        let cardInfo = {
-          CardInfo: {
-            Name:'小强',
-            QrCode:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ereW8O65g1NL7ib2716iadicoiaTI21zDTbuexBJPyEG4Nsvf6pSHzrA2ibcOcbMaiaVia3se5nQqhMAGBaQ/132',
-            Avater:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ereW8O65g1NL7ib2716iadicoiaTI21zDTbuexBJPyEG4Nsvf6pSHzrA2ibcOcbMaiaVia3se5nQqhMAGBaQ/132',
-
-          },
-          TagList:[{TagName:'有意思'}],
+        let ctx = wx.createCanvasContext('customCanvas')
+        ctx.setFillStyle('#5F6FEE') //文字颜色：默认黑色
+        ctx.setFontSize(60) //设置字体大小，默认10
+        ctx.fillText("LXT", 60, 60) //绘制文本
+        //调用draw()开始绘制
+        let imgPath = '../../../static/img/反方实@2x.png'
+        // ctx.drawImage(imgPath,0,0,width,height)    
+        ctx.draw(false, () => {
           
-        }
-        mkimg.getAvaterInfo(cardInfo)
-        setTimeout(()=>{
-            wx.canvasToTempFilePath({
-            canvasId: 'myCanvas',
+        })
+
+        wx.canvasToTempFilePath({
+            canvasId: 'customCanvas',
             success: function (res) {
               // console.log(res.tempFilePath)
               let temp_path = res.tempFilePath
@@ -366,14 +359,27 @@
                 success: (data) => {
                   // console.log(data)
                   let base64 = 'data:image/png;base64,' + data.data
-                  console.log(base64,999)
+                  console.log(data)
                   self.share_img = temp_path
                 }
               })
             }
           })
-        },3000)
+
       
+
+      },
+      mkhaibao() {
+        let cardInfo = {
+          CardInfo: {
+            Name:'小强',
+            Avater:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ereW8O65g1NL7ib2716iadicoiaTI21zDTbuexBJPyEG4Nsvf6pSHzrA2ibcOcbMaiaVia3se5nQqhMAGBaQ/132',
+
+          },
+          TagList:[{TagName:'有意思'}],
+          
+        }
+        mkimg.getAvaterInfo(cardInfo)
       }
     },
 
@@ -422,8 +428,7 @@
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
-     
-     this.mkhaibao()
+
       // this.get_share_img()
     },
     created() {
@@ -735,7 +740,5 @@
     right: 0;
     top: 0;
     bottom: 0;
-    z-index: -100;
   }
 </style>
-
