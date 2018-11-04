@@ -6,7 +6,10 @@
     "pages/my-comment/main",
     "pages/my-post/main",
     "pages/detail/main",
-    "pages/login/main"
+    "pages/login/main",
+    "pages/ta/main",
+    "pages/ta-post/main",
+    "pages/ta-comment/main"
   ],
   "window": {
     "backgroundTextStyle": "white",

@@ -3,7 +3,7 @@
     <div class="item-top">
       <div class="face">
         <div class="zheng-icon"></div>
-        <img :src="item.headImgUrl" />
+        <img  @click="goTa(item.userId)" :src="item.headImgUrl" />
       </div>
       <div class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
         {{ item.likeCount}}
@@ -26,6 +26,12 @@
     methods: {
       like(id) {
         this.$emit('doLike', id)
+      },
+      goTa(id) {
+        if(id) {
+          let url = '/pages/ta/main?id=' + id
+          wx.navigateTo({ url })
+        }
       }
     }
   }

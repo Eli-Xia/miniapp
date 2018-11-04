@@ -1,8 +1,13 @@
 <template>
   <div class="item-box">
     <div class="item-top">
-      <div class="click-box"  @click="goto(item.id)">我也可以点</div>
-      <div class="face"><img :src="item.headImgUrl" /></div>
+      <div class="zanzhu" v-if="pageName == 'home'">赞助</div>
+      <div v-if="pageName == 'my-post'">
+      <div class="no-pass" >该评论不过审</div>
+      <div class="close-btn"></div>
+      </div>
+      <div class="click-box" @click="goto(item.id)">我也可以点</div>
+      <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
       <div class="name-date">
         <div class="nickname">{{item.nickname}}</div>
         <div class="add-date">{{item.createTime}}</div>
@@ -13,15 +18,16 @@
 
     </div>
     <div class="item-bottom">
+      <div class="tag-btn" v-if="item.debateTag">{{item.debateTag.name}}</div>
       <div class="comment_count btn" @click="goto(item.id)">
         <div class="btn-group">
           <div class="icon"></div>
-          <div class="count" >{{item.commentCount}}</div>
+          <div class="count">{{item.commentCount}}</div>
         </div>
 
       </div>
-      <button  class="share-btn" open-type='share' :id="item.id" :data-share="item">分享</button>
-      <div class="share_count btn">
+     
+      <div class="share_count btn" @click="share(item)">
         <div class="btn-group">
           <div class="icon"></div>
           <div class="count">{{item.forwardCount}}</div>
@@ -33,33 +39,42 @@
 
 <script>
   export default {
-    data(){
+    data() {
       return {
-        shareId:0
+        shareId: 0
       }
     },
-    props: ['item','pageName'],
+    props: ['item', 'pageName'],
     methods: {
-      setID(id){
+      setID(id) {
         this.shareId = id
         console.log('0000')
       },
       goto(id) {
-       
+
         if (this.pageName !== 'detail') {
           let url = '/pages/detail/main?id=' + id
           wx.navigateTo({ url })
         }
+      },
+      goTa(id) {
+        if(id) {
+          let url = '/pages/ta/main?id=' + id
+          wx.navigateTo({ url })
+        }
+      },
+      share(item) {
+        this.$emit('onShare',item)
       }
     },
     onShow() {
       // console.log(this.item)
-      console.log(this.pageName,1111)
+      console.log(this.pageName, 1111)
     },
     created() {
       // console.log(this.pageName,1111)
     },
-    
+
   }
 </script>
 
@@ -73,8 +88,17 @@
   .item-box .item-top {
     padding: 24rpx;
     height: 42rpx;
-  }
 
+  }
+  .item-top {
+  position: relative;
+  }
+  .item-top .zanzhu {
+    position:absolute;
+    right: 25rpx;
+    font-size: 24rpx;
+    color: rgb(196, 198, 211);
+  }
   .item-top .face {
     width: 72rpx;
     height: 72rpx;
@@ -85,7 +109,7 @@
     width: 72rpx;
     height: 72rpx;
     border-radius: 50%;
-    border:1rpx solid #9ea0b5;
+    border: 1rpx solid #9ea0b5;
   }
 
   .item-top .name-date {
@@ -93,6 +117,20 @@
     margin-left: 11rpx;
     line-height: 30rpx;
     margin-top: 8rpx;
+  }
+
+  .tag-btn {
+    height: 30rpx;
+    position: absolute;
+    left: 25rpx;
+    top:10rpx;
+    color: rgb(41, 182, 246);
+    line-height: 30rpx;
+    border: 1rpx solid rgb(41, 182, 246);
+    font-size: 24rpx;
+    border-radius: 21rpx;
+    padding: 5rpx 9rpx;
+
   }
 
   .item-mid {
@@ -107,14 +145,15 @@
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
-    max-height:120rpx;
-   
+    max-height: 120rpx;
+
   }
+
   .item-mid.detail {
-    max-height: 370rpx!important;
-    overflow:auto;
+    max-height: 370rpx !important;
+    overflow: auto;
     padding-bottom: 30rpx;
-     -webkit-line-clamp: 5;
+    -webkit-line-clamp: 5;
     /* background: #000; */
   }
 
@@ -128,48 +167,33 @@
 
   .add-date {
     font-size: 22rpx;
-    color: rgb(215, 217,225);
+    color: rgb(215, 217, 225);
   }
 
   .item-bottom {
     height: 32rpx;
     padding: 16rpx;
+    position: relative;
     border-top: 1rpx solid rgb(239, 239, 244);
-    display: inline-block;
-
-    /* Firefox */
-
-    display: -moz-box;
-
-    -moz-box-orient: horizontal;
-
-    /* Safari, Opera, and Chrome */
-
-    display: -webkit-box;
-
-    -webkit-box-orient: horizontal;
-
-    /* W3C */
-
-    display: box;
-    text-align: center;
-
-    box-orient: horizontal;
-
   }
 
   .item-bottom .btn {
-    -webkit-box-flex: 1.0;
-
-    -moz-box-flex: 1.0;
-
-    box-flex: 1.0;
-    height: 32rpx;
-    line-height: 32rpx;
+    width: 90rpx;
+    height: 40rpx;
+    top: 15rpx;
+    position: absolute;
   }
 
   .btn-group {
     text-align: center
+  }
+
+  .comment_count.btn {
+    right: 200rpx;
+  }
+
+  .share_count.btn {
+    right: 60rpx;
   }
 
   .comment_count .icon {
@@ -199,6 +223,7 @@
     width: 110rpx;
     margin: 0 auto;
   }
+
   .share-btn {
     width: 30%;
     position: absolute;
@@ -206,11 +231,35 @@
     height: 40rpx;
     opacity: 0;
   }
+
   .click-box {
     width: 60%;
     position: absolute;
     right: 0;
     height: 72rpx;
     opacity: 0;
+  }
+
+   .no-pass {
+    position: absolute;
+    width: 160rpx;
+    height: 40rpx;
+    background:rgb(244, 67 ,54);
+    color: #FFF;
+    font-size: 20rpx;
+    text-align: center;
+    line-height: 40rpx;
+    right: 72rpx;
+    top:15rpx;
+    border-radius: 20rpx;
+  }
+
+  .close-btn {
+    width: 24rpx;
+    height: 24rpx;
+     background: url(../../static/img/close1@2x.png) no-repeat;
+     position: absolute;
+     right: 25rpx;
+     background-size: 100% 100%;
   }
 </style>

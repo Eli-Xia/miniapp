@@ -206,4 +206,92 @@ mkimg.saveShareImg = function () {
 
 }
 
+mkimg.shareCard = async function (data, cb) {
+
+  var that = this;
+  let ctx = wx.createCanvasContext('card-canvas');
+  var str = data.debateTopic
+  console.log(str.length, str)
+  if (str.length > 30) {
+    str = str.substr(0, 30) + '...'
+  }
+  var width = "";
+
+  var height = 600 * 0.5;
+  console.log('获取到高度')
+  width = 750 * 0.5;
+  var left = 0;
+  ctx.setFillStyle('#fff');
+  ctx.fillRect(0, 0, 500, height);
+
+  //头像
+  var rand = Math.floor(Math.random()*9+1);
+  console.log(rand)
+  let bgImg = '../../static/img/share-card/share'+rand+'.jpg'
+  ctx.drawImage(bgImg, left, 20, width, width);
+  ctx.font = "36px Arial bold";
+  ctx.setFillStyle('#fff');
+  ctx.setTextAlign('left');
+
+
+
+  var titleHeight = 60; // 标题的高度
+  var canvasWidth = 270; //计算canvas的宽度
+  var initHeight = 110; //绘制字体距离canvas顶部初始的高度
+  if(str.length < 16) {
+    initHeight = 150
+  }
+
+  if(str.length > 15 && str.length <=24) {
+    initHeight = 126
+  }
+ 
+
+  // 标题border-bottom 线距顶部距离
+  titleHeight = mkimg.drawText(ctx, str, initHeight, titleHeight, canvasWidth); // 调用行文本换行函数
+
+  ctx.moveTo(65, titleHeight)
+  ctx.lineTo(325, titleHeight)
+
+
+
+
+  //  绘制二维码cardInfo.CardInfo.QrCode
+
+  ctx.draw(false, () => {
+
+    wx.canvasToTempFilePath({
+      canvasId: 'card-canvas',
+      success: function (res) {
+        // console.log(res.tempFilePath)
+        let temp_path = res.tempFilePath
+        // 小程序读取文件管理器 api
+        cb(temp_path)
+      }
+    })
+
+  })
+
+}
+mkimg.drawText = function (ctx, str, initHeight, titleHeight, canvasWidth) {
+  var lineWidth = 0;
+  var lastSubStrIndex = 0; //每次开始截取的字符串的索引
+  for (let i = 0; i < str.length; i++) {
+    lineWidth += ctx.measureText(str[i]).width;
+    if (lineWidth > canvasWidth) {
+      ctx.fillText(str.substring(lastSubStrIndex, i), 40, initHeight); //绘制截取部分
+      initHeight += 40; //20为字体的高度
+      lineWidth = 0;
+      lastSubStrIndex = i;
+      titleHeight += 40;
+    }
+    if (i == str.length - 1) { //绘制剩余部分
+      ctx.fillText(str.substring(lastSubStrIndex, i + 1), 40, initHeight);
+    }
+  }
+  // 标题border-bottom 线距顶部距离
+  titleHeight = titleHeight + 10;
+  return titleHeight
+}
+
 export default mkimg

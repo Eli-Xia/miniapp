@@ -1,9 +1,12 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
- 
+  
+    <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
+   
     <div v-for="(item,index) in lists" :key="index">
-      <post-item :item="item" pageName="index"></post-item>
+      <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
     </div>
+    <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
     <nav-bar :pageName="pageName"></nav-bar>
   </div>
 </template>
@@ -13,7 +16,9 @@
   import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import postItem from '@/components/post-item'
+  import sharePage from '@/components/share'
   import { setTimeout } from 'timers';
+  import mkimg from '../../utils/mkimg';
   export default {
 
     data() {
@@ -21,21 +26,40 @@
         pageName: 'home',
         lists: [],
         nowPage: 1,
-        share_img:''
+        share_img: '',
+        shareData: {},
+        showShare: false
+
       }
     },
 
     components: {
       navBar,
-      postItem
+      postItem,
+      sharePage,
     },
 
     methods: {
-
+      onShare(data) {
+        this.showShare = true
+        this.shareData = data
+        //生成分享图片链接s
+        const self = this
+        mkimg.shareCard(data, function (url) {
+          console.log(url, '---')
+          self.share_img = url
+        })
+      },
+      closeShare() {
+        this.showShare = false
+        this.shareData = {}
+      },
       clickHandle(msg, ev) {
         console.log('clickHandle:', msg, ev)
       },
+      doShare() {
 
+      },
       get_index_list() {
         const self = this
         fly.post('/api/app/dabate-topic/list', {
@@ -47,6 +71,7 @@
               //渲染列表
 
               response.result.map((item, index) => {
+
                 if (!item.forwardCount) {
                   item.forwardCount = '分享'
                 }
@@ -69,14 +94,14 @@
       }
     },
     onShow() {
-      
+
 
     },
     onLoad() {
-      if(this.$root.$mp.query.id) {
+      if (this.$root.$mp.query.id) {
         //跳走
         let url = '/pages/detail/main?id=' + this.$root.$mp.query.id
-          wx.navigateTo({ url })
+        wx.navigateTo({ url })
       }
     },
 
@@ -91,34 +116,29 @@
       this.get_index_list()
       wx.stopPullDownRefresh();
     },
-    onShareAppMessage: function (opts) {
-      let shareData = opts.target.dataset.share
-     
-
-        return {
-
-          title: shareData.debateTopic,
-
-          path: '/pages/detail/main?id=' + shareData.id,
-          // imageUrl: self.share_img,
-          success: function (res) {
-            let url = '/api/app/dabate-topic/forward'
-            let data = {
-              debateTopicId: shareData.id
-            }
-            fly.post(url, data)
-
-          },
-          fail: function (e) {
-            console.log(e)
-          }
-
-
-        }
-      
-
+    onShareAppMessage:function (opts) {
+  let shareData = opts.target.dataset.share
+ let self = this
+ console.log(self.share_img)
+  return {
+    title:'你怎么看？',
+    path: '/pages/index/main?id=' + shareData.id,
+    imageUrl: self.share_img,
+    success: function (res) {
+      self.closeShare()
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: shareData.id
+      }
+      fly.post(url, data)
 
     },
+    fail: function (e) {
+      console.log(e)
+    }
+  }
+
+},
     onReachBottom: function () {
       this.nowPage += 1
       this.get_index_list()

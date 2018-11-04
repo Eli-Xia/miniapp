@@ -1,7 +1,7 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
     <div v-for="(item,index) in lists" :key="index">
-      <post-item :item="item" pageName="my-post"></post-item>
+      <post-item :item="item" pageName="pageName"></post-item>
     </div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
@@ -16,8 +16,9 @@
 
     data() {
       return {
-        pageName: 'my-post',
-        lists: null
+        pageName: 'ta-post',
+        lists: null,
+        id: 0
       }
     },
 
@@ -25,12 +26,6 @@
       navBar,
       postItem
     },
-    onLoad() {
-      wx.setNavigationBarTitle({
-        title: '我的辩题'
-      })
-    },
-
     methods: {
 
       clickHandle(msg, ev) {
@@ -38,7 +33,8 @@
       },
       get_index_list() {
         const self = this
-        fly.post('/api/app/dabate-topic/list-my', {
+        fly.post('/api/app/dabate-topic/list-person', {
+            userId: this.id,
             page: 1,
             pageSize: 30
           })
@@ -65,10 +61,16 @@
       }
     },
     onShow() {
-      this.get_index_list()
+
     },
-    created() {
-      // this.get_index_list()
+    onLoad() {
+      wx.setNavigationBarTitle({
+        title: 'ta的辩题'
+      })
+      this.id = this.$root.$mp.query.id
+      console.log(this.id)
+      this.get_index_list()
+
     },
     onPullDownRefresh() {
 
@@ -79,7 +81,7 @@
       this.nowPage += 1
       this.get_index_list()
     },
-   onShareAppMessage: function (opts) {
+    onShareAppMessage: function (opts) {
       let shareData = opts.target.dataset.share
       console.log(shareData)
       return {

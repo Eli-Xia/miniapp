@@ -1,3 +1,4 @@
+import fly from './fly'
 function formatNumber(n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
@@ -43,8 +44,34 @@ function getBase64(url) {
   return dataURL;
 }
 
+
+export function shareFun(opts) {
+  let shareData = opts.target.dataset.share
+
+  return {
+
+    title: '',
+
+    path: '/pages/index/main?id=' + shareData.id,
+    imageUrl: this.share_img,
+    success: function (res) {
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: shareData.id
+      }
+      fly.post(url, data)
+
+    },
+    fail: function (e) {
+      console.log(e)
+    }
+  }
+
+}
+
 export default {
   formatNumber,
   formatTime,
-  getBase64
+  getBase64,
+  shareFun
 }

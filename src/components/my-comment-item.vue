@@ -1,9 +1,12 @@
 <template>
   <div class="item-box">
     <div class="item-top">
+
       <div class="face"><img :src="item.headImgUrl" /></div>
-      <div class="like-btn">
-        {{item.likeCount}}
+      <div v-if="pageName == 'my-commtent'">
+        <div class="no-pass">该评论不过审</div>
+        <div class="like-btn close-btn">
+        </div>
       </div>
       <div class="name-date">
         <div class="nickname">{{item.nickname}}</div>
@@ -22,11 +25,11 @@
 
 <script>
   export default {
-    props: ['item'],
-    methods:{
+    props: ['item', 'pageName'],
+    methods: {
       goto(id) {
-          let url = "/pages/detail/main?id="+id
-          wx.navigateTo({ url })
+        let url = "/pages/detail/main?id=" + id
+        wx.navigateTo({ url })
       }
     }
   }
@@ -42,7 +45,7 @@
 
   .item-box .item-top {
     padding: 24rpx;
-    height: 42rpx;
+    position: relative;
   }
 
   .item-top .face {
@@ -93,22 +96,25 @@
     line-height: 37rpx;
     background: rgb(245, 246, 248);
     color: rgb(176, 178, 196);
-     overflow-y: hidden;
+    overflow-y: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
-    max-height:128rpx;
+    max-height: 128rpx;
   }
 
-  .like-btn {
+  .like-btn.close-btn {
 
     float: right;
     text-align: left;
-    padding-left: 40rpx;
+    padding-left: 0rpx;
     font-size: 24rpx;
+    height: 24rpx;
+    margin-right: 6rpx;
+    width: 24rpx;
     margin-top: 30rpx;
-    background: url(../../static/img/空心赞@2x.png) no-repeat;
+    background: url(../../static/img/close1@2x.png) no-repeat;
     background-size: auto 100%;
     color: rgb(176, 178, 196);
   }
@@ -116,5 +122,19 @@
   .btn-group {
     width: 110rpx;
     margin: 0 auto;
+  }
+
+  .no-pass {
+    position: absolute;
+    width: 160rpx;
+    height: 40rpx;
+    background: rgb(244, 67, 54);
+    color: #FFF;
+    font-size: 20rpx;
+    text-align: center;
+    line-height: 40rpx;
+    right: 72rpx;
+    top: 44rpx;
+    border-radius: 20rpx;
   }
 </style>
