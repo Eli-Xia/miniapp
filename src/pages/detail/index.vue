@@ -1,11 +1,8 @@
-
 <template>
   <div>
-    <canvas canvas-id='myCanvas' style="display:none1"></canvas>
-   <div id="canvas-container"></div>
-
-    <h1 @click="mkhaibao">生成海报</h1>
+    <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
     <div v-if="loading">
+      <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
       <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
       <div class="layer" @click="closeForm" v-if="adding">
 
@@ -24,8 +21,23 @@
 
         </div>
       </div>
+    
 
-      <post-item :item="detail" pageName="detail"></post-item>
+     <div class="form-post" v-if="saying" :style="'bottom:'+(bottom+517)+'rpx;z-index:99999;border-bottom:6rpx solid #ddd'">
+        <div class="f-title">
+          请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
+          <div class="status">
+
+            <div class="zheng-fan-vs" style="margin:0; margin-top: 25rpx;">
+              <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
+              <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
+              <div class="vs">VS</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <post-item :item="detail" @onShare="onShare" pageName="detail"></post-item>
       <div class="status">
 
         <div class="zheng-fan-vs">
@@ -50,10 +62,18 @@
           <fan-item @doLike="doLike" :item="item" v-if="item.debateViewType == 2"></fan-item>
         </div>
       </div>
-
+      <div id="say-add" v-if="saying">
+        <div class="say-bottom">
+          <div class="button-1">清空</div>
+          <div class="button-2"></div>
+          <div class="button-3">发表</div>
+        </div>
+      </div>
+      <div class="say-layer" @click="closeSay" v-if="saying"></div>
       <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
-
-        <div class="submit" @click="sendComment">发表</div>
+        <div id="say-btn" @click="show_say"></div>
+        <div id="fen-btn" v-if="!adding"></div>
+        <div v-if="adding" class="submit" @click="sendComment">发表</div>
         <input @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="">
 
       </div>
@@ -75,6 +95,7 @@
   import LoginBtn from '@/components/login'
   import { isLogin, login } from '../../utils/Login';
   import { setTimeout } from 'timers';
+  import sharePage from '@/components/share'
   export default {
     data() {
       return {
@@ -102,7 +123,10 @@
         commentList: [],
         bottom: 0,
         nowPage: 1,
-        share_img: ''
+        share_img: '',
+        showShare: false,
+        shareData: {},
+        saying: false
       }
     },
 
@@ -111,7 +135,8 @@
       postItem,
       zhengItem,
       fanItem,
-      LoginBtn
+      LoginBtn,
+      sharePage
     },
 
     methods: {
@@ -129,6 +154,8 @@
             this.detail['forwardCount'] = res.result.forwardCount || '分享'
             this.detail['commentCount'] = res.result.commentCount || '评论'
             this.detail['id'] = res.result.debateTopicId
+            this.detail['qrCodeUrl'] = res.result.qrCodeUrl
+
 
             this.leftText = res.result.leftViewContent
             this.rightText = res.result.rightViewContent
@@ -138,7 +165,7 @@
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
             this.loading = true
-            
+
 
           } else {
             wx.showToast({
@@ -323,6 +350,7 @@
 
       },
       showForm() {
+        this.closeSay()
         this.adding = true
       },
       setLogin(status) {
@@ -334,46 +362,34 @@
         this.commentData.debatViewType = 0
         this.commentData.content = null
       },
+
+      closeSay() {
+
+        this.saying = false
+        this.tips = false
+        this.commentData.debatViewType = 0
+        this.commentData.content = null
+      },
       get_share_img() {
-       
+
 
       },
-      mkhaibao() {
+      onShare(data) {
+        this.showShare = true
+        this.shareData = data
+        //生成分享图片链接s
         const self = this
-        console.log(111)
-        let cardInfo = {
-          CardInfo: {
-            Name:'小强',
-            QrCode:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ereW8O65g1NL7ib2716iadicoiaTI21zDTbuexBJPyEG4Nsvf6pSHzrA2ibcOcbMaiaVia3se5nQqhMAGBaQ/132',
-            Avater:'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83ereW8O65g1NL7ib2716iadicoiaTI21zDTbuexBJPyEG4Nsvf6pSHzrA2ibcOcbMaiaVia3se5nQqhMAGBaQ/132',
-
-          },
-          TagList:[{TagName:'有意思'}],
-          
-        }
-        mkimg.getAvaterInfo(cardInfo)
-        setTimeout(()=>{
-            wx.canvasToTempFilePath({
-            canvasId: 'myCanvas',
-            success: function (res) {
-              // console.log(res.tempFilePath)
-              let temp_path = res.tempFilePath
-              // 小程序读取文件管理器 api
-              let fileSystemManager = wx.getFileSystemManager()
-              fileSystemManager.readFile({
-                filePath: temp_path,
-                encoding: 'base64',
-                success: (data) => {
-                  // console.log(data)
-                  let base64 = 'data:image/png;base64,' + data.data
-                  console.log(base64,999)
-                  self.share_img = temp_path
-                }
-              })
-            }
-          })
-        },3000)
-      
+        mkimg.shareCard(data, function (url) {
+          self.share_img = url
+        })
+      },
+      closeShare() {
+        this.showShare = false
+        this.shareData = {}
+      },
+      show_say() {
+        this.saying = true
+        this.closeForm()
       }
     },
 
@@ -393,28 +409,24 @@
     },
     onShareAppMessage: function (opts) {
       let shareData = opts.target.dataset.share
-      console.log(this.share_img)
+      let self = this
+      console.log(self.share_img)
       return {
-
-        title: shareData.debateTopic,
-
+        title: '你怎么看？',
         path: '/pages/index/main?id=' + shareData.id,
-        imageUrl: this.share_img,
+        imageUrl: self.share_img,
         success: function (res) {
+          self.closeShare()
           let url = '/api/app/dabate-topic/forward'
           let data = {
             debateTopicId: shareData.id
           }
-          fly.post(url, data).then(data => {
-            console.log(data, res)
-          }).catch(e => console.log(e))
+          fly.post(url, data)
 
         },
         fail: function (e) {
-          console.log(e, 'erroe')
+          console.log(e)
         }
-
-
       }
 
     },
@@ -422,9 +434,9 @@
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
-     
-     this.mkhaibao()
-      // this.get_share_img()
+      this.closeShare()
+
+
     },
     created() {
 
@@ -626,14 +638,14 @@
   }
 
   .add-box .content {
-    width: 590rpx;
+    width: 548rpx;
     padding-left: 25rpx;
     height: 72rpx;
     border-radius: 35rpx;
     background: #FFF;
     line-height: 72rpx;
     font-size: 28rpx;
-    margin: 10rpx 100rpx 10rpx 30rpx;
+    margin: 12rpx 100rpx 10rpx 90rpx;
 
   }
 
@@ -737,5 +749,88 @@
     bottom: 0;
     z-index: -100;
   }
-</style>
 
+  .add-box #say-btn {
+    position: absolute;
+    width: 60rpx;
+    height: 60rpx;
+    left: 16rpx;
+    top: 19rpx;
+    background: url(../../../static/img/say@2x.png);
+    background-size: 100% 100%;
+  }
+
+  .add-box #fen-btn {
+    position: absolute;
+    width: 60rpx;
+    height: 60rpx;
+    right: 16rpx;
+    top: 19rpx;
+    background: url(../../../static/img/sharebtn@2x.png);
+    background-size: 100% 100%;
+  }
+
+  #say-add {
+    background: #FFF;
+    height: 518rpx;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+  }
+
+  .say-layer {
+    background: rgba(0, 0, 0, .6);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    position: fixed;
+    z-index: 9999;
+  }
+
+  .say-bottom {
+    height: 140rpx;
+    bottom: 0rpx;
+  }
+
+  .say-bottom .button-1 {
+    width: 70rpx;
+    height: 34rpx;
+    position: absolute;
+    font-size: 36rpx;
+    text-align: center;
+    bottom: 63rpx;
+    left: 92rpx;
+    color:rgb(111, 111, 113);
+  }
+
+
+  .say-bottom .button-3 {
+    width: 70rpx;
+    height: 34rpx;
+    position: absolute;
+    font-size: 36rpx;
+    text-align: center;
+    bottom: 63rpx;
+    color: rgb(76, 160, 72);
+    right: 92rpx;
+    color:rgb(111, 111, 113);
+  }
+
+  .say-bottom .button-2 {
+    width: 120rpx;
+    height: 120rpx;
+    position: absolute;
+    font-size: 36rpx;
+    text-align: center;
+    bottom: 20rpx;
+    left: 50%;
+    margin-left: -60rpx;
+
+    color:rgb(111, 111, 113);
+    background: url(../../../static/img/sayButton.png);
+    background-size: 100% 100%;
+  }
+</style>

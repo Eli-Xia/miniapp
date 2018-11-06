@@ -13,8 +13,8 @@
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div class="item-bottom">
-        <p>{{item.content}}</p>
+      <div class="item-bottom" :class="item.state == 0 ? 'is_deleted' : ''">
+         <p>{{item.state == 0 ? '该评论已被删除' : item.content}}</p>
       </div>
       <div class="line"></div>
     </div>
@@ -108,7 +108,10 @@
     background: rgb(227, 234, 255);
     color: rgb(26, 26, 28);
   }
-
+  .is_deleted {
+    background: #F7F7F7;
+    color: rgb(176,178,196);
+  }
   .like-btn {
 
     float: left;

@@ -17,8 +17,13 @@
       <p>{{item.content}}</p>
 
     </div>
-    <div class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+
+    <div v-if="item.debateTopic" class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
       <p>{{item.debateTopic}}</p>
+    </div>
+
+     <div v-if="!item.debateTopic" class="item-bottom">
+      <p>该辩题已被删除</p>
     </div>
   </div>
 </template>

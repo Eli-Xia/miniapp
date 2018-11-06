@@ -1,5 +1,5 @@
 <template>
-  <div class="page-main" @click="clickHandle('test click', $event)">
+  <div class="page-main" >
   
     <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
    
@@ -46,7 +46,6 @@
         //生成分享图片链接s
         const self = this
         mkimg.shareCard(data, function (url) {
-          console.log(url, '---')
           self.share_img = url
         })
       },

@@ -1,35 +1,73 @@
 <template>
   <div class="share-box">
+    <canvas :style="'width:'+img_w+'px;height:'+img_h+'px;'" canvas-id='haibao-canvas' class="haibao-can"></canvas>
     <div class="layer" @click="close"></div>
-    <div class="bottom-box">
+
+    <div class="haibao-box haibao-img" v-if="showHaibao">
+      <img width="100%" :src="haibao_src" alt="">
+    </div>
+    <div class="bottom-box" :style="'height:'+(320+bottom)+'rpx'">
       <div class="share-type">
         <div class="to-one">
           <button class="share-btn" open-type='share' :data-share="shareData"></button>
           <div class="icon"></div>
           <div class="text">微信好友</div>
         </div>
-        <div class="to-haibao">
+        <div class="to-haibao" @click="mk_haibao()">
           <div class="icon"></div>
           <div class="text">生成海报</div>
         </div>
       </div>
-      <div class="cancel-btn" @click="close">取消</div>
+      <div :style="'height:'+(98+bottom)+'rpx'" class="cancel-btn" @click="close">取消</div>
     </div>
+
   </div>
 </template>
 <script>
+  import mkimg from '../utils/mkimg';
   export default {
     props: ['shareData'],
     data() {
       return {
         pageName: 'share',
+        showHaibao: false,
+        haibao_src: "",
+        img_w: 0,
+        img_h: 0,
+        bottom: 0
       }
     },
     methods: {
       close() {
-        this.$emit('closeShare',true)
+        this.$emit('closeShare', true)
+      },
+      mk_haibao() {
+
+        this.showHaibao = true
+        const self = this
+        wx.getSystemInfo({
+          success: function (res) {
+            // self.img_w = res.windowWidth * 2
+            // self.img_h = res.windowHeight * 2
+            console.log(res.windowHeight * 2, 'iiii')
+            self.img_w = 750
+            self.img_h = 1336
+            console.log(self.img_w, self.img_h)
+            mkimg.sheng(self.shareData, self.img_w, self.img_h, function (src) {
+              self.haibao_src = src
+              console.log(src)
+            })
+          },
+        })
+
+
       }
-    }
+    },
+    created() {
+      if (wx.getSystemInfoSync().windowHeight > 720) {
+        this.bottom = 50
+      }
+    },
 
   }
 </script>
@@ -111,10 +149,27 @@
     padding-top: 10rpx;
     color: rgb(117, 122, 151);
   }
+
   .share-btn {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    opacity: 0;
+  }
+
+  .haibao-img {
+    width: 401rpx;
+    height: 714rpx;
+    position: fixed;
+    left: 50%;
+    margin-left: -200rpx;
+    top: 80rpx;
+    z-index: 9999999;
+    background: #FFF;
+  }
+
+  .haibao-img img {
+    width: 100%;
+    height: 100%;
   }
 </style>

@@ -3,7 +3,7 @@
     <div class="item-top">
       <div class="zanzhu" v-if="pageName == 'home'">赞助</div>
       <div v-if="pageName == 'my-post'">
-      <div class="no-pass" >该评论不过审</div>
+      <div class="no-pass" >该辩题不过审</div>
       <div class="close-btn"></div>
       </div>
       <div class="click-box" @click="goto(item.id)">我也可以点</div>
@@ -64,6 +64,7 @@
         }
       },
       share(item) {
+        console.log('...000')
         this.$emit('onShare',item)
       }
     },

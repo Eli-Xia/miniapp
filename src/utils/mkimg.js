@@ -225,30 +225,32 @@ mkimg.shareCard = async function (data, cb) {
   ctx.fillRect(0, 0, 500, height);
 
   //头像
-  var rand = Math.floor(Math.random()*9+1);
+  var rand = Math.floor(Math.random() * 9 + 1);
   console.log(rand)
-  let bgImg = '../../static/img/share-card/share'+rand+'.jpg'
+  let bgImg = '../../static/img/share-card/share' + rand + '.jpg'
   ctx.drawImage(bgImg, left, 20, width, width);
   ctx.font = "36px Arial bold";
   ctx.setFillStyle('#fff');
   ctx.setTextAlign('left');
 
-
+  let qrcode = data.qrCodeUrl
+  console.log(qrcode)
+  ctx.drawImage(qrcode, 100, 100);
 
   var titleHeight = 60; // 标题的高度
   var canvasWidth = 270; //计算canvas的宽度
   var initHeight = 110; //绘制字体距离canvas顶部初始的高度
-  if(str.length < 16) {
+  if (str.length < 16) {
     initHeight = 150
   }
 
-  if(str.length > 15 && str.length <=24) {
+  if (str.length > 15 && str.length <= 24) {
     initHeight = 126
   }
- 
+
 
   // 标题border-bottom 线距顶部距离
-  titleHeight = mkimg.drawText(ctx, str, initHeight, titleHeight, canvasWidth); // 调用行文本换行函数
+  titleHeight = mkimg.drawText(ctx, str, initHeight, titleHeight, canvasWidth,40,40); // 调用行文本换行函数
 
   ctx.moveTo(65, titleHeight)
   ctx.lineTo(325, titleHeight)
@@ -273,20 +275,20 @@ mkimg.shareCard = async function (data, cb) {
   })
 
 }
-mkimg.drawText = function (ctx, str, initHeight, titleHeight, canvasWidth) {
+mkimg.drawText = function (ctx, str, initHeight, titleHeight, canvasWidth,x,line_h) {
   var lineWidth = 0;
   var lastSubStrIndex = 0; //每次开始截取的字符串的索引
   for (let i = 0; i < str.length; i++) {
     lineWidth += ctx.measureText(str[i]).width;
     if (lineWidth > canvasWidth) {
-      ctx.fillText(str.substring(lastSubStrIndex, i), 40, initHeight); //绘制截取部分
-      initHeight += 40; //20为字体的高度
+      ctx.fillText(str.substring(lastSubStrIndex, i), x, initHeight); //绘制截取部分
+      initHeight += line_h; //20为字体的高度
       lineWidth = 0;
       lastSubStrIndex = i;
-      titleHeight += 40;
+      titleHeight += line_h;
     }
     if (i == str.length - 1) { //绘制剩余部分
-      ctx.fillText(str.substring(lastSubStrIndex, i + 1), 40, initHeight);
+      ctx.fillText(str.substring(lastSubStrIndex, i + 1), x, initHeight);
     }
   }
   // 标题border-bottom 线距顶部距离
@@ -294,4 +296,113 @@ mkimg.drawText = function (ctx, str, initHeight, titleHeight, canvasWidth) {
   return titleHeight
 }
 
+
+
+
+
+mkimg.share_haibao = async function (data, width, height,codeSrc, cb) {
+
+  var that = this;
+  let ctx = wx.createCanvasContext('haibao-canvas');
+  var str = data.debateTopic
+  console.log(str.length, str)
+  if (str.length > 30) {
+    str = str.substr(0, 30) + '...'
+  }
+
+  console.log('获取到高度')
+  var left = 0;
+  //头像
+  var rand = Math.floor(Math.random() * 9 + 1);
+  console.log(rand)
+  let bgImg = '../../static/img/share-haibao.png'
+  ctx.drawImage(bgImg, 0, 0, width, height);
+  ctx.font = "42px Arial bold";
+  ctx.setFillStyle('#000');
+  ctx.setTextAlign('left');
+ 
+  let qrcode = codeSrc
+  ctx.drawImage(qrcode, 100, (1336-188-36),188,188);
+
+  var titleHeight = 30; // 标题的高度
+  var canvasWidth = 375; //计算canvas的宽度
+  var initHeight = 160; //绘制字体距离canvas顶部初始的高度
+  if (str.length < 16) {
+    initHeight = 200
+  }
+
+  if (str.length > 15 && str.length <= 24) {
+    initHeight = 170
+  }
+
+
+  // 标题border-bottom 线距顶部距离
+  titleHeight = mkimg.drawText(ctx, str, initHeight, titleHeight, canvasWidth,190,50); // 调用行文本换行函数
+
+  ctx.moveTo(200, titleHeight)
+  ctx.lineTo(325, titleHeight)
+
+
+
+
+  //  绘制二维码cardInfo.CardInfo.QrCode
+
+  ctx.draw(false, () => {
+
+    wx.canvasToTempFilePath({
+      canvasId: 'haibao-canvas',
+      success: function (res) {
+        // console.log(res.tempFilePath)
+        let temp_path = res.tempFilePath
+        // 小程序读取文件管理器 api
+        console.log(temp_path)
+        cb(temp_path)
+
+        wx.saveImageToPhotosAlbum({
+            filePath: res.tempFilePath,
+            success(res) {
+              wx.showModal({
+                content: '图片已保存到相册，赶紧晒一下吧~',
+                showCancel: false,
+                confirmText: '好的',
+                confirmColor: '#333',
+                success: function (res1) {
+                  if (res.confirm) {}
+                },
+                fail: function (res1) {
+                  console.log(res1)
+                }
+              })
+            },
+            fail: function (res) {
+              console.log(res)
+              wx.showToast({
+                title: res.errMsg,
+                icon: 'none',
+                duration: 2000
+              })
+            }
+          })
+      }
+    })
+
+  })
+
+}
+
+mkimg.sheng = function (data, w, h, cb) {
+  wx.downloadFile({
+    url: data.qrCodeUrl,
+    success: function (res) {
+      wx.hideLoading();
+      if (res.statusCode === 200) {
+        var codeSrc = res.tempFilePath;
+        console.log('二维码下载完成')
+        mkimg.share_haibao(data, w, h,codeSrc,cb); //真正的绘图方法
+      } else {
+       
+      }
+    }
+  })
+}
 export default mkimg
