@@ -358,31 +358,6 @@ mkimg.share_haibao = async function (data, width, height,codeSrc, cb) {
         console.log(temp_path)
         cb(temp_path)
 
-        wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success(res) {
-              wx.showModal({
-                content: '图片已保存到相册，赶紧晒一下吧~',
-                showCancel: false,
-                confirmText: '好的',
-                confirmColor: '#333',
-                success: function (res1) {
-                  if (res.confirm) {}
-                },
-                fail: function (res1) {
-                  console.log(res1)
-                }
-              })
-            },
-            fail: function (res) {
-              console.log(res)
-              wx.showToast({
-                title: res.errMsg,
-                icon: 'none',
-                duration: 2000
-              })
-            }
-          })
       }
     })
 

@@ -5,7 +5,9 @@
 
     <div class="haibao-box haibao-img" v-if="showHaibao">
       <img width="100%" :src="haibao_src" alt="">
+      <div class="succss-text"> {{success_text}}</div>
     </div>
+
     <div class="bottom-box" :style="'height:'+(320+bottom)+'rpx'">
       <div class="share-type">
         <div class="to-one">
@@ -34,7 +36,8 @@
         haibao_src: "",
         img_w: 0,
         img_h: 0,
-        bottom: 0
+        bottom: 0,
+        success_text: ''
       }
     },
     methods: {
@@ -55,7 +58,20 @@
             console.log(self.img_w, self.img_h)
             mkimg.sheng(self.shareData, self.img_w, self.img_h, function (src) {
               self.haibao_src = src
-              console.log(src)
+              wx.saveImageToPhotosAlbum({
+                filePath: src,
+                success(res) {
+                  self.success_text = '已经保存相册，记得分享哟！'
+                },
+                fail: function (res) {
+                  console.log(res)
+                  wx.showToast({
+                    title: res.errMsg,
+                    icon: 'none',
+                    duration: 2000
+                  })
+                }
+              })
             })
           },
         })
@@ -116,7 +132,7 @@
     height: 130rpx;
     left: 149rpx;
     position: absolute;
-    font-size: 26rpx;
+    font-size: 24rpx;
     top: 45rpx;
   }
 
@@ -125,7 +141,7 @@
     width: 110rpx;
     height: 130rpx;
     position: absolute;
-    font-size: 26rpx;
+    font-size: 24rpx;
     top: 45rpx;
   }
 
@@ -171,5 +187,13 @@
   .haibao-img img {
     width: 100%;
     height: 100%;
+  }
+
+  .succss-text {
+      text-align: center;
+      z-index: 8000;
+      font-size: 26rpx;
+      color: #FFF;
+      padding-top: 40rpx;
   }
 </style>

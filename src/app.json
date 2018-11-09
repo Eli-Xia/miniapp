@@ -9,7 +9,8 @@
     "pages/login/main",
     "pages/ta/main",
     "pages/ta-post/main",
-    "pages/ta-comment/main"
+    "pages/ta-comment/main",
+    "pages/tags/main"
   ],
   "window": {
     "backgroundTextStyle": "white",

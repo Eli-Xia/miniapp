@@ -3,9 +3,10 @@
     <div class="item-top">
 
       <div class="face"><img :src="item.headImgUrl" /></div>
-      <div v-if="pageName == 'my-commtent'">
-        <div class="no-pass">该评论不过审</div>
-        <div class="like-btn close-btn">
+      <div v-if="pageName == 'my-comment'">
+        <div class="no-pass" v-if="item.state == 0">该评论不过审</div>
+        <div class="like-btn close-btn" @click="dels(item.commentId)">
+          
         </div>
       </div>
       <div class="name-date">
@@ -35,6 +36,9 @@
       goto(id) {
         let url = "/pages/detail/main?id=" + id
         wx.navigateTo({ url })
+      },
+      dels(id) {
+        this.$emit('dels',id)
       }
     }
   }

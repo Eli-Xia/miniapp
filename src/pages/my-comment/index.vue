@@ -1,6 +1,6 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
-    <my-comment-item :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
+    <my-comment-item @dels="del" :pageName="pageName" :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
@@ -32,8 +32,8 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
-              if(this.nowPage < 1) {
-                 self.lists.push(item)
+              if (this.nowPage < 1) {
+                self.lists.push(item)
               }
             })
             if (this.nowPage == 1) {
@@ -46,6 +46,42 @@
             console.log(res)
           }
         })
+      },
+      del(id) {
+        const self = this
+        wx.showModal({
+          title: '提示',
+          content: '确定要删除评论？',
+          confirmText: '确定',
+          cancelText: '取消',
+          success(res) {
+            // 点击一键登录，去授权页面
+            if (res.confirm) {
+
+              fly.post('/api/app/comment/delete-my', {
+                id: id
+              }).then(data => {
+                if (data.retCode == 0) {
+                  wx.showToast({
+                    title: '删除成功！',
+                    icon: 'right'
+                  })
+                  setTimeout(() => {
+                    self.get_list()
+                  })
+
+                } else {
+                  wx.showToast({
+                    title: data.retMsg,
+                    icon: 'error'
+                  })
+                }
+              })
+
+            }
+          }
+        })
+
       }
     },
     onShow() {
@@ -69,7 +105,7 @@
       this.get_list()
       wx.stopPullDownRefresh();
     },
-  
+
 
   }
 </script>

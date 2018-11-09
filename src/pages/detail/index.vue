@@ -21,9 +21,9 @@
 
         </div>
       </div>
-    
 
-     <div class="form-post" v-if="saying" :style="'bottom:'+(bottom+517)+'rpx;z-index:99999;border-bottom:6rpx solid #ddd'">
+
+      <div class="form-post" v-if="saying" :style="'bottom:'+(bottom+517)+'rpx;z-index:99999;border-bottom:6rpx solid #ddd'">
         <div class="f-title">
           请选择支持的一方: <span v-if="tips" style="color:red;font-size:25rpx">(观点必选哦)</span>
           <div class="status">
@@ -63,16 +63,19 @@
         </div>
       </div>
       <div id="say-add" v-if="saying">
+        <div class="say_content">{{say_content}}</div>
+        <div class="start_text">{{say_text}}</div>
         <div class="say-bottom">
           <div class="button-1">清空</div>
-          <div class="button-2"></div>
+          <div class="start_saying" v-if="start_saying"></div>
+          <div @touchend="end_say" @touchstart="start_say" class="button-2"></div>
           <div class="button-3">发表</div>
         </div>
       </div>
       <div class="say-layer" @click="closeSay" v-if="saying"></div>
       <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
-        <div id="say-btn" @click="show_say"></div>
-        <div id="fen-btn" v-if="!adding"></div>
+        <!-- <div id="say-btn" @click="show_say"></div> -->
+        <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
         <div v-if="adding" class="submit" @click="sendComment">发表</div>
         <input @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="">
 
@@ -126,7 +129,10 @@
         share_img: '',
         showShare: false,
         shareData: {},
-        saying: false
+        saying: false,
+        say_text: '长按说话',
+        start_saying: false,
+        say_content: '',
       }
     },
 
@@ -390,6 +396,62 @@
       show_say() {
         this.saying = true
         this.closeForm()
+      },
+      start_say() {
+        this.say_text = '请说话...'
+        this.start_saying = true
+        const self = this
+        wx.startRecord({
+          success: function (res) {
+            console.log('录音成功' + JSON.stringify(res));
+            self.say_text = '识别中...'
+
+            //上传语音文件至服务器
+            wx.uploadFile({
+              url: 'https://test.keendo.com.cn/api/app/voice-recognition/recognition',
+              filePath: res.tempFilePath,
+              name: 'multipartFile',
+              header: { token: wx.getStorageSync('token') }, // 设置请求的 header
+              formData: {
+                'msg': 'voice'
+              }, // HTTP 请求中其他额外的 form data
+              success: function (res) {
+                // success
+                console.log(res)
+                let result = JSON.parse(res.data)
+                result = result.result
+                self.say_content = result
+                self.say_text = '按住说话'
+
+
+              },
+              fail: function (err) {
+                // fail
+                console.log(err);
+              },
+              complete: function () {
+                // complete
+              }
+            })
+          },
+          fail: function (res) {
+            //录音失败
+            that.setData({
+              voiceButtonName: '语音识别'
+            })
+            console.log('录音失败' + JSON.stringify(res));
+          }
+        })
+        setTimeout(function () {
+          //结束录音  
+          wx.stopRecord()
+        }, 60000)
+
+      },
+      end_say() {
+        this.say_text = '长按说话'
+        this.start_saying = false
+        wx.stopRecord()
       }
     },
 
@@ -638,14 +700,14 @@
   }
 
   .add-box .content {
-    width: 548rpx;
+    width: 582rpx;
     padding-left: 25rpx;
     height: 72rpx;
     border-radius: 35rpx;
     background: #FFF;
     line-height: 72rpx;
     font-size: 28rpx;
-    margin: 12rpx 100rpx 10rpx 90rpx;
+    margin: 12rpx 120rpx 10rpx 50rpx;
 
   }
 
@@ -803,7 +865,7 @@
     text-align: center;
     bottom: 63rpx;
     left: 92rpx;
-    color:rgb(111, 111, 113);
+    color: rgb(111, 111, 113);
   }
 
 
@@ -816,21 +878,53 @@
     bottom: 63rpx;
     color: rgb(76, 160, 72);
     right: 92rpx;
-    color:rgb(111, 111, 113);
+    color: rgb(111, 111, 113);
   }
 
   .say-bottom .button-2 {
-    width: 120rpx;
-    height: 120rpx;
+    width: 110rpx;
+    height: 110rpx;
     position: absolute;
     font-size: 36rpx;
     text-align: center;
-    bottom: 20rpx;
+    bottom: 30rpx;
     left: 50%;
-    margin-left: -60rpx;
+    margin-left: -55rpx;
 
-    color:rgb(111, 111, 113);
+    color: rgb(111, 111, 113);
     background: url(../../../static/img/sayButton.png);
     background-size: 100% 100%;
+  }
+
+  .start_saying {
+    width: 140rpx;
+    height: 140rpx;
+    position: absolute;
+    font-size: 36rpx;
+    text-align: center;
+    bottom: 15rpx;
+    left: 50%;
+    margin-left: -70rpx;
+    border-radius: 50%;
+    color: rgb(111, 111, 113);
+    background: rgba(0, 0, 0, .1)
+  }
+
+  .start_text {
+    position: absolute;
+    left: 0;
+    bottom: 170rpx;
+    width: 190rpx;
+    left: 50%;
+    margin-left: -90rpx;
+    text-align: center;
+    font-size: 20rpx;
+    color: #555;
+  }
+  .say_content {
+    position: absolute;
+    top:20rpx;
+    left: 20rpx;
+    right: 20rpx;
   }
 </style>

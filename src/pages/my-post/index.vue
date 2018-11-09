@@ -1,7 +1,7 @@
 <template>
   <div class="page-main" @click="clickHandle('test click', $event)">
     <div v-for="(item,index) in lists" :key="index">
-      <post-item :item="item" pageName="my-post"></post-item>
+      <post-item @dels="del" :item="item" pageName="my-post"></post-item>
     </div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
@@ -12,6 +12,7 @@
   import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import postItem from '@/components/post-item'
+import { setTimeout } from 'timers';
   export default {
 
     data() {
@@ -62,6 +63,43 @@
           .catch(function (error) {
             console.log(error);
           });
+      },
+      del(id) {
+        const self = this
+        wx.showModal({
+          title: '提示',
+          content: '确定删除辩题吗？',
+          confirmText: '确定',
+          cancelText: '取消',
+          success(res) {
+            // 点击一键登录，去授权页面
+            if (res.confirm) {
+
+              fly.post('/api/app/dabate-topic/delete-my', {
+                id: id
+              }).then(data => {
+                if (data.retCode == 0) {
+
+                  wx.showToast({
+                    title: '删除成功！',
+                    icon: 'right'
+                  })
+                  setTimeout(()=>{
+                    self.get_index_list()
+                  },1000)
+                  
+                } else {
+                  wx.showToast({
+                    title: data.retMsg,
+                    icon: 'error'
+                  })
+                }
+              })
+
+            }
+          }
+        })
+
       }
     },
     onShow() {

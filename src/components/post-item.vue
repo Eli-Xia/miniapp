@@ -1,10 +1,10 @@
 <template>
   <div class="item-box">
     <div class="item-top">
-      <div class="zanzhu" v-if="pageName == 'home'">赞助</div>
+      <div class="zanzhu" v-if="pageName == 'home' && item.sponsored">赞助</div>
       <div v-if="pageName == 'my-post'">
-      <div class="no-pass" >该辩题不过审</div>
-      <div class="close-btn"></div>
+        <div class="no-pass" v-if="item.state == 0">该辩题不过审</div>
+        <div class="close-btn" @click="del(item.id)"></div>
       </div>
       <div class="click-box" @click="goto(item.id)">我也可以点</div>
       <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
@@ -18,7 +18,7 @@
 
     </div>
     <div class="item-bottom">
-      <div class="tag-btn" v-if="item.debateTag">{{item.debateTag.name}}</div>
+      <div class="tag-btn" @click="go_tag(item.debateTag)" v-if="item.debateTag">{{item.debateTag.name}}</div>
       <div class="comment_count btn" @click="goto(item.id)">
         <div class="btn-group">
           <div class="icon"></div>
@@ -26,7 +26,7 @@
         </div>
 
       </div>
-     
+
       <div class="share_count btn" @click="share(item)">
         <div class="btn-group">
           <div class="icon"></div>
@@ -58,14 +58,22 @@
         }
       },
       goTa(id) {
-        if(id) {
+        if (id) {
           let url = '/pages/ta/main?id=' + id
           wx.navigateTo({ url })
         }
       },
       share(item) {
         console.log('...000')
-        this.$emit('onShare',item)
+        this.$emit('onShare', item)
+      },
+      del(id) {
+        this.$emit('dels', id)
+      },
+
+      go_tag(tag) {
+        let url = '/pages/tags/main?id=' + tag.id + '&title=' + tag.name
+        wx.navigateTo({ url })
       }
     },
     onShow() {
@@ -91,15 +99,18 @@
     height: 42rpx;
 
   }
+
   .item-top {
-  position: relative;
+    position: relative;
   }
+
   .item-top .zanzhu {
-    position:absolute;
+    position: absolute;
     right: 25rpx;
     font-size: 24rpx;
     color: rgb(196, 198, 211);
   }
+
   .item-top .face {
     width: 72rpx;
     height: 72rpx;
@@ -124,7 +135,7 @@
     height: 30rpx;
     position: absolute;
     left: 25rpx;
-    top:10rpx;
+    top: 10rpx;
     color: rgb(41, 182, 246);
     line-height: 30rpx;
     border: 1rpx solid rgb(41, 182, 246);
@@ -241,26 +252,27 @@
     opacity: 0;
   }
 
-   .no-pass {
+  .no-pass {
     position: absolute;
     width: 160rpx;
     height: 40rpx;
-    background:rgb(244, 67 ,54);
+    background: rgb(244, 67, 54);
     color: #FFF;
     font-size: 20rpx;
     text-align: center;
     line-height: 40rpx;
     right: 72rpx;
-    top:15rpx;
+    top: 15rpx;
     border-radius: 20rpx;
   }
 
   .close-btn {
     width: 24rpx;
     height: 24rpx;
-     background: url(../../static/img/close1@2x.png) no-repeat;
-     position: absolute;
-     right: 25rpx;
-     background-size: 100% 100%;
+    background: url(../../static/img/close1@2x.png) no-repeat;
+    position: absolute;
+    right: 25rpx;
+    background-size: 100% 100%;
+    z-index: 99999;
   }
 </style>
