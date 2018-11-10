@@ -4,7 +4,7 @@
     <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
 
     <div v-for="(item,index) in lists" :key="index">
-      <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
+      <post-item :item="item" pageName="tags" @onShare="onShare"></post-item>
     </div>
     <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
     <nav-bar :pageName="pageName"></nav-bar>
@@ -23,7 +23,7 @@
 
     data() {
       return {
-        pageName: 'home',
+        pageName: 'tags',
         lists: [],
         nowPage: 1,
         share_img: '',

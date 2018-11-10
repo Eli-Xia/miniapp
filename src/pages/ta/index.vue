@@ -80,7 +80,7 @@
     },
     onLoad() {
       wx.setNavigationBarTitle({
-        title: '个人中心'
+        title: 'ta的主页'
       })
 
       this.id = this.$root.$mp.query.id

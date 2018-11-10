@@ -5,7 +5,11 @@
         <div class="zheng-icon"></div>
         <img @click="goTa(item.userId)" :src="item.headImgUrl" />
       </div>
-      <div class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
+     <div v-if="!(item.deleted == 1 || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
+        {{ item.likeCount}}
+      </div>
+
+       <div v-if="(item.deleted == 1 || item.state == 0)"  class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
         {{ item.likeCount}}
       </div>
         <div class="name-date">
@@ -13,8 +17,8 @@
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div class="item-bottom">
-        <p>{{item.content}}</p>
+       <div class="item-bottom" :class="(item.deleted == 1 || item.state == 0) ? 'is_deleted' : ''">
+       <p>{{(item.deleted == 1 || item.state == 0) ? '该评论已被删除' : item.content}}</p>
       </div>
       <div class="line"></div>
     </div>
@@ -27,8 +31,8 @@
       like(id) {
         this.$emit('doLike', id)
       },
-       goTa(id) {
-        if(id) {
+      goTa(id) {
+        if (id) {
           let url = '/pages/ta/main?id=' + id
           wx.navigateTo({ url })
         }
@@ -42,11 +46,10 @@
     margin: 10rpx 0rpx;
     border-radius: 0rpx;
     background: none;
-    margin-top: 0rpx;
-
+    margin-top: -6rpx;
     padding-bottom: 0rpx;
 
-
+    /* border: 1rpx solid #000; */
   }
 
   .item-box .item-top {
@@ -130,9 +133,9 @@
   }
 
   .line {
-    height: 10rpx;
+    height: 1rpx;
     border-top: 1rpx solid rgb(239, 239, 244);
-    margin: 30rpx;
+    margin: 23rpx 30rpx;
     margin-bottom: 0;
   }
 

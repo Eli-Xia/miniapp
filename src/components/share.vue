@@ -1,6 +1,6 @@
 <template>
   <div class="share-box">
-    <canvas :style="'width:'+img_w+'px;height:'+img_h+'px;'" canvas-id='haibao-canvas' class="haibao-can"></canvas>
+    <canvas :style="'opacity: 0;margin-top:-200000rpx;width:'+img_w+'px;height:'+img_h+'px;'" canvas-id='haibao-canvas' class="haibao-can"></canvas>
     <div class="layer" @click="close"></div>
 
     <div class="haibao-box haibao-img" v-if="showHaibao">
@@ -46,7 +46,8 @@
       },
       mk_haibao() {
 
-        this.showHaibao = true
+      this.success_text = '海报生成中...'
+      this.showHaibao = true
         const self = this
         wx.getSystemInfo({
           success: function (res) {
@@ -58,18 +59,15 @@
             console.log(self.img_w, self.img_h)
             mkimg.sheng(self.shareData, self.img_w, self.img_h, function (src) {
               self.haibao_src = src
+               self.success_text = '生成完毕'
+            //   self.showHaibao = true
               wx.saveImageToPhotosAlbum({
                 filePath: src,
                 success(res) {
                   self.success_text = '已经保存相册，记得分享哟！'
                 },
                 fail: function (res) {
-                  console.log(res)
-                  wx.showToast({
-                    title: res.errMsg,
-                    icon: 'none',
-                    duration: 2000
-                  })
+                 
                 }
               })
             })

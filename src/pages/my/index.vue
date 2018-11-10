@@ -84,12 +84,13 @@
       wx.stopPullDownRefresh();
     },
     onShow() {
-      this.get_user()
+     
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: '个人中心'
       })
+       this.get_user()
     }
 
 

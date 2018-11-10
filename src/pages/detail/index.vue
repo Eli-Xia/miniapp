@@ -1,8 +1,8 @@
 <template>
   <div>
-    <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
+   
     <div v-if="loading">
-      <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
+      <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:-10000;"></canvas>
       <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
       <div class="layer" @click="closeForm" v-if="adding">
 
@@ -82,7 +82,7 @@
       </div>
 
     </div>
-
+ <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
   </div>
 </template>
 
@@ -161,6 +161,7 @@
             this.detail['commentCount'] = res.result.commentCount || '评论'
             this.detail['id'] = res.result.debateTopicId
             this.detail['qrCodeUrl'] = res.result.qrCodeUrl
+            this.detail['userId'] = res.result.userId
 
 
             this.leftText = res.result.leftViewContent
@@ -356,7 +357,7 @@
 
       },
       showForm() {
-        this.closeSay()
+        // this.closeSay()
         this.adding = true
       },
       setLogin(status) {

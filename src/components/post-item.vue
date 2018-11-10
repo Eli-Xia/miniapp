@@ -19,6 +19,8 @@
     </div>
     <div class="item-bottom">
       <div class="tag-btn" @click="go_tag(item.debateTag)" v-if="item.debateTag">{{item.debateTag.name}}</div>
+    
+    
       <div class="comment_count btn" @click="goto(item.id)">
         <div class="btn-group">
           <div class="icon"></div>
@@ -58,6 +60,7 @@
         }
       },
       goTa(id) {
+        console.log(id)
         if (id) {
           let url = '/pages/ta/main?id=' + id
           wx.navigateTo({ url })
@@ -72,6 +75,9 @@
       },
 
       go_tag(tag) {
+        if(this.pageName == 'tags') {
+          return false
+        }
         let url = '/pages/tags/main?id=' + tag.id + '&title=' + tag.name
         wx.navigateTo({ url })
       }
@@ -132,17 +138,16 @@
   }
 
   .tag-btn {
-    height: 30rpx;
+    height: 38rpx;
     position: absolute;
     left: 25rpx;
-    top: 10rpx;
+    top: 11rpx;
     color: rgb(41, 182, 246);
-    line-height: 30rpx;
+    line-height: 38rpx;
     border: 1rpx solid rgb(41, 182, 246);
-    font-size: 24rpx;
+    font-size: 22rpx;
     border-radius: 21rpx;
-    padding: 5rpx 9rpx;
-
+    padding: 0 10rpx;
   }
 
   .item-mid {
