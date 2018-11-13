@@ -138,12 +138,12 @@
   }
 
   .tag-btn {
-    height: 38rpx;
+    height: 37rpx;
     position: absolute;
     left: 25rpx;
-    top: 11rpx;
+    top: 12rpx;
     color: rgb(41, 182, 246);
-    line-height: 38rpx;
+    line-height: 37rpx;
     border: 1rpx solid rgb(41, 182, 246);
     font-size: 22rpx;
     border-radius: 21rpx;
@@ -197,7 +197,7 @@
   .item-bottom .btn {
     width: 90rpx;
     height: 40rpx;
-    top: 15rpx;
+    top: 16rpx;
     position: absolute;
   }
 

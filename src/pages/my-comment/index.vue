@@ -1,6 +1,7 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
     <my-comment-item @dels="del" :pageName="pageName" :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
+     <div class="nothing" v-if="lists.length < 1"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>

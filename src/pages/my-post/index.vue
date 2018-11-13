@@ -2,6 +2,7 @@
   <div class="page-main" @click="clickHandle('test click', $event)">
     <div v-for="(item,index) in lists" :key="index">
       <post-item @dels="del" :item="item" pageName="my-post"></post-item>
+       <div class="nothing" v-if="lists.length < 1"></div>
     </div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
@@ -18,7 +19,7 @@ import { setTimeout } from 'timers';
     data() {
       return {
         pageName: 'my-post',
-        lists: null
+        lists: []
       }
     },
 

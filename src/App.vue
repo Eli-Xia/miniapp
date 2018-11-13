@@ -1,30 +1,40 @@
-
-
-
 <script>
-export default {
-  created () {
-    // 调用API从本地缓存中获取数据
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
+  export default {
+    created() {
+      // 调用API从本地缓存中获取数据
+      const logs = wx.getStorageSync('logs') || []
+      logs.unshift(Date.now())
+      wx.setStorageSync('logs', logs)
 
-    console.log('app created and cache logs by setStorageSync')
+      console.log('app created and cache logs by setStorageSync')
+    }
   }
-}
 </script>
 
 <style>
-/* this rule will be remove */
-* {
-  transition: width 2s;
-  -moz-transition: width 2s;
-  -webkit-transition: width 2s;
-  -o-transition: width 2s;
-}
-body {
-  background:  rgb(245, 246 ,248)
-}
+  /* this rule will be remove */
+  * {
+    transition: width 2s;
+    -moz-transition: width 2s;
+    -webkit-transition: width 2s;
+    -o-transition: width 2s;
+  }
 
-/*公共样式写这里*/ 
+  body {
+    background: rgb(245, 246, 248)
+  }
+
+  .nothing {
+    position: absolute;
+    width: 174rpx;
+    height: 224rpx;
+    left: 50%;
+    margin-left: -87rpx;
+    top: 50%;
+    margin-top:-142rpx;
+    background: url(../static/img/nothing1.png) no-repeat;
+    background-size: 100% 100%;
+  }
+
+  /*公共样式写这里*/
 </style>

@@ -221,31 +221,26 @@ mkimg.shareCard = async function (data, cb) {
   console.log('获取到高度')
   width = 750 * 0.5;
   var left = 0;
-  ctx.setFillStyle('#fff');
-  ctx.fillRect(0, 0, 500, height);
+ 
 
   //头像
   var rand = Math.floor(Math.random() * 9 + 1);
   console.log(rand)
   let bgImg = '../../static/img/share-card/share' + rand + '.jpg'
-  ctx.drawImage(bgImg, left, 20, width, width);
-  ctx.font = "36px Arial bold";
+  ctx.drawImage(bgImg, left, -20, 375, 320);
+  ctx.font = "34px Arial bold";
   ctx.setFillStyle('#fff');
   ctx.setTextAlign('left');
 
-  let qrcode = data.qrCodeUrl
-  console.log(qrcode)
-  ctx.drawImage(qrcode, 100, 100);
-
   var titleHeight = 60; // 标题的高度
   var canvasWidth = 270; //计算canvas的宽度
-  var initHeight = 110; //绘制字体距离canvas顶部初始的高度
+  var initHeight = 100; //绘制字体距离canvas顶部初始的高度
   if (str.length < 16) {
-    initHeight = 150
+    initHeight = 136
   }
 
   if (str.length > 15 && str.length <= 24) {
-    initHeight = 126
+    initHeight = 110
   }
 
 

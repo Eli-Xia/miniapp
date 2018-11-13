@@ -162,6 +162,7 @@
             this.detail['id'] = res.result.debateTopicId
             this.detail['qrCodeUrl'] = res.result.qrCodeUrl
             this.detail['userId'] = res.result.userId
+            this.detail['debateTag'] = res.result.debateTag
 
 
             this.leftText = res.result.leftViewContent

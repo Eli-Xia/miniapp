@@ -6,8 +6,9 @@
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="tags" @onShare="onShare"></post-item>
     </div>
+     <div class="nothing" v-if="lists.length < 1"></div>
     <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
-    <nav-bar :pageName="pageName"></nav-bar>
+    <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
     <my-comment-item :pageName="pageName" :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
-    <!-- <nav-bar :pageName="pageName"></nav-bar> -->
+   <div class="nothing" v-if="lists.length < 1"></div>
   </div>
 </template>
 
@@ -100,7 +100,7 @@
   }
 
   .my-card .name {
-    width: 190rpx;
+    width: 490rpx;
     height: 190rpx;
     font-size: 29rpx;
     color: rgb(26, 26, 28)

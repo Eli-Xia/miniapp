@@ -5,12 +5,16 @@
         <div class="zheng-icon"></div>
         <img @click="goTa(item.userId)" :src="item.headImgUrl" />
       </div>
-      <div v-if="!(item.deleted == 1 || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
+      <div v-if="!(item.deleted == 1 || item.state == 0) && clicked == false" class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
         {{ item.likeCount}}
       </div>
 
-       <div v-if="(item.deleted == 1 || item.state == 0)"  class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+       <div v-if="!(item.deleted == 1 || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
         {{ item.likeCount}}
+      </div>
+
+        <div v-if="(item.deleted == 1 || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+          {{ item.likeCount}}
       </div>
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
@@ -27,9 +31,19 @@
 <script>
   export default {
     props: ['item'],
+     data() {
+      return {
+        clicked: false
+      }
+    },
     methods: {
       like(id) {
+        this.clicked = true
         this.$emit('doLike', id)
+
+        setTimeout(()=>{
+          this.clicked = false
+        },1000)
       },
       goTa(id) {
         if (id) {

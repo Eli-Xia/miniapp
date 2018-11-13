@@ -1,8 +1,8 @@
 <template>
-  <div class="page-main" >
-  
-    <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:100;"></canvas>
-   
+  <div class="page-main">
+
+    <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-1900rpx; z-index:100;"></canvas>
+
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
     </div>
@@ -95,11 +95,22 @@
     onShow() {
 
 
+
     },
-    onLoad() {
-      if (this.$root.$mp.query.id) {
+    onLoad(query) {
+
+      if (query.id) {
         //跳走
-        let url = '/pages/detail/main?id=' + this.$root.$mp.query.id
+        let url = '/pages/detail/main?id=' + query.id
+        wx.navigateTo({ url })
+      }
+
+
+      if (query.scene) {
+        const scene = decodeURIComponent(query.scene)
+        let id = scene.split("=")
+        id = id[1]
+        let url = '/pages/detail/main?id=' + id
         wx.navigateTo({ url })
       }
     },
@@ -115,29 +126,33 @@
       this.get_index_list()
       wx.stopPullDownRefresh();
     },
-    onShareAppMessage:function (opts) {
-  let shareData = opts.target.dataset.share
- let self = this
- console.log(self.share_img)
-  return {
-    title:'你怎么看？',
-    path: '/pages/index/main?id=' + shareData.id,
-    imageUrl: self.share_img,
-    success: function (res) {
-      self.closeShare()
-      let url = '/api/app/dabate-topic/forward'
-      let data = {
-        debateTopicId: shareData.id
+    onShareAppMessage: function (opts) {
+      let shareData = opts.target.dataset.share
+      console.log(shareData)
+      let self = this
+      console.log(self.share_img)
+      return {
+        title: '你怎么看？',
+        path: '/pages/index/main?id=' + shareData.id,
+        imageUrl: self.share_img,
+        success: function (res) {
+         
+          let url = '/api/app/dabate-topic/forward'
+          let data = {
+            debateTopicId: shareData.id
+          }
+          fly.post(url, data).then(data => {
+            console.log(data)
+          })
+           self.closeShare()
+
+        },
+        fail: function (e) {
+          console.log(e)
+        }
       }
-      fly.post(url, data)
 
     },
-    fail: function (e) {
-      console.log(e)
-    }
-  }
-
-},
     onReachBottom: function () {
       this.nowPage += 1
       this.get_index_list()

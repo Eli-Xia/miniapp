@@ -118,7 +118,7 @@
   }
 
   .my-card .name {
-    width: 190rpx;
+    width: 590rpx;
     height: 190rpx;
     font-size: 29rpx;
     color: rgb(26, 26, 28)

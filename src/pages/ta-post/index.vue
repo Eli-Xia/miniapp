@@ -3,6 +3,7 @@
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="pageName"></post-item>
     </div>
+     <div class="nothing" v-if="lists.length < 1"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
@@ -17,7 +18,7 @@
     data() {
       return {
         pageName: 'ta-post',
-        lists: null,
+        lists: [],
         id: 0
       }
     },

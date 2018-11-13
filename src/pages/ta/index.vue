@@ -22,7 +22,7 @@
       <div class="my-post-icon"></div>
       <div class="my-comment-title">ta的评论</div>
     </div>
-    <nav-bar :pageName="pageName"></nav-bar>
+    <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
 
@@ -112,7 +112,7 @@
   }
 
   .my-card .name {
-    width: 190rpx;
+    width: 590rpx;
     height: 190rpx;
     font-size: 29rpx;
     color: rgb(26, 26, 28)
