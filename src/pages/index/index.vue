@@ -127,7 +127,7 @@
       wx.stopPullDownRefresh();
     },
     onShareAppMessage: function (opts) {
-      let shareData = opts.target.dataset.share
+      let shareData = this.shareData
       console.log(shareData)
       let self = this
       console.log(self.share_img)
@@ -136,19 +136,29 @@
         path: '/pages/index/main?id=' + shareData.id,
         imageUrl: self.share_img,
         success: function (res) {
-         
+
           let url = '/api/app/dabate-topic/forward'
           let data = {
             debateTopicId: shareData.id
           }
           fly.post(url, data).then(data => {
-            console.log(data)
+            if (data.retCode == 0) {
+              wx.showToast({
+                title: '分享成功',
+                icon: 'none'
+              })
+            }
           })
-           self.closeShare()
+          self.closeShare()
+
 
         },
         fail: function (e) {
           console.log(e)
+          wx.showToast({
+            title: '已取消转发',
+            icon: 'none'
+          })
         }
       }
 

@@ -472,7 +472,7 @@
 
     },
     onShareAppMessage: function (opts) {
-      let shareData = opts.target.dataset.share
+      let shareData = this.shareData
       let self = this
       console.log(self.share_img)
       return {
