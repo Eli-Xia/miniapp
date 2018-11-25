@@ -1,4 +1,5 @@
 import fly from './fly'
+
 function formatNumber(n) {
   const str = n.toString()
   return str[1] ? str : `0${str}`
@@ -69,9 +70,19 @@ export function shareFun(opts) {
 
 }
 
+export function sub(str) {
+  console.log(str.length)
+  if (str.length > 11) {
+    return str.substr(0, 11) + '...'
+  } else {
+    return str
+  }
+}
+
 export default {
   formatNumber,
   formatTime,
   getBase64,
-  shareFun
+  shareFun,
+  sub
 }

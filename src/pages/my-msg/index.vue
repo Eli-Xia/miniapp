@@ -1,101 +1,59 @@
 <template>
   <div class="counter-warp">
-     <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
-    <div class="my-card">
-      <div class="like">
-        <div class="like-count">{{info.supportCount}}</div>
-        <div class="like-icon">获赞</div>
-      </div>
-      <div class="face-name">
-        <div class="face"><img :src="info.headImgUrl" alt=""></div>
-        <div class="name">{{info.nickname}}</div>
-      </div>
+    <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
 
+
+    <div class="my-post" @click="goto('/pages/my-msg-ping/main')">
+      <div class="my-post-icon"></div>
+      <div class="my-comment-title">评论</div>
+      <div class="sm-count">6</div>
     </div>
-
-    <div class="my-post " id="message" @click="goto('/pages/my-msg/main')">
-      <div class="my-post-icon msg"></div>
-      <div class="my-post-title msg">消息</div>
+     <div class="my-post" style="margin-top:-10rpx"  @click="goto('/pages/my-msg-zan/main')">
+      <div class="my-post-icon"></div>
+      <div class="my-post-title">赞</div>
       <div class="sm-count">10</div>
     </div>
-
-    <div class="my-post" @click="goto('/pages/my-post/main')">
-      <div class="my-post-icon"></div>
-      <div class="my-post-title">我的辩题</div>
-    </div>
-
-    <div class="my-post" @click="goto('/pages/my-comment/main')">
-      <div class="my-post-icon"></div>
-      <div class="my-comment-title">我的评论</div>
-    </div>
     <login-btn @setLogin="setLogin"> </login-btn>
-    <nav-bar :pageName="pageName"></nav-bar>
+
   </div>
 </template>
 
 <script>
   import fly from '../../utils/fly'
-  import navBar from '@/components/nav-bar'
   import LoginBtn from '@/components/login'
-  import { isLogin, login } from '../../utils/Login';
   export default {
     data() {
       return {
-        pageName: 'my',
-        info:{
+        pageName: 'my-msg',
+        info: {
 
         },
-        callback:function(){},
-        showLogin:false,
-        checkLogin:false,
+        callback: function () {},
+        showLogin: false,
+        checkLogin: false,
       }
     },
-
-    components: {
-      navBar,
-      LoginBtn
-    },
     methods: {
-      get_user() {
-        this.callback = ()=>{
-          this.get_user()
-        }
-        fly.post('/api/app/user/info', {}).then(res => {
-          if(res.retCode == 0) {
-            this.info = res.result
-            this.showLogin = false
-            this.checkLogin = false
-          }
-          if(res.retCode == 2) {
-            wx.setStorageSync('token', null)
-            wx.setStorageSync('isLogin', false)
-            // this.showLogin = true
-            this.checkLogin = true
-          }
-        }).catch(e => {
-          console.log(e)
-        })
 
-      },
       setLogin() {
 
       },
       goto(url) {
-          wx.navigateTo({ url })
-        
+        wx.navigateTo({ url })
+
       }
     },
     onPullDownRefresh() {
       wx.stopPullDownRefresh();
     },
     onShow() {
-     
+
     },
     onLoad() {
       wx.setNavigationBarTitle({
-        title: '个人中心'
+        title: '消息'
       })
-       this.get_user()
+
     }
 
 
@@ -166,18 +124,18 @@
     background: #FFF;
     border-radius: 10rpx;
     margin: 30rpx;
-    padding: 36rpx 25rpx;
+    padding: 20rpx 25rpx;
     position: relative;
   }
 
   .my-post-title {
-    height: 38rpx;
+    height: 80rpx;
     width: 200rpx;
-    background: url(../../../static/img/辩题@2x.png) 10rpx 4rpx no-repeat;
-    background-size: auto 90%;
+    background: url(../../../static/img/good@2x.png) 0 0 no-repeat;
+    background-size: auto 100%;
     font-size: 28rpx;
-    line-height: 40rpx;
-    padding-left: 66rpx;
+    line-height: 80rpx;
+    padding-left: 110rpx;
     color: rgb(26, 26, 28);
   }
 
@@ -196,24 +154,23 @@
     float: right;
     height: 25rpx;
     width: 14rpx;
-    margin-top: 10rpx;
+    margin-top: 30rpx;
     background: url(../../../static/img/箭头@2x.png) right 0rpx no-repeat;
     background-size: 100% 100%;
   }
-  
-  
+
+
 
   .my-comment-title {
-    height: 38rpx;
+    height: 80rpx;
     width: 200rpx;
-    background: url(../../../static/img/评论@2x.png) 10rpx 4rpx no-repeat;
-    background-size: auto 90%;
+    background: url(../../../static/img/pinglun0@2x.png) 0 0 no-repeat;
+    background-size: auto 100%;
     font-size: 28rpx;
-    line-height: 40rpx;
-    padding-left: 66rpx;
+    line-height: 80rpx;
+    padding-left: 110rpx;
     color: rgb(26, 26, 28);
   }
-
   .sm-count {
       position: absolute;
       top:10rpx;
@@ -226,6 +183,6 @@
       background: rgb(241, 44, 32);
       color: #FFF;
       right: 60rpx;
-      top: 37rpx;
+      top: 44rpx;
   }
 </style>

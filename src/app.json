@@ -10,11 +10,14 @@
     "pages/ta/main",
     "pages/ta-post/main",
     "pages/ta-comment/main",
-    "pages/tags/main"
+    "pages/tags/main",
+    "pages/my-msg/main",
+    "pages/my-msg-ping/main",
+    "pages/my-msg-zan/main"
   ],
   "window": {
     "backgroundTextStyle": "white",
-    "navigationBarBackgroundColor": "#f3f5f9",
+    "navigationBarBackgroundColor": "#FFF",
     "navigationBarTitleText": "首页",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": true

@@ -1,6 +1,6 @@
 <template>
   <div>
-   
+
     <div v-if="loading">
       <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:-10000;"></canvas>
       <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
@@ -82,7 +82,7 @@
       </div>
 
     </div>
- <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
+    <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
   </div>
 </template>
 
@@ -458,34 +458,48 @@
     },
 
     onShow() {
-
+      const self = this
       this.nowPage = 1
       this.loading = false
       this.checkLogin = false
       this.showLogin = false
       this.closeForm()
-      console.log(this.$root.$mp.query.id)
+
       this.commentData.debateTopicId = this.$root.$mp.query.id
       this.id = this.$root.$mp.query.id
       this.get_detail(this.$root.$mp.query.id)
       this.get_comment(this.$root.$mp.query.id)
+      setTimeout(() => {
+
+        mkimg.shareCard(self.detail, function (url) {
+          self.share_img = url
+        })
+      }, 1000)
 
     },
     onShareAppMessage: function (opts) {
-      let shareData = this.shareData
-      let self = this
-      console.log(self.share_img)
+
+      const self = this
+      console.log('999')
       return {
         title: '你怎么看？',
-        path: '/pages/index/main?id=' + shareData.id,
+        path: '/pages/index/main?id=' + self.id,
         imageUrl: self.share_img,
         success: function (res) {
           self.closeShare()
           let url = '/api/app/dabate-topic/forward'
           let data = {
-            debateTopicId: shareData.id
+            debateTopicId: self.id
           }
-          fly.post(url, data)
+          fly.post(url, data).then(datas => {
+            if (datas.retCode == 0) {
+              wx.showToast({
+                title: '分享成功',
+                icon: 'none'
+              })
+            }
+          })
+          self.closeShare()
 
         },
         fail: function (e) {
@@ -499,6 +513,7 @@
         title: '帖子详情'
       })
       this.closeShare()
+      const self = this
 
 
     },
@@ -923,9 +938,10 @@
     font-size: 20rpx;
     color: #555;
   }
+
   .say_content {
     position: absolute;
-    top:20rpx;
+    top: 20rpx;
     left: 20rpx;
     right: 20rpx;
   }
