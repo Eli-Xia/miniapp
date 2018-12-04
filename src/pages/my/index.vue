@@ -13,11 +13,11 @@
 
     </div>
 
-    <div class="my-post " id="message" @click="goto('/pages/my-msg/main')">
+    <!-- <div class="my-post " id="message" @click="goto('/pages/my-msg/main')">
       <div class="my-post-icon msg"></div>
       <div class="my-post-title msg">消息</div>
       <div class="sm-count">10</div>
-    </div>
+    </div> -->
 
     <div class="my-post" @click="goto('/pages/my-post/main')">
       <div class="my-post-icon"></div>
