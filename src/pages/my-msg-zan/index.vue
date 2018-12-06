@@ -4,7 +4,7 @@
     <div class="item-box" v-for="(item,index) in lists" :key="index">
       <div class="item-top">
 
-        <div class="face"><img :src="item.headImgUrl" /></div>
+        <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
 
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
@@ -13,25 +13,25 @@
       </div>
 
 
-      <div v-if="item.debateTopic" class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
-        <p>{{item.debateTopic }}</p>
+      <div v-if="item.commentContent" class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 60 ? 'margin-bottom:20rpx': ''">
+        <p>{{item.commentContent }}</p>
       </div>
 
-      <div v-if="!item.debateTopic" class="item-bottom">
+      <div v-if="!item.commentContent" class="item-bottom">
         <p>该辩题已被删除</p>
       </div>
     </div>
 
 
 
-    <div class="nothing" v-if="lists.length < 1"></div>
+    <div class="nothing" v-if="!lists"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
 
 <script>
   import fly from '../../utils/fly'
-  import utils,{ sub } from '../../utils'
+  import utils, { sub } from '../../utils'
   export default {
     data() {
       return {
@@ -46,14 +46,13 @@
     },
     methods: {
       get_list() {
-        fly.post('/api/app/comment/list-my', {
+        fly.post('/api/app/msg/list/like', {
           page: this.nowPage,
           pageSize: 30
         }).then(res => {
           if (res.retCode == 0) {
             res.result.map(item => {
-              item.createTime = utils.formatTime(new Date(item.createTime))
-              item.debateTopic = utils.sub(item.debateTopic)
+
               if (this.nowPage < 1) {
                 self.lists.push(item)
               }
@@ -68,6 +67,18 @@
             console.log(res)
           }
         })
+      },
+      goTa(id) {
+        if (id) {
+          let url = '/pages/ta/main?id=' + id
+          wx.navigateTo({ url })
+        }
+      },
+      goTo(id) {
+        if (id) {
+          let url = '/pages/detail/main?id=' + id
+          wx.navigateTo({ url })
+        }
       },
       del(id) {
         const self = this
@@ -117,7 +128,7 @@
       }
     },
     onShow() {
-      this.get_list()
+     
     },
     created() {
 
@@ -126,6 +137,7 @@
       wx.setNavigationBarTitle({
         title: '赞我的'
       })
+       this.get_list()
     },
     onReachBottom: function () {
       this.nowPage += 1
@@ -195,7 +207,7 @@
   .add-date {
     font-size: 22rpx;
     color: rgb(196, 198, 211);
-    
+
   }
 
   .item-bottom {

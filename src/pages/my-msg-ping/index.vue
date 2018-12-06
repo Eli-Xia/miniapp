@@ -4,15 +4,15 @@
     <div class="item-box" v-for="(item,index) in lists" :key="index">
       <div class="item-top">
 
-        <div class="face"><img :src="item.headImgUrl" /></div>
+        <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
     
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div class="item-mid" @click="goto(item.debateTopicId)">
-        <p>{{item.content}}</p>
+      <div class="item-mid" @click="goTo(item.debateTopicId)">
+        <p>{{item.commentContent}}</p>
 
       </div>
 
@@ -49,7 +49,7 @@
     },
     methods: {
       get_list() {
-        fly.post('/api/app/comment/list-my', {
+        fly.post('/api/app/msg/list/comment', {
           page: this.nowPage,
           pageSize: 30
         }).then(res => {
@@ -70,6 +70,18 @@
             console.log(res)
           }
         })
+      },
+      goTa(id) {
+        if (id) {
+          let url = '/pages/ta/main?id=' + id
+          wx.navigateTo({ url })
+        }
+      },
+      goTo(id) {
+        if (id) {
+          let url = '/pages/detail/main?id=' + id
+          wx.navigateTo({ url })
+        }
       },
       del(id) {
         const self = this

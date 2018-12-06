@@ -6,12 +6,12 @@
     <div class="my-post" @click="goto('/pages/my-msg-ping/main')">
       <div class="my-post-icon"></div>
       <div class="my-comment-title">评论</div>
-      <div class="sm-count">6</div>
+      <div class="sm-count" v-if="comments_count > 0">{{comments_count}}</div>
     </div>
-     <div class="my-post" style="margin-top:-10rpx"  @click="goto('/pages/my-msg-zan/main')">
+    <div class="my-post" style="margin-top:-10rpx" @click="goto('/pages/my-msg-zan/main')">
       <div class="my-post-icon"></div>
       <div class="my-post-title">赞</div>
-      <div class="sm-count">10</div>
+      <div class="sm-count" v-if="like_count > 0">{{like_count}}</div>
     </div>
     <login-btn @setLogin="setLogin"> </login-btn>
 
@@ -31,12 +31,39 @@
         callback: function () {},
         showLogin: false,
         checkLogin: false,
+        like_count: 0,
+        comments_count: 0
       }
     },
     methods: {
 
       setLogin() {
 
+      },
+      get_msg_count() {
+        fly.post('/api/app/msg/count/comment').then(res => {
+          if (res.retCode == 0) {
+            this.comments_count = res.result
+          
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
+
+          fly.post('/api/app/msg/count/like').then(res => {
+          if (res.retCode == 0) {
+            this.like_count = res.result
+          
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
       },
       goto(url) {
         wx.navigateTo({ url })
@@ -53,7 +80,7 @@
       wx.setNavigationBarTitle({
         title: '消息'
       })
-
+      this.get_msg_count()
     }
 
 
@@ -171,18 +198,19 @@
     padding-left: 110rpx;
     color: rgb(26, 26, 28);
   }
+
   .sm-count {
-      position: absolute;
-      top:10rpx;
-      width: 36rpx;
-      height: 36rpx;
-      border-radius: 18rpx;
-      font-size: 22rpx;
-      line-height: 36rpx;
-      text-align: center;
-      background: rgb(241, 44, 32);
-      color: #FFF;
-      right: 60rpx;
-      top: 44rpx;
+    position: absolute;
+    top: 10rpx;
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 18rpx;
+    font-size: 22rpx;
+    line-height: 36rpx;
+    text-align: center;
+    background: rgb(241, 44, 32);
+    color: #FFF;
+    right: 60rpx;
+    top: 44rpx;
   }
 </style>

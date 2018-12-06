@@ -1,6 +1,6 @@
 <template>
   <div class="counter-warp">
-     <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
+    <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
     <div class="my-card">
       <div class="like">
         <div class="like-count">{{info.supportCount}}</div>
@@ -13,24 +13,24 @@
 
     </div>
 
-    <!-- <div class="my-post " id="message" @click="goto('/pages/my-msg/main')">
+    <div class="my-post " id="message" @click="goto('/pages/my-msg/main')">
       <div class="my-post-icon msg"></div>
       <div class="my-post-title msg">消息</div>
-      <div class="sm-count">10</div>
-    </div> -->
+      <div class="sm-count" v-if="msg_count"> {{  msg_count }}</div>
+      </div>
 
-    <div class="my-post" @click="goto('/pages/my-post/main')">
-      <div class="my-post-icon"></div>
-      <div class="my-post-title">我的辩题</div>
-    </div>
+      <div class="my-post" @click="goto('/pages/my-post/main')">
+        <div class="my-post-icon"></div>
+        <div class="my-post-title">我的辩题</div>
+      </div>
 
-    <div class="my-post" @click="goto('/pages/my-comment/main')">
-      <div class="my-post-icon"></div>
-      <div class="my-comment-title">我的评论</div>
+      <div class="my-post" @click="goto('/pages/my-comment/main')">
+        <div class="my-post-icon"></div>
+        <div class="my-comment-title">我的评论</div>
+      </div>
+      <login-btn @setLogin="setLogin"> </login-btn>
+      <nav-bar :pageName="pageName"></nav-bar>
     </div>
-    <login-btn @setLogin="setLogin"> </login-btn>
-    <nav-bar :pageName="pageName"></nav-bar>
-  </div>
 </template>
 
 <script>
@@ -42,12 +42,13 @@
     data() {
       return {
         pageName: 'my',
-        info:{
+        info: {
 
         },
-        callback:function(){},
-        showLogin:false,
-        checkLogin:false,
+        callback: function () {},
+        showLogin: false,
+        checkLogin: false,
+        msg_count: 0
       }
     },
 
@@ -57,16 +58,17 @@
     },
     methods: {
       get_user() {
-        this.callback = ()=>{
+        this.callback = () => {
           this.get_user()
         }
         fly.post('/api/app/user/info', {}).then(res => {
-          if(res.retCode == 0) {
+          if (res.retCode == 0) {
             this.info = res.result
+            this.get_msg_count()
             this.showLogin = false
             this.checkLogin = false
           }
-          if(res.retCode == 2) {
+          if (res.retCode == 2) {
             wx.setStorageSync('token', null)
             wx.setStorageSync('isLogin', false)
             // this.showLogin = true
@@ -77,25 +79,58 @@
         })
 
       },
+      get_my_msg() {
+        fly.post('/api/app/user/info', {}).then(res => {
+          if (res.retCode == 0) {
+            this.info = res.result
+            this.showLogin = false
+            this.checkLogin = false
+          }
+          if (res.retCode == 2) {
+            wx.setStorageSync('token', null)
+            wx.setStorageSync('isLogin', false)
+            // this.showLogin = true
+            this.checkLogin = true
+          }
+        }).catch(e => {
+          console.log(e)
+        })
+      },
+      get_msg_count() {
+        fly.post('/api/app/msg/count/total').then(res => {
+          if (res.retCode == 0) {
+            this.msg_count = res.result
+
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
+
+
+      },
       setLogin() {
 
       },
       goto(url) {
-          wx.navigateTo({ url })
-        
+        wx.navigateTo({ url })
+
       }
     },
     onPullDownRefresh() {
       wx.stopPullDownRefresh();
     },
     onShow() {
-     
+
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: '个人中心'
       })
-       this.get_user()
+      this.get_user()
+
     }
 
 
@@ -200,8 +235,8 @@
     background: url(../../../static/img/箭头@2x.png) right 0rpx no-repeat;
     background-size: 100% 100%;
   }
-  
-  
+
+
 
   .my-comment-title {
     height: 38rpx;
@@ -215,17 +250,17 @@
   }
 
   .sm-count {
-      position: absolute;
-      top:10rpx;
-      width: 36rpx;
-      height: 36rpx;
-      border-radius: 18rpx;
-      font-size: 22rpx;
-      line-height: 36rpx;
-      text-align: center;
-      background: rgb(241, 44, 32);
-      color: #FFF;
-      right: 60rpx;
-      top: 37rpx;
+    position: absolute;
+    top: 10rpx;
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 18rpx;
+    font-size: 22rpx;
+    line-height: 36rpx;
+    text-align: center;
+    background: rgb(241, 44, 32);
+    color: #FFF;
+    right: 60rpx;
+    top: 37rpx;
   }
 </style>
