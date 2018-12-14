@@ -64,7 +64,7 @@
         fly.post('/api/app/user/info', {}).then(res => {
           if (res.retCode == 0) {
             this.info = res.result
-            this.get_msg_count()
+            
             this.showLogin = false
             this.checkLogin = false
           }
@@ -123,7 +123,7 @@
       wx.stopPullDownRefresh();
     },
     onShow() {
-
+        this.get_msg_count()
     },
     onLoad() {
       wx.setNavigationBarTitle({
@@ -219,8 +219,8 @@
   .my-post-title.msg {
     height: 38rpx;
     width: 200rpx;
-    background: url(../../../static/img/message@2x.png) 10rpx 4rpx no-repeat;
-    background-size: auto 90%;
+    background: url(../../../static/img/message@2x.png) 10rpx 6rpx no-repeat;
+    background-size: auto 80%;
     font-size: 28rpx;
     line-height: 40rpx;
     padding-left: 66rpx;

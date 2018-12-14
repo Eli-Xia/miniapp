@@ -13,17 +13,20 @@
     <div class="nav-li my" @click="goto('/pages/my/main')" :class="pageName == 'my' ? 'active': ''">
       <div class="icon"></div>
       <div class="text">我的 </div>
+      <div class="msg-dot" v-if=" msg_count > 0"></div>
     </div>
 
   </div>
 </template>
 
 <script>
+import fly from '../utils/fly'
   export default {
     props: ['pageName'],
     data() {
         return {
-            bottom:'0rpx'
+            bottom:'0rpx',
+            msg_count:0
         }
     },
     methods: {
@@ -36,9 +39,28 @@
           wx.redirectTo({ url })
         }
 
+      },
+      get_msg_count() {
+        fly.post('/api/app/msg/count/total').then(res => {
+          if (res.retCode == 0) {
+            this.msg_count = res.result
+
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
+
+
       }
     },
-    created() {
+    onShow(){
+       this.get_msg_count()
+    },
+    onLoad() {
+     
        if(wx.getSystemInfoSync().windowHeight > 720) {
            this.bottom = '50rpx'
        } 
@@ -97,6 +119,7 @@
   .nav-li.home,
   .nav-li.my {
     margin-top: 14rpx;
+    position: relative;
   }
 
   .nav-li.home .icon {
@@ -157,5 +180,15 @@
     margin-top: 10rpx;
     background-image: url(../../static/img/fatie.png);
     background-size: 100% 100%;
+  }
+
+  .msg-dot {
+    width: 14rpx;
+    height: 14rpx;
+    background: rgb(241, 44, 32);
+    border-radius: 50%;
+    position: absolute;
+    left: 135rpx;
+    top: 1rpx;
   }
 </style>

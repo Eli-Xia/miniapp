@@ -4,7 +4,11 @@
     <div class="item-box" v-for="(item,index) in lists" :key="index">
       <div class="item-top">
 
-        <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
+        <div class="face" @click="goTa(item.userId)">
+            <div class="msg-dot" v-if="item.hasRead == 0"></div> 
+            <img :src="item.headImgUrl" />
+            
+            </div>
 
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
@@ -13,12 +17,12 @@
       </div>
 
 
-      <div v-if="item.commentContent" class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 60 ? 'margin-bottom:20rpx': ''">
+      <div  class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 60 ? 'margin-bottom:20rpx': ''">
         <p>{{item.commentContent }}</p>
       </div>
 
       <div v-if="!item.commentContent" class="item-bottom">
-        <p>该辩题已被删除</p>
+        <p>该辩题已删除</p>
       </div>
     </div>
 
@@ -138,6 +142,7 @@
         title: '赞我的'
       })
        this.get_list()
+       
     },
     onReachBottom: function () {
       this.nowPage += 1
@@ -263,5 +268,15 @@
     right: 72rpx;
     top: 44rpx;
     border-radius: 20rpx;
+  }
+
+  .msg-dot {
+    width: 13rpx;
+    height: 13rpx;
+    background: rgb(241, 44, 32);
+    border-radius: 50%;
+    position: absolute;
+    left: -18rpx;
+    top: 32rpx;
   }
 </style>

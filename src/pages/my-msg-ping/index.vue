@@ -1,28 +1,31 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
-   
+
     <div class="item-box" v-for="(item,index) in lists" :key="index">
       <div class="item-top">
 
-        <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
-    
+        <div class="face" @click="goTa(item.userId)">
+           <div class="msg-dot" v-if="item.hasRead == 0"></div> 
+          <img :src="item.headImgUrl" />
+        </div>
+
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div class="item-mid" @click="goTo(item.debateTopicId)">
-        <p>{{item.commentContent}}</p>
-
+      <div  class="item-mid" @click="goTo(item.debateTopicId)">
+       <p :style="item.commentContent == '该评论已删除'  ? 'color:rgb(176, 178, 196)' :''">{{item.commentContent}}</p>
       </div>
 
-      <div v-if="item.debateTopic" class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+      
+
+     
+      <div class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
         <p>{{item.debateTopic}}</p>
       </div>
 
-      <div v-if="!item.debateTopic" class="item-bottom">
-        <p>该辩题已被删除</p>
-      </div>
+      
     </div>
 
 
@@ -147,7 +150,7 @@
 </script>
 
 <style scoped>
-    .item-box {
+  .item-box {
     margin: 10rpx 0;
     border-radius: 0rpx;
     background: #FFF;
@@ -163,6 +166,7 @@
     width: 72rpx;
     height: 72rpx;
     float: left;
+    position: relative;
   }
 
   .item-top .face img {
@@ -247,5 +251,14 @@
     right: 72rpx;
     top: 44rpx;
     border-radius: 20rpx;
+  }
+  .msg-dot {
+    width: 13rpx;
+    height: 13rpx;
+    background: rgb(241, 44, 32);
+    border-radius: 50%;
+    position: absolute;
+    left: -18rpx;
+    top: 32rpx;
   }
 </style>

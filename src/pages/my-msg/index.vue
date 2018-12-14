@@ -74,13 +74,13 @@
       wx.stopPullDownRefresh();
     },
     onShow() {
-
+        this.get_msg_count()
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: '消息'
       })
-      this.get_msg_count()
+      
     }
 
 

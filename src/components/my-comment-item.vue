@@ -14,18 +14,25 @@
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div class="item-mid" @click="goto(item.debateTopicId)">
+    <div v-if="item.debateTopic != '该辩题已被删除'"  class="item-mid" @click="goto(item.debateTopicId)">
       <p>{{item.content}}</p>
-
     </div>
 
-    <div v-if="item.debateTopic" class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+     <div v-if="item.debateTopic == '该辩题已被删除'"  class="item-mid">
+      <p>{{item.content}}</p>
+    </div>
+
+
+
+    <div v-if="item.debateTopic != '该辩题已被删除'"  class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
       <p>{{item.debateTopic}}</p>
     </div>
 
-     <div v-if="!item.debateTopic" class="item-bottom">
-      <p>该辩题已被删除</p>
+    <div v-if="item.debateTopic == '该辩题已被删除'"  class="item-bottom" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+      <p>{{item.debateTopic}}</p>
     </div>
+
+    
   </div>
 </template>
 

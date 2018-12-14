@@ -5,15 +5,15 @@
         <div class="zheng-icon"></div>
         <img @click="goTa(item.userId)" :src="item.headImgUrl" />
       </div>
-      <div v-if="!(item.deleted == 1 || item.state == 0) && clicked == false" class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
+      <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == false" class="like-btn" :class="item.likeState == 1 ? 'liked': ''" @click="like(item)">
         {{ item.likeCount}}
       </div>
 
-       <div v-if="!(item.deleted == 1 || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+       <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
         {{ item.likeCount}}
       </div>
 
-        <div v-if="(item.deleted == 1 || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+        <div v-if="(item.content ==  '该评论已删除' || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
           {{ item.likeCount}}
       </div>
           <div class="name-date">
@@ -21,8 +21,8 @@
             <div class="add-date">{{item.createTime}}</div>
           </div>
         </div>
-        <div class="item-bottom" :class="(item.deleted == 1 || item.state == 0) ? 'is_deleted' : ''">
-          <p>{{(item.deleted == 1 || item.state == 0) ? '该评论已被删除' : item.content}}</p>
+        <div class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
+          <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已被删除' : item.content}}</p>
         </div>
         <div class="line"></div>
       </div>
@@ -87,6 +87,10 @@ import { setTimeout } from 'timers';
     border: 1rpx solid #9ea0b5;
   }
 
+.is_deleted {
+    background: #F7F7F7!important;
+    color: rgb(176, 178, 196)!important;
+  }
   .item-top .name-date {
     float: left;
     margin-left: 11rpx;

@@ -1,8 +1,12 @@
 <template>
   <div>
-
+    <div class="noPage" v-if="noPage">
+      <div class="delete_icon">
+       
+      </div>
+    </div>
     <div v-if="loading">
-      <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-700rpx; z-index:-10000;"></canvas>
+      <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-1800rpx; z-index:-10000;"></canvas>
       <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
       <div class="layer" @click="closeForm" v-if="adding">
 
@@ -133,6 +137,7 @@
         say_text: '长按说话',
         start_saying: false,
         say_content: '',
+        noPage:false
       }
     },
 
@@ -172,7 +177,15 @@
             this.leftId = res.result.leftViewId
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
-            this.loading = true
+
+            if (res.result.display == 0) {
+              this.loading = true
+               this.noPage = false
+            } else {
+              this.noPage = true
+               this.loading = false
+            }
+
 
 
           } else {
@@ -456,9 +469,12 @@
         wx.stopRecord()
       }
     },
-
+    onHide(){
+      this.nowPage = false
+    },
     onShow() {
       const self = this
+      
       this.nowPage = 1
       this.loading = false
       this.checkLogin = false
@@ -509,6 +525,7 @@
 
     },
     onLoad() {
+      
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
@@ -517,6 +534,7 @@
 
 
     },
+
     created() {
 
       if (wx.getSystemInfoSync().windowHeight > 720) {
@@ -944,5 +962,25 @@
     top: 20rpx;
     left: 20rpx;
     right: 20rpx;
+  }
+
+  .noPage {
+    background: rgba(245, 246, 248);
+    position: absolute;
+    top: 0rpx;
+    left: 0rpx;
+    right: 0rpx;
+    bottom: 0rpx;
+  }
+  .delete_icon {
+    width: 244rpx;
+    height: 194rpx;
+    position: absolute;
+    left: 50%;
+    margin-left: -122rpx;
+    top:50%;
+    margin-top: -120rpx;
+    background: url(../../../static/img/delete.png);
+    background-size: 100% 100%;
   }
 </style>
