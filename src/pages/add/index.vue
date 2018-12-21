@@ -14,7 +14,8 @@
         <input type="text" v-model="sendData.left" placeholder="例：该">
       </div>
       
-      <div v-if="allowSend" class="submit nosend" @click="sendPost">发表</div>
+      <div v-if="allowSend  && !sending" class="submit nosend" @click="sendPost">发表</div>
+      <div v-if="allowSend &&  sending" class="submit nosend">发表</div>
       <div v-if="!allowSend" class="submit" >发表</div>
     </div>
     <login-btn  :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
@@ -43,7 +44,8 @@ import { setTimeout } from 'timers';
         allowSend:false,
         checkLogin:false,
         showLogin:false,
-        callback:function(){}
+        callback:function(){},
+        sending:false
         
       }
     },
@@ -65,6 +67,7 @@ import { setTimeout } from 'timers';
         this.callback = ()=>{
           this.sendPost()
         }
+        this.sending = true
         let postData= {
           debateTopic: this.sendData.content,
           addDebateViewList: [
@@ -72,14 +75,27 @@ import { setTimeout } from 'timers';
             { type: 2, content: this.sendData.right }
           ]
         }
+
+        if(this.sendData.left.length > 6 || this.sendData.right.length >6) {
+           wx.showToast({
+                title: '观点不能大于6个',
+                icon: 'none'
+               })
+               this.sending = false
+               return false
+        }
         //验证数据合法
         if (!postData.debateTopic || !postData.addDebateViewList[0].content || !postData.addDebateViewList[1].content) {
            console.log("请填写完整")
         } else {
+           
+           
+
           fly.request("/api/app/dabate-topic/add",postData,{
             method:"post",
            
           }).then(data=>{
+             this.sending = false
             if(data.retCode ==0) {
 
                wx.showToast({

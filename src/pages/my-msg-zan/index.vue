@@ -5,10 +5,10 @@
       <div class="item-top">
 
         <div class="face" @click="goTa(item.userId)">
-            <div class="msg-dot" v-if="item.hasRead == 0"></div> 
-            <img :src="item.headImgUrl" />
-            
-            </div>
+          <div class="msg-dot" v-if="item.hasRead == 0"></div>
+          <img :src="item.headImgUrl" />
+
+        </div>
 
         <div class="name-date">
           <div class="nickname">{{item.nickname}}</div>
@@ -17,7 +17,7 @@
       </div>
 
 
-      <div  class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 60 ? 'margin-bottom:20rpx': ''">
+      <div class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 10 ? 'margin-bottom:20rpx': ''">
         <p>{{item.commentContent }}</p>
       </div>
 
@@ -28,7 +28,7 @@
 
 
 
-    <div class="nothing" v-if="!lists"></div>
+    <div class="nothing" v-if="lists.length < 1"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
@@ -56,7 +56,9 @@
         }).then(res => {
           if (res.retCode == 0) {
             res.result.map(item => {
-
+              if (item.commentContent.length > 10) {
+                item.commentContent = item.commentContent.substr(0, 10) + '...'
+              }
               if (this.nowPage < 1) {
                 self.lists.push(item)
               }
@@ -122,7 +124,7 @@
       },
       filters: {
         sub(str) {
-          console.log(str)
+          console.log(str, '---')
           if (str.lenght > 15) {
             return str.substr(0, 15) + '...'
           } else {
@@ -132,7 +134,7 @@
       }
     },
     onShow() {
-     
+
     },
     created() {
 
@@ -141,8 +143,8 @@
       wx.setNavigationBarTitle({
         title: '赞我的'
       })
-       this.get_list()
-       
+      this.get_list()
+
     },
     onReachBottom: function () {
       this.nowPage += 1
@@ -178,6 +180,7 @@
     width: 72rpx;
     height: 72rpx;
     float: left;
+    position: relative;
   }
 
   .item-top .face img {

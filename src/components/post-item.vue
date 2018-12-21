@@ -6,7 +6,10 @@
         <div class="no-pass" v-if="item.state == 0">该辩题不过审</div>
         <div class="close-btn" @click="del(item.id)"></div>
       </div>
-      <div class="click-box" @click="goto(item.id)">我也可以点</div>
+
+      <form @submit="nima" :data-id="item.id" report-submit="true">
+        <button formType="submit" class='click-box'></button>
+      </form>
       <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
       <div class="name-date">
         <div class="nickname">{{item.nickname}}</div>
@@ -19,15 +22,19 @@
     </div>
     <div class="item-bottom">
       <div class="tag-btn" @click="go_tag(item.debateTag)" v-if="item.debateTag">{{item.debateTag.name}}</div>
-    
-    
-      <div class="comment_count btn" @click="goto(item.id)">
-        <div class="btn-group">
-          <div class="icon"></div>
-          <div class="count">{{item.commentCount}}</div>
+
+      <form @submit="nima" :data-id="item.id" report-submit="true">
+        <button formType="submit" class='btn-f'></button>
+
+        <div class="comment_count btn" @click="goto(item.id)">
+          <div class="btn-group">
+            <div class="icon"></div>
+            <div class="count">{{item.commentCount}}</div>
+          </div>
+
         </div>
 
-      </div>
+      </form>
 
       <div class="share_count btn" @click="share(item)">
         <div class="btn-group">
@@ -40,6 +47,7 @@
 </template>
 
 <script>
+import fly from '../utils/fly'
   export default {
     data() {
       return {
@@ -54,6 +62,7 @@
       },
       goto(id) {
 
+        //发送formId 消息
         if (this.pageName !== 'detail') {
           let url = '/pages/detail/main?id=' + id
           wx.navigateTo({ url })
@@ -75,11 +84,25 @@
       },
 
       go_tag(tag) {
-        if(this.pageName == 'tags') {
+        if (this.pageName == 'tags') {
           return false
         }
         let url = '/pages/tags/main?id=' + tag.id + '&title=' + tag.name
         wx.navigateTo({ url })
+      },
+      nima(e) {
+        let id = e.target.dataset.id
+
+        let formId = e.target.formId
+
+        let url = '/api/app/msg-template-form/add'
+        fly.post(url, {
+          formId: formId
+        }).then((res) => {
+          console.log(res.retCode)
+        })
+
+        this.goto(id)
       }
     },
     onShow() {
@@ -250,10 +273,10 @@
   }
 
   .click-box {
-    width: 60%;
+    width: 80%;
     position: absolute;
     right: 0;
-    height: 72rpx;
+    height: 122rpx;
     opacity: 0;
   }
 
@@ -279,5 +302,14 @@
     right: 25rpx;
     background-size: 100% 100%;
     z-index: 99999;
+  }
+
+  .btn-f {
+    position: absolute;
+    width: 50rpx;
+    height: 30rpx;
+    opacity: 0;
+    right: 256rpx;
+
   }
 </style>

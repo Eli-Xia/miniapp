@@ -33,6 +33,13 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
+              if(item.content.length > 78) {
+                item.content = item.content.substr(0,78)+'...'
+              }
+
+              if(item.debateTopic.length > 78) {
+                item.debateTopic = item.debateTopic.substr(0,78)+'...'
+              }
               if (this.nowPage < 1) {
                 self.lists.push(item)
               }

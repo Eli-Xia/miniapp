@@ -22,7 +22,7 @@
           </div>
         </div>
         <div class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
-          <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已被删除' : item.content}}</p>
+          <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
         </div>
         <div class="line"></div>
       </div>

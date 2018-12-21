@@ -3,13 +3,13 @@
  */
 import Fly from 'flyio/dist/npm/wx'
 const fly = new Fly()
-const host = "https://test.keendo.com.cn"
+const host = "https://debate.keendo.com.cn"
 //添加请求拦截器
 fly.interceptors.request.use((request) => {
-  wx.showLoading({
-    title: "加载中",
-    mask: true
-  });
+  // wx.showLoading({
+  //   title: "加载中",
+  //   mask: true
+  // });
   console.log(request);
   // request.headers["X-Tag"] = "flyio";
   // request.headers['content-type']= 'application/json';

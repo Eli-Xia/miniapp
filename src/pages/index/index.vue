@@ -1,6 +1,6 @@
 <template>
   <div class="page-main">
-
+    <login-btn :cb="callback" pageName="home" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
     <canvas canvas-id='card-canvas' style="width:750rpx;height:600rpx; position: absolute; top:-1900rpx; z-index:100;"></canvas>
 
     <div v-for="(item,index) in lists" :key="index">
@@ -19,6 +19,8 @@
   import sharePage from '@/components/share'
   import { setTimeout } from 'timers';
   import mkimg from '../../utils/mkimg';
+  import LoginBtn from '@/components/login'
+  import { isLogin, login } from '../../utils/Login';
   export default {
 
     data() {
@@ -28,7 +30,10 @@
         nowPage: 1,
         share_img: '',
         shareData: {},
-        showShare: false
+        showShare: false,
+        checkLogin: false,
+        showLogin: false,
+        callback: function () {}
 
       }
     },
@@ -37,6 +42,7 @@
       navBar,
       postItem,
       sharePage,
+      LoginBtn,
     },
 
     methods: {
@@ -57,6 +63,26 @@
         console.log('clickHandle:', msg, ev)
       },
       doShare() {
+
+      },
+      setLogin(status) {
+        this.showLogin = status
+      },
+      checkLog() {
+        let url = '/api/app/user/check-login'
+        fly.post(url, {
+
+          })
+          .then((res) => {
+            if (res.result.login == 0) {
+
+              wx.setStorageSync('token', null)
+              wx.setStorageSync('isLogin', false)
+              // this.showLogin = true
+              this.checkLogin = true
+              
+            }
+          })
 
       },
       get_index_list() {
@@ -90,6 +116,9 @@
           .catch(function (error) {
             console.log(error);
           });
+      },
+      formSubmit(e) {
+        console.log(e.detail)
       }
     },
     onShow() {
@@ -98,6 +127,7 @@
 
     },
     onLoad(query) {
+      this.checkLog()
 
       if (query.id) {
         //跳走
@@ -131,10 +161,22 @@
       console.log(shareData)
       let self = this
       console.log(self.share_img)
+      let title = ''
+      let imgurl = ''
+      let path = ''
+      if (shareData.id) {
+        title = '你怎么没看？'
+        imgurl = self.share_img
+        path = '/pages/index/main?id=' + shareData.id
+      } else {
+        title = '到底说了什么让他无言以对？'
+        imgurl = 'http://chatrbt-1254066218.file.myqcloud.com/debate/topic/share-poster/WechatIMG10478.jpeg'
+        path = '/pages/index/main'
+      }
       return {
-        title: '你怎么看？',
-        path: '/pages/index/main?id=' + shareData.id,
-        imageUrl: self.share_img,
+        title: title,
+        path: path,
+        imageUrl: imgurl,
         success: function (res) {
 
           let url = '/api/app/dabate-topic/forward'
@@ -145,6 +187,11 @@
             if (data.retCode == 0) {
               wx.showToast({
                 title: '分享成功',
+                icon: 'none'
+              })
+            } else {
+              wx.showToast({
+                title: '转发失败' + data.retMsg,
                 icon: 'none'
               })
             }

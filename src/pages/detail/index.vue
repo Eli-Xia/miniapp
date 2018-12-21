@@ -2,7 +2,7 @@
   <div>
     <div class="noPage" v-if="noPage">
       <div class="delete_icon">
-       
+
       </div>
     </div>
     <div v-if="loading">
@@ -80,9 +80,11 @@
       <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
         <!-- <div id="say-btn" @click="show_say"></div> -->
         <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
-        <div v-if="adding" class="submit" @click="sendComment">发表</div>
-        <input @focus="showForm" placeholder-class="phcolor" v-model="commentData.content" type="text" name="content" class="content" placeholder="我在等你的神评呢！" id="">
+        <div v-if="adding && !sending" class="submit" @click="sendComment">发表</div>
 
+         <div v-if="adding && sending" class="submit" >发表</div>
+        <input  @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content"  id="">
+       
       </div>
 
     </div>
@@ -137,7 +139,9 @@
         say_text: '长按说话',
         start_saying: false,
         say_content: '',
-        noPage:false
+        noPage: false,
+        sending: false,
+        defaultText:'我在等你的神评呢！'
       }
     },
 
@@ -180,10 +184,10 @@
 
             if (res.result.display == 0) {
               this.loading = true
-               this.noPage = false
+              this.noPage = false
             } else {
               this.noPage = true
-               this.loading = false
+              this.loading = false
             }
 
 
@@ -268,7 +272,11 @@
         this.commentData.debatViewType = id
       },
       sendComment() {
+        this.sending = true
 
+        setTimeout(()=>{
+          this.sending = false
+        },1000)
         this.callback = () => {
           this.sendComment()
         }
@@ -286,6 +294,7 @@
               title: '评论成功！',
               icon: 'right'
             })
+             this.sending = false
             this.nowPage = 1
             this.get_comment(this.$root.$mp.query.id)
             this.get_detail(this.$root.$mp.query.id)
@@ -315,7 +324,11 @@
       doLike(id) {
         let url = '/api/app/comment/like'
         if (id.likeState == 1) {
+          id.likeState = 1
           url = '/api/app/comment/cancel-like'
+
+        } else {
+          id.likeState = 0
         }
 
         let data = {
@@ -372,6 +385,7 @@
       },
       showForm() {
         // this.closeSay()
+        this.defaultText = ''
         this.adding = true
       },
       setLogin(status) {
@@ -469,12 +483,12 @@
         wx.stopRecord()
       }
     },
-    onHide(){
+    onHide() {
       this.nowPage = false
     },
     onShow() {
       const self = this
-      
+
       this.nowPage = 1
       this.loading = false
       this.checkLogin = false
@@ -525,7 +539,7 @@
 
     },
     onLoad() {
-      
+
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
@@ -742,6 +756,7 @@
     background: #FFF;
     line-height: 72rpx;
     font-size: 28rpx;
+    /* color: #999; */
     margin: 12rpx 120rpx 10rpx 50rpx;
 
   }
@@ -972,15 +987,20 @@
     right: 0rpx;
     bottom: 0rpx;
   }
+
   .delete_icon {
     width: 244rpx;
     height: 194rpx;
     position: absolute;
     left: 50%;
     margin-left: -122rpx;
-    top:50%;
+    top: 50%;
     margin-top: -120rpx;
     background: url(../../../static/img/delete.png);
     background-size: 100% 100%;
+  }
+
+  .adding {
+    color: #222;
   }
 </style>

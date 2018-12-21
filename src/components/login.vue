@@ -1,6 +1,6 @@
 <template>
-  <div :style="showLogin ? 'display:block' : 'display:none'"  di="ck" class="login-layer">
-    
+  <div :style="showLogin ? 'display:block' : 'display:none'" di="ck" class="login-layer">
+
     <div class="window-box">
       <div class="info">您需要登陆才完成操作哦</div>
       <div class="close-btn" @click="close()">关闭</div><button class="login-btn" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfo1">点击授权登陆</button>
@@ -12,7 +12,7 @@
   import fly from '../utils/fly'
   import { isLogin } from '../utils/Login';
   export default {
-    props: ['checkLogin', 'cb','showLogin'],
+    props: ['checkLogin', 'cb', 'showLogin', 'pageName'],
     data() {
       return {
         too: null,
@@ -25,17 +25,17 @@
     },
     computed: {
       ck() {
-        if(this.checkLogin){
-           this.getSetting()
+        if (this.checkLogin) {
+          this.getSetting()
         }
-        return  this.checkLogin
+        return this.checkLogin
       }
     },
     mounted() {
       // 一进来看看用户是否授权过
-     
-       
-      
+
+
+
     },
     created() {
 
@@ -63,7 +63,11 @@
             } else {
               console.log('用户还未授权过')
               // 显示组件
-              self.showLogin= true
+              console.log('当前页面是什么，如果当前页面首页不出发说完全操作', self.pageName)
+              if (self.pageName != 'home')
+              {
+                self.showLogin = true
+              }
             }
           }
         })
@@ -103,7 +107,7 @@
       },
       getUserInfo1() {
         console.log('click事件首先触发')
-        this.showLogin  =false
+        this.showLogin = false
         // 判断小程序的API，回调，参数，组件等是否在当前版本可用。  为false 提醒用户升级微信版本
         // console.log(wx.canIUse('button.open-type.getUserInfo'))
         if (wx.canIUse('button.open-type.getUserInfo')) {
@@ -158,14 +162,14 @@
         // console.log(e.mp.detail.rawData)
         if (e.mp.detail.rawData) {
           //用户按了允许授权按钮
-           
+
           console.log('用户按了允许授权按钮', e.mp.detail.rawData, '去登陆')
-           wx.showLoading()
+          wx.showLoading()
           this.login(this.cb)
         } else {
           //用户按了拒绝按钮
           console.log('用户按了拒绝按钮')
-         
+
         }
       },
       isLogin() {
@@ -179,7 +183,7 @@
       close() {
         this.checkLogin = false
         this.showLogin = false
-        
+
       }
     }
   }
@@ -203,14 +207,14 @@
     width: 50%;
     font-size: 30rpx;
     color: #333;
-    border: 1rpx solid #ddd!important;
+    border: 1rpx solid #ddd !important;
     height: 90rpx;
     border-radius: 0;
     background: #FFF;
     line-height: 90rpx;
     z-index: 3000;
     color: green;
- 
+
   }
 
   button::after {
