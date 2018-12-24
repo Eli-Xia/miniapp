@@ -16,7 +16,7 @@
         </div>
       </div>
 
-
+      <div class="click-box"  @click="goTo(item.debateTopicId)"></div>
       <div class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.commentContent > 10 ? 'margin-bottom:20rpx': ''">
         <p>{{item.commentContent }}</p>
       </div>
@@ -232,11 +232,6 @@
     height: 85rpx;
     overflow: hidden;
     line-height: 28rpx;
-    overflow-y: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
   }
 
   .like-btn.close-btn {
@@ -281,5 +276,13 @@
     position: absolute;
     left: -18rpx;
     top: 32rpx;
+  }
+  .click-box {
+    width: 300rpx;
+    height: 100rpx;
+    /* background: #F6F600; */
+    position: absolute;
+    right: 170rpx;
+    top: 20rpx;
   }
 </style>

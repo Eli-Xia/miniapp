@@ -82,9 +82,9 @@
         <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
         <div v-if="adding && !sending" class="submit" @click="sendComment">发表</div>
 
-         <div v-if="adding && sending" class="submit" >发表</div>
-        <input  @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content"  id="">
-       
+        <div v-if="adding && sending" class="submit">发...</div>
+        <input @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content" id="">
+
       </div>
 
     </div>
@@ -141,7 +141,7 @@
         say_content: '',
         noPage: false,
         sending: false,
-        defaultText:'我在等你的神评呢！'
+        defaultText: '我在等你的神评呢！'
       }
     },
 
@@ -272,11 +272,7 @@
         this.commentData.debatViewType = id
       },
       sendComment() {
-        this.sending = true
 
-        setTimeout(()=>{
-          this.sending = false
-        },1000)
         this.callback = () => {
           this.sendComment()
         }
@@ -287,14 +283,16 @@
         this.tips = false
         console.log(111)
         let url = '/api/app/comment/add'
+        this.sending = true
         fly.post(url, this.commentData).then(res => {
+
           if (res.retCode == 0) {
             console.log(res, '=====')
             wx.showToast({
               title: '评论成功！',
               icon: 'right'
             })
-             this.sending = false
+            this.sending = false
             this.nowPage = 1
             this.get_comment(this.$root.$mp.query.id)
             this.get_detail(this.$root.$mp.query.id)
@@ -487,6 +485,39 @@
       this.nowPage = false
     },
     onShow() {
+      
+
+    },
+    onShareAppMessage: function (opts) {
+
+      const self = this
+      console.log('999')
+      return {
+        title: '你怎么看？',
+        path: '/pages/index/main?id=' + self.id,
+        imageUrl: self.share_img,
+        success: function (res) {
+          self.closeShare()
+          let url = '/api/app/dabate-topic/forward'
+          let data = {
+            debateTopicId: self.id
+          }
+          fly.post(url, data)
+          self.closeShare()
+
+        },
+        fail: function (e) {
+          console.log(e)
+        }
+      }
+
+    },
+    onLoad() {
+
+      wx.setNavigationBarTitle({
+        title: '帖子详情'
+      })
+      this.closeShare()
       const self = this
 
       this.nowPage = 1
@@ -505,47 +536,6 @@
           self.share_img = url
         })
       }, 1000)
-
-    },
-    onShareAppMessage: function (opts) {
-
-      const self = this
-      console.log('999')
-      return {
-        title: '你怎么看？',
-        path: '/pages/index/main?id=' + self.id,
-        imageUrl: self.share_img,
-        success: function (res) {
-          self.closeShare()
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: self.id
-          }
-          fly.post(url, data).then(datas => {
-            if (datas.retCode == 0) {
-              wx.showToast({
-                title: '分享成功',
-                icon: 'none'
-              })
-            }
-          })
-          self.closeShare()
-
-        },
-        fail: function (e) {
-          console.log(e)
-        }
-      }
-
-    },
-    onLoad() {
-
-      wx.setNavigationBarTitle({
-        title: '帖子详情'
-      })
-      this.closeShare()
-      const self = this
-
 
     },
 

@@ -67,7 +67,7 @@ import { setTimeout } from 'timers';
         this.callback = ()=>{
           this.sendPost()
         }
-        this.sending = true
+       
         let postData= {
           debateTopic: this.sendData.content,
           addDebateViewList: [
@@ -90,7 +90,7 @@ import { setTimeout } from 'timers';
         } else {
            
            
-
+           this.sending = true
           fly.request("/api/app/dabate-topic/add",postData,{
             method:"post",
            

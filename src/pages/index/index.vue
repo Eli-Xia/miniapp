@@ -183,19 +183,7 @@
           let data = {
             debateTopicId: shareData.id
           }
-          fly.post(url, data).then(data => {
-            if (data.retCode == 0) {
-              wx.showToast({
-                title: '分享成功',
-                icon: 'none'
-              })
-            } else {
-              wx.showToast({
-                title: '转发失败' + data.retMsg,
-                icon: 'none'
-              })
-            }
-          })
+          fly.post(url, data)
           self.closeShare()
 
 
