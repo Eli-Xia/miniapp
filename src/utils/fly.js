@@ -10,11 +10,11 @@ fly.interceptors.request.use((request) => {
   //   title: "加载中",
   //   mask: true
   // });
-  console.log(request);
+ 
   // request.headers["X-Tag"] = "flyio";
   // request.headers['content-type']= 'application/json';
   const token = wx.getStorageSync('token') || false
-  console.log(token)
+  
   request.headers = {
     "X-Tag": "flyio",
     'content-type': 'application/json'
@@ -33,13 +33,22 @@ fly.interceptors.request.use((request) => {
   request.body = {
     ...request.body
   }
+  console.log("请求->")
+  console.log("{")
+  console.log('  api_url:',request.url)
+  console.log('  token:',request.headers["token"])
+  console.log('  body:',request.body)
+  console.log("}")
+
   return request;
 });
 
 //添加响应拦截器
 fly.interceptors.response.use(
   (response) => {
-    wx.hideLoading();
+    
+    console.log('响应->')
+    console.log(response.data)
     return response.data; //请求成功之后将返回值返回
   },
   (err) => {
