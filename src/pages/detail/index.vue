@@ -321,12 +321,17 @@
       },
       doLike(id) {
         let url = '/api/app/comment/like'
+        let action = 'doLike'
         if (id.likeState == 1) {
-          id.likeState = 1
+          id.likeState = 0
+          id.likeCount -= 1
+          action = 'cancelLike'
           url = '/api/app/comment/cancel-like'
 
         } else {
-          id.likeState = 0
+          action = 'doLike'
+          id.likeState = 1
+          id.likeCount += 1
         }
 
         let data = {
@@ -335,17 +340,19 @@
         this.callback = () => {
           this.doLike(id)
         }
+
+        // return false
         fly.post(url, data).then(res => {
           if (res.retCode == 0) {
             console.log(res, '=====')
 
-            if (id.likeState == 1) {
+            if (action == 'cancelLike') {
               wx.showToast({
                 title: '取消成功！',
                 icon: 'right'
               })
-              id.likeState = 0
-              id.likeCount -= 1
+
+
 
             } else {
 
@@ -354,8 +361,7 @@
                 icon: 'right'
               })
               this.get_detail(this.$root.$mp.query.id)
-              id.likeState = 1
-              id.likeCount += 1
+
             }
 
             this.closeForm()
@@ -479,13 +485,30 @@
         this.say_text = '长按说话'
         this.start_saying = false
         wx.stopRecord()
-      }
+      },
+      checkLog() {
+        let url = '/api/app/user/check-login'
+        fly.post(url, {
+
+          })
+          .then((res) => {
+            if (res.result.login == 0) {
+
+              wx.setStorageSync('token', null)
+              wx.setStorageSync('isLogin', false)
+              // this.showLogin = true
+              this.checkLogin = true
+
+            }
+          })
+
+      },
     },
     onHide() {
       this.nowPage = false
     },
     onShow() {
-      
+
 
     },
     onShareAppMessage: function (opts) {
@@ -513,7 +536,7 @@
 
     },
     onLoad() {
-
+      this.checkLog()
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })

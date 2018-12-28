@@ -108,7 +108,7 @@ import { setTimeout } from 'timers';
               setTimeout(()=>{
                 let url ="/pages/index/main"
                  wx.redirectTo({url})
-              },2000)
+              },1000)
              
             }
             if(data.retCode == 2) {
