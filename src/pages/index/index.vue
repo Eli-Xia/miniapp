@@ -156,17 +156,16 @@
       this.get_index_list()
       wx.stopPullDownRefresh();
     },
-    // onShow(){
-    //   console.log('onshow')
-    // },
-    // onHide(){
-    //   console.log('onHide')
-    // },
+    onShow(){
+      console.log('onshow')
+    },
+    onHide(){
+      console.log('onHide')
+    },
     onShareAppMessage: function (opts) {
       let shareData = this.shareData
-      console.log(shareData)
       let self = this
-      console.log(self.share_img)
+  
       let title = ''
       let imgurl = ''
       let path = ''
@@ -180,34 +179,21 @@
         path = '/pages/index/main'
       }
 
-       let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: shareData.id
-          }
-          fly.post(url, data).then(res => {
-            console.log(res)
-          }).catch(e => {
-            console.log(e)
-          })
-          self.closeShare()
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: shareData.id
+      }
+      fly.post(url, data).then(res => {
+        console.log(res)
+      }).catch(e => {
+        console.log(e)
+      })
+      self.closeShare()
 
       return {
         title: title,
         path: path,
-        imageUrl: imgurl,
-        success: function (res) {
-          console.log(res)
-         
-
-
-        },
-        fail: function (e) {
-          console.log(e)
-          wx.showToast({
-            title: '已取消转发',
-            icon: 'none'
-          })
-        }
+        imageUrl: imgurl
       }
 
     },
