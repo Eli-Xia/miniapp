@@ -3,7 +3,7 @@
  */
 import Fly from 'flyio/dist/npm/wx'
 const fly = new Fly()
-const host = "https://debate.keendo.com.cn"
+const host = "https://test.keendo.com.cn"
 //添加请求拦截器
 fly.interceptors.request.use((request) => {
   // wx.showLoading({
