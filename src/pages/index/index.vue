@@ -80,7 +80,7 @@
               wx.setStorageSync('isLogin', false)
               // this.showLogin = true
               this.checkLogin = true
-              
+
             }
           })
 
@@ -129,20 +129,25 @@
     onLoad(query) {
       this.checkLog()
 
-      if (query.id) {
-        //跳走
-        let url = '/pages/detail/main?id=' + query.id
-        wx.navigateTo({ url })
-      }
+
+      setTimeout(() => {
+        if (query.id) {
+          //跳走
+          let url = '/pages/detail/main?id=' + query.id
+          wx.navigateTo({ url })
+        }
 
 
-      if (query.scene) {
-        const scene = decodeURIComponent(query.scene)
-        let id = scene.split("=")
-        id = id[1]
-        let url = '/pages/detail/main?id=' + id
-        wx.navigateTo({ url })
-      }
+        if (query.scene) {
+          const scene = decodeURIComponent(query.scene)
+          let id = scene.split("=")
+          id = id[1]
+          let url = '/pages/detail/main?id=' + id
+          wx.navigateTo({ url })
+        }
+      }, 500)
+
+
     },
 
     created() {

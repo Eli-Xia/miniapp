@@ -244,10 +244,10 @@
         fly.post(url, data).then(res => {
           if (res.retCode == 0) {
             console.log(res, '=====')
-            wx.showToast({
-              title: '支持成功！',
-              icon: 'right'
-            })
+            // wx.showToast({
+            //   title: '支持成功！',
+            //   icon: 'right'
+            // })
             this.showLogin = false
             this.checkLogin = false
             this.get_detail(this.$root.$mp.query.id)
@@ -347,19 +347,19 @@
             console.log(res, '=====')
 
             if (action == 'cancelLike') {
-              wx.showToast({
-                title: '取消成功！',
-                icon: 'right'
-              })
+              // wx.showToast({
+              //   title: '取消成功！',
+              //   icon: 'right'
+              // })
 
 
 
             } else {
 
-              wx.showToast({
-                title: '点赞成功！',
-                icon: 'right'
-              })
+              // wx.showToast({
+              //   title: '点赞成功！',
+              //   icon: 'right'
+              // })
               this.get_detail(this.$root.$mp.query.id)
 
             }
@@ -536,7 +536,7 @@
 
     },
     onLoad() {
-      this.checkLog()
+      
       wx.setNavigationBarTitle({
         title: '帖子详情'
       })
