@@ -121,11 +121,6 @@
         console.log(e.detail)
       }
     },
-    onShow() {
-
-
-
-    },
     onLoad(query) {
       this.checkLog()
 
@@ -161,6 +156,12 @@
       this.get_index_list()
       wx.stopPullDownRefresh();
     },
+    // onShow(){
+    //   console.log('onshow')
+    // },
+    // onHide(){
+    //   console.log('onHide')
+    // },
     onShareAppMessage: function (opts) {
       let shareData = this.shareData
       console.log(shareData)
@@ -178,18 +179,25 @@
         imgurl = 'http://chatrbt-1254066218.file.myqcloud.com/debate/topic/share-poster/WechatIMG10478.jpeg'
         path = '/pages/index/main'
       }
+
+       let url = '/api/app/dabate-topic/forward'
+          let data = {
+            debateTopicId: shareData.id
+          }
+          fly.post(url, data).then(res => {
+            console.log(res)
+          }).catch(e => {
+            console.log(e)
+          })
+          self.closeShare()
+
       return {
         title: title,
         path: path,
         imageUrl: imgurl,
         success: function (res) {
-
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: shareData.id
-          }
-          fly.post(url, data)
-          self.closeShare()
+          console.log(res)
+         
 
 
         },

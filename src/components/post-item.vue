@@ -105,13 +105,7 @@ import fly from '../utils/fly'
         this.goto(id)
       }
     },
-    onShow() {
-      // console.log(this.item)
-      console.log(this.pageName, 1111)
-    },
-    created() {
-      // console.log(this.pageName,1111)
-    },
+   
 
   }
 </script>
