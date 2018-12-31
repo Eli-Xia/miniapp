@@ -57,10 +57,10 @@ import fly from '../utils/fly'
       }
     },
     onShow(){
-       this.get_msg_count()
+      
     },
     onLoad() {
-     
+      this.get_msg_count()
        if(wx.getSystemInfoSync().windowHeight > 720) {
            this.bottom = '50rpx'
        } 

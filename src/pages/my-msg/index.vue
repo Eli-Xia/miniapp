@@ -71,6 +71,20 @@
             console.log(res)
           }
         })
+
+        fly.post('/api/app/sys-notification/count').then(res => {
+          if (res.retCode == 0) {
+            this.tongzhi_count = res.result.count
+          
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
+
+        
       },
       goto(url) {
         wx.navigateTo({ url })

@@ -4,8 +4,8 @@
     <div class="item-box" v-for="(item,index) in lists" :key="index">
       <div class="item-top">
 
-        <div class="face" @click="goTa(item.userId)">
-          <div class="msg-dot" v-if="item.hasRead == 0"></div>
+        <div class="face">
+          <div class="msg-dot" v-if="item.scan == 0"></div>
           <img src="../../../static/img/touxiang.png" />
         </div>
 
@@ -14,9 +14,8 @@
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div class="item-mid" @click="goTo(item.debateTopicId)">
-        您发表的辩题“我是辩题啊脏话一大堆”未通过审核，
-        请遵守来辩论管理规则，共同维护社区秩序。
+      <div class="item-mid">
+        {{item.content}}
 
       </div>
 
@@ -46,7 +45,7 @@
     },
     methods: {
       get_list() {
-        fly.post('/api/app/msg/list/comment', {
+        fly.post('/api/app/sys-notification/list', {
           page: this.nowPage,
           pageSize: 30
         }).then(res => {
