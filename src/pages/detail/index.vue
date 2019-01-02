@@ -68,8 +68,8 @@
           <div class="fanbi" :style="'width:'+(rightBi)+'%'">{{rightBi}}%</div>
           <div class="mid-bar" :style="'left:'+(leftBi)+'%'"></div>
 
-          <div class="piao-left">({{piao_left}})</div>
-          <div class="piao-right">({{piao_right}})</div>
+          <div class="piao-left">({{piao_left}}票)</div>
+          <div class="piao-right">({{piao_right}}票)</div>
         </div>
 
       </div>

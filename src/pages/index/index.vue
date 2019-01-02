@@ -5,7 +5,7 @@
 
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
-      <div class="feedback" v-if="index == 2">
+      <div class="feedback" v-if="index == 3">
       <feedback-item></feedback-item>
       </div>
     </div>
