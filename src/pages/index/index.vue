@@ -5,6 +5,9 @@
 
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
+      <div class="feedback" v-if="index == 2">
+      <feedback-item></feedback-item>
+      </div>
     </div>
     <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
     <nav-bar :pageName="pageName"></nav-bar>
@@ -16,6 +19,7 @@
   import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import postItem from '@/components/post-item'
+  import feedbackItem from '@/components/feedback-item'
   import sharePage from '@/components/share'
   import { setTimeout } from 'timers';
   import mkimg from '../../utils/mkimg';
@@ -43,6 +47,7 @@
       postItem,
       sharePage,
       LoginBtn,
+      feedbackItem
     },
 
     methods: {
@@ -89,7 +94,7 @@
         const self = this
         fly.post('/api/app/dabate-topic/list', {
             page: this.nowPage,
-            pageSize: 30
+            pageSize: 6
           })
           .then((response) => {
             if (response.retCode === 0) {
@@ -211,5 +216,13 @@
     margin-bottom: 250rpx;
     padding-bottom: 200rpx;
     opacity: 1;
+  }
+
+  .feedback {
+    position: relative;
+    background: #FFF;
+    border-radius: 20rpx;
+    margin: 0 31rpx;
+    overflow: hidden;
   }
 </style>
