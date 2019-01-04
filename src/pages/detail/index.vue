@@ -548,23 +548,18 @@
 
       const self = this
       console.log('999')
+
+      self.closeShare()
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: self.id
+      }
+      fly.post(url, data)
+      self.closeShare()
       return {
         title: '你怎么看？',
         path: '/pages/index/main?id=' + self.id,
-        imageUrl: self.share_img,
-        success: function (res) {
-          self.closeShare()
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: self.id
-          }
-          fly.post(url, data)
-          self.closeShare()
-
-        },
-        fail: function (e) {
-          console.log(e)
-        }
+        imageUrl: self.share_img
       }
 
     },

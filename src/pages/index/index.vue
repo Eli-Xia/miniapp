@@ -6,7 +6,7 @@
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="home" @onShare="onShare"></post-item>
       <div class="feedback" v-if="index == 3">
-      <feedback-item></feedback-item>
+        <feedback-item></feedback-item>
       </div>
     </div>
     <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
@@ -85,7 +85,7 @@
               wx.setStorageSync('isLogin', false)
               // this.showLogin = true
               this.checkLogin = true
-              
+
             }
           })
 
@@ -178,28 +178,17 @@
         imgurl = 'http://chatrbt-1254066218.file.myqcloud.com/debate/topic/share-poster/WechatIMG10478.jpeg'
         path = '/pages/index/main'
       }
+
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: shareData.id
+      }
+      fly.post(url, data)
+      self.closeShare()
       return {
         title: title,
         path: path,
-        imageUrl: imgurl,
-        success: function (res) {
-
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: shareData.id
-          }
-          fly.post(url, data)
-          self.closeShare()
-
-
-        },
-        fail: function (e) {
-          console.log(e)
-          wx.showToast({
-            title: '已取消转发',
-            icon: 'none'
-          })
-        }
+        imageUrl: imgurl
       }
 
     },
