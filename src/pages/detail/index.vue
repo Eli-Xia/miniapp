@@ -26,6 +26,18 @@
         </div>
       </div>
 
+      <!-- 滚动浮窗 -->
+
+      <div :style="display? 'display:block':'display:none'" class="float-view " :class="showFloat? 'show':'hide'">
+        <div class="content-1">
+          {{detail.float_text}}
+        </div>
+        <div class="guandian">
+
+          <div class="left">{{leftText}}</div>
+          <div class="right">{{rightText}}</div>
+        </div>
+      </div>
 
       <div class="form-post" v-if="saying" :style="'bottom:'+(bottom+517)+'rpx;z-index:99999;border-bottom:6rpx solid #ddd'">
         <div class="f-title">
@@ -36,6 +48,8 @@
               <div :class="commentData.debatViewType == 1 ? 'zheng-selected' : 'zheng'" @click="seyDebat(1)">{{leftText}}</div>
               <div :class="commentData.debatViewType == 2 ? 'fan-selected' : 'fan'" @click="seyDebat(2)">{{rightText}}</div>
               <div class="vs">VS</div>
+
+
             </div>
           </div>
 
@@ -53,6 +67,9 @@
           <div class="zhengbi" :style="'width:'+leftBi+'%'">{{leftBi}}%</div>
           <div class="fanbi" :style="'width:'+(rightBi)+'%'">{{rightBi}}%</div>
           <div class="mid-bar" :style="'left:'+(leftBi)+'%'"></div>
+
+          <div class="piao-left">({{piao_left}}票)</div>
+          <div class="piao-right">({{piao_right}}票)</div>
         </div>
 
       </div>
@@ -82,7 +99,7 @@
         <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
         <div v-if="adding && !sending" class="submit" @click="sendComment">发表</div>
 
-        <div v-if="adding && sending" class="submit">发...</div>
+        <div v-if="adding && sending" class="submit">发表</div>
         <input @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content" id="">
 
       </div>
@@ -141,7 +158,11 @@
         say_content: '',
         noPage: false,
         sending: false,
-        defaultText: '我在等你的神评呢！'
+        defaultText: '我在等你的神评呢！',
+        showFloat: false,
+        display: false,
+        piao_left: 0,
+        piao_right: 0
       }
     },
 
@@ -165,6 +186,7 @@
             this.detail['headImgUrl'] = res.result.sponsorHeadImgUrl
             this.detail['nickname'] = res.result.sponsorNickname
             this.detail['debateTopic'] = res.result.debateTopic
+            this.detail['float_text'] = res.result.debateTopic.length > 22 ? res.result.debateTopic.substr(0, 22) + '...' : res.result.debateTopic
             this.detail['createTime'] = utils.formatTime(new Date(res.result.createTime))
             this.detail['forwardCount'] = res.result.forwardCount || '分享'
             this.detail['commentCount'] = res.result.commentCount || '评论'
@@ -177,6 +199,8 @@
             this.leftText = res.result.leftViewContent
             this.rightText = res.result.rightViewContent
             this.leftBi = res.result.leftViewProportion
+            this.piao_left = res.result.leftViewSupportNum
+            this.piao_right = res.result.rightViewSupportNum
             this.rightBi = res.result.rightViewProportion
             this.leftId = res.result.leftViewId
             this.rightId = res.result.rightViewId
@@ -413,6 +437,13 @@
 
 
       },
+      oneline(str) {
+        if (str.length > 30) {
+          return str.substr(0, 28) + '...'
+        } else {
+          return str
+        }
+      },
       onShare(data) {
         this.showShare = true
         this.shareData = data
@@ -506,35 +537,33 @@
     },
     onHide() {
       this.nowPage = false
+      this.display = false
+      this.showFloat = false
     },
     onShow() {
 
-
+      this.display = false
     },
     onShareAppMessage: function (opts) {
 
       const self = this
       console.log('999')
+
+      self.closeShare()
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: self.id
+      }
+      fly.post(url, data)
+      self.closeShare()
       return {
         title: '你怎么看？',
         path: '/pages/index/main?id=' + self.id,
-        imageUrl: self.share_img,
-        success: function (res) {
-          self.closeShare()
-          let url = '/api/app/dabate-topic/forward'
-          let data = {
-            debateTopicId: self.id
-          }
-          fly.post(url, data)
-          self.closeShare()
-
-        },
-        fail: function (e) {
-          console.log(e)
-        }
+        imageUrl: self.share_img
       }
 
     },
+
     onLoad() {
       
       wx.setNavigationBarTitle({
@@ -558,6 +587,8 @@
         mkimg.shareCard(self.detail, function (url) {
           self.share_img = url
         })
+
+
       }, 1000)
 
     },
@@ -586,6 +617,19 @@
     onReachBottom: function () {
       this.nowPage += 1
       this.get_comment(this.$root.$mp.query.id)
+    },
+    onPageScroll: function (e) {
+
+      if (e.scrollTop > 220) {
+        this.showFloat = true
+        this.display = true
+
+      } else {
+        this.showFloat = false
+        // this.display = false
+      }
+      console.log(e)
+
     }
 
 
@@ -611,7 +655,7 @@
 
   .bili {
 
-    height: 50rpx;
+    height: 80rpx;
 
   }
 
@@ -1015,5 +1059,119 @@
 
   .adding {
     color: #222;
+  }
+
+  .float-view {
+    position: fixed;
+    background: #FFF;
+    left: 0;
+    right: 0;
+    z-index: 999999;
+    display: none;
+    height: 110rpx;
+    padding: 10rpx 45rpx;
+    animation-iteration-count: infinite;
+    border-bottom: 10rpx solid rgb(245, 246, 248);
+  }
+
+  .float-view.hide {
+
+    animation: slideup 1s;
+    top: -300rpx;
+  }
+
+  .float-view.show {
+
+    animation: slidedown 1s;
+    top: 0;
+
+  }
+
+  @keyframes slideup {
+    0% {
+      top: 0rpx;
+    }
+
+    50% {
+      top: -200rpx;
+    }
+
+    100% {
+      top: -200rpx;
+    }
+  }
+
+
+  @keyframes slidedown {
+    0% {
+      top: -200rpx;
+    }
+
+    50% {
+      top: 0;
+    }
+
+    100% {
+      top: 0;
+    }
+  }
+
+  .content-1 {
+    height: 130rpx;
+
+    font-size: 28rpx;
+    color: rgb(176, 178, 196);
+  }
+
+  .guandian {
+    /* border: 1rpx solid #ddd; */
+    position: absolute;
+    top: 0rpx;
+    right: 0rpx;
+    left: 0rpx;
+  }
+
+  .guandian .left {
+    height: 42rpx;
+    width: 45%;
+    position: absolute;
+    left: 42rpx;
+    top: 64rpx;
+    padding-left: 52rpx;
+    background: url(../../../static/img/小正@3x.png) no-repeat;
+    background-size: auto 100%;
+    font-size: 28rpx;
+    color: rgb(255, 55, 56);
+  }
+
+
+  .guandian .right {
+    height: 42rpx;
+    width: 45%;
+    position: absolute;
+    right: 42rpx;
+    top: 64rpx;
+    padding-right: 52rpx;
+    background: url(../../../static/img/小反@3x.png) top right no-repeat;
+    background-size: auto 100%;
+    font-size: 28rpx;
+    text-align: right;
+    color: rgb(67, 112, 239);
+  }
+
+  .piao-left {
+    position: absolute;
+    left: 0;
+    top: 48rpx;
+    font-size: 22rpx;
+    color: rgb(117, 122, 151);
+  }
+
+  .piao-right {
+    position: absolute;
+    right: 0;
+    top: 48rpx;
+    font-size: 22rpx;
+    color: rgb(117, 122, 151);
   }
 </style>

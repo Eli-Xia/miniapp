@@ -2,6 +2,7 @@
   <div class="item-box">
     <div class="item-top">
       <div class="zanzhu" v-if="pageName == 'home' && item.sponsored">赞助</div>
+      <div class="hot" v-if="item.hot ==1"></div>
       <div v-if="pageName == 'my-post'">
         <div class="no-pass" v-if="item.state == 0">该辩题不过审</div>
         <div class="close-btn" @click="del(item.id)"></div>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import fly from '../utils/fly'
+  import fly from '../utils/fly'
   export default {
     data() {
       return {
@@ -305,5 +306,17 @@ import fly from '../utils/fly'
     opacity: 0;
     right: 256rpx;
 
+  }
+
+  .hot {
+    position: absolute;
+    top: 21rpx;
+    right: 21rpx;
+    width: 24rpx;
+    height: 31rpx;
+    background: #ddd;
+    background: url(../../static/img/fire.png) no-repeat;
+
+    background-size: 100% 100%;
   }
 </style>

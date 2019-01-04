@@ -28,6 +28,13 @@
         <div class="my-post-icon"></div>
         <div class="my-comment-title">我的评论</div>
       </div>
+
+      <div class="my-post" @click="goto('/pages/feedback/main')">
+        <div class="my-post-icon"></div>
+        <div class="my-feedback-title">意见反馈</div>
+      </div>
+
+
       <login-btn @setLogin="setLogin"> </login-btn>
       <nav-bar :pageName="pageName"></nav-bar>
     </div>
@@ -242,6 +249,17 @@
     height: 38rpx;
     width: 200rpx;
     background: url(../../../static/img/评论@2x.png) 10rpx 4rpx no-repeat;
+    background-size: auto 90%;
+    font-size: 28rpx;
+    line-height: 40rpx;
+    padding-left: 66rpx;
+    color: rgb(26, 26, 28);
+  }
+
+  .my-feedback-title {
+    height: 38rpx;
+    width: 200rpx;
+    background: url(../../../static/img/fankui.png) 10rpx 4rpx no-repeat;
     background-size: auto 90%;
     font-size: 28rpx;
     line-height: 40rpx;

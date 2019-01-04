@@ -13,6 +13,12 @@
       <div class="my-post-title">赞</div>
       <div class="sm-count" v-if="like_count > 0">{{like_count}}</div>
     </div>
+
+    <div class="my-post" style="margin-top:-10rpx" @click="goto('/pages/my-msg-notify/main')">
+      <div class="my-post-icon"></div>
+      <div class="my-post-title tongzhi">通知</div>
+      <div class="sm-count" v-if="tongzhi_count > 0">{{tongzhi_count}}</div>
+    </div>
     <login-btn @setLogin="setLogin"> </login-btn>
 
   </div>
@@ -32,7 +38,8 @@
         showLogin: false,
         checkLogin: false,
         like_count: 0,
-        comments_count: 0
+        comments_count: 0,
+        tongzhi_count: 0
       }
     },
     methods: {
@@ -64,6 +71,20 @@
             console.log(res)
           }
         })
+
+        fly.post('/api/app/sys-notification/count').then(res => {
+          if (res.retCode == 0) {
+            this.tongzhi_count = res.result.count
+          
+
+          } else if (retCode == 2) {
+
+          } else {
+            console.log(res)
+          }
+        })
+
+        
       },
       goto(url) {
         wx.navigateTo({ url })
@@ -177,6 +198,19 @@
     color: rgb(26, 26, 28);
   }
 
+
+.my-post-title.tongzhi {
+     height: 80rpx;
+    width: 200rpx;
+  background: url(../../../static/img/tongzhi@2x.png) 0rpx 0rpx no-repeat;
+    background-size: auto 100%;
+    font-size: 28rpx;
+    line-height: 80rpx;
+    padding-left: 110rpx;
+    color: rgb(26, 26, 28);
+    
+   
+  }
   .my-post-icon {
     float: right;
     height: 25rpx;

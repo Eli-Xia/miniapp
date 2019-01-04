@@ -107,7 +107,7 @@ import { setTimeout } from 'timers';
               //发布成功跳转首页
               setTimeout(()=>{
                 let url ="/pages/index/main"
-                 wx.redirectTo({url})
+                wx.navigateBack()
               },1000)
              
             }
