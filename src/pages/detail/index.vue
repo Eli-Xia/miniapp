@@ -99,7 +99,7 @@
         <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
         <div v-if="adding && !sending" class="submit" @click="sendComment">发表</div>
 
-        <div v-if="adding && sending" class="submit">发...</div>
+        <div v-if="adding && sending" class="submit">发表</div>
         <input @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content" id="">
 
       </div>
