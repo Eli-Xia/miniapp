@@ -76,15 +76,15 @@
       wx.stopPullDownRefresh();
     },
     onShow() {
-     
+     this.id = this.$root.$mp.query.id
+       this.get_user()
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: 'ta的主页'
       })
 
-      this.id = this.$root.$mp.query.id
-       this.get_user()
+      
     }
 
 

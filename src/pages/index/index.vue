@@ -8,6 +8,10 @@
       <div class="feedback" v-if="index == 3">
         <feedback-item></feedback-item>
       </div>
+      <div class="ad" v-if="index == 6 && adOpen == 1">
+        <ad unit-id="adunit-33a877da7d6d1f54"></ad>
+
+      </div>
     </div>
     <share-page v-if="showShare" :shareData="shareData" @closeShare="closeShare"></share-page>
     <nav-bar :pageName="pageName"></nav-bar>
@@ -37,7 +41,8 @@
         showShare: false,
         checkLogin: false,
         showLogin: false,
-        callback: function () {}
+        callback: function () {},
+        adOpen: 0
 
       }
     },
@@ -59,6 +64,16 @@
         mkimg.shareCard(data, function (url) {
           self.share_img = url
         })
+      },
+
+      get_ad_status() {
+        let url = '/api/admin/ad-config/get'
+        fly.post(url).then(res => {
+          if (res.retCode == 0) {
+            this.adOpen = res.result.switchVal
+          }
+        })
+
       },
       closeShare() {
         this.showShare = false
@@ -92,11 +107,16 @@
       },
       get_index_list() {
         const self = this
+        wx.showLoading({
+          title: "加载中",
+          mask: true
+        });
         fly.post('/api/app/dabate-topic/list', {
             page: this.nowPage,
-            pageSize: 6
+            pageSize: 20
           })
           .then((response) => {
+             wx.hideLoading();
             if (response.retCode === 0) {
               //渲染列表
 
@@ -136,7 +156,19 @@
           let url = '/pages/detail/main?id=' + query.id
           wx.navigateTo({ url })
         }
+        
+        if (query.from == 1) {
+          //跳走
+          let url = 'pages/my-msg-ping/main'
+          wx.navigateTo({ url })
+        }
 
+
+        if (query.from == 2) {
+          //跳走
+          let url = 'pages/my-msg-zan/main'
+          wx.navigateTo({ url })
+        }
 
         if (query.scene) {
           const scene = decodeURIComponent(query.scene)
@@ -154,23 +186,25 @@
       this.lists = []
       this.nowPage = 1
       this.get_index_list()
+      this.get_ad_status()
     },
     onPullDownRefresh() {
       console.log(1)
       this.nowPage = 1
       this.get_index_list()
+      this.get_ad_status()
       wx.stopPullDownRefresh();
     },
-    onShow(){
+    onShow() {
       console.log('onshow')
     },
-    onHide(){
+    onHide() {
       console.log('onHide')
     },
     onShareAppMessage: function (opts) {
       let shareData = this.shareData
       let self = this
-  
+
       let title = ''
       let imgurl = ''
       let path = ''
@@ -223,5 +257,11 @@
     border-radius: 20rpx;
     margin: 0 31rpx;
     overflow: hidden;
+  }
+
+  .ad {
+    margin: 30rpx;
+    overflow: hidden;
+    border-radius: 20rpx;
   }
 </style>

@@ -15,7 +15,8 @@
     "pages/my-msg-ping/main",
     "pages/my-msg-zan/main",
     "pages/my-msg-notify/main",
-    "pages/feedback/main"
+    "pages/feedback/main",
+    "pages/comment/main"
   ],
   "window": {
     "backgroundTextStyle": "white",

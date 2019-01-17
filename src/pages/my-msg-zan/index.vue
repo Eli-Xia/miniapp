@@ -10,7 +10,7 @@
 
         </div>
 
-        <div class="name-date">
+        <div class="name-date" @click="goTa(item.userId)">
           <div class="nickname">{{item.nickname}}</div>
           <div class="add-date">赞了你的评论</div>
         </div>
@@ -214,7 +214,7 @@
 
   .add-date {
     font-size: 22rpx;
-    color: rgb(196, 198, 211);
+    color:  #b0b2c4;
 
   }
 

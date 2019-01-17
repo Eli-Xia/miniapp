@@ -12,7 +12,7 @@
         <button formType="submit" class='click-box'></button>
       </form>
       <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
-      <div class="name-date">
+      <div class="name-date" @click="goTa(item.userId)">
         <div class="nickname">{{item.nickname}}</div>
         <div class="add-date">{{item.createTime}}</div>
       </div>
@@ -202,7 +202,7 @@
 
   .add-date {
     font-size: 22rpx;
-    color: rgb(215, 217, 225);
+    color: #b0b2c4;
   }
 
   .item-bottom {

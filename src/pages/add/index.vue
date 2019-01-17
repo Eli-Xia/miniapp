@@ -104,11 +104,12 @@ import { setTimeout } from 'timers';
                })
                this.showLogin = false
                this.checkLogin = false
+               this.allowSend = false
               //发布成功跳转首页
               setTimeout(()=>{
                 let url ="/pages/index/main"
                 wx.navigateBack()
-              },1000)
+              },500)
              
             }
             if(data.retCode == 2) {
@@ -137,7 +138,7 @@ import { setTimeout } from 'timers';
     },
     onLoad() {
       wx.setNavigationBarTitle({
-        title: '发表辩题'
+        title: '发起辩题'
       })
     }
    
@@ -224,5 +225,7 @@ import { setTimeout } from 'timers';
   .submit.nosend {
     background: rgb(25, 25, 26);
   }
+
+  
 
 </style>

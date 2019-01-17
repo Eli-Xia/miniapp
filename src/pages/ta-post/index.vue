@@ -3,7 +3,7 @@
     <div v-for="(item,index) in lists" :key="index">
       <post-item :item="item" pageName="pageName"></post-item>
     </div>
-     <div class="nothing" v-if="lists.length < 1"></div>
+    <div class="nothing" v-if="lists.length < 1"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
@@ -62,15 +62,18 @@
       }
     },
     onShow() {
-
+      this.id = this.$root.$mp.query.id
+      console.log(this.id)
+      this.get_index_list()
+    },
+    onHide() {
+      this.lists = []
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: 'ta的辩题'
       })
-      this.id = this.$root.$mp.query.id
-      console.log(this.id)
-      this.get_index_list()
+
 
     },
     onPullDownRefresh() {

@@ -1,7 +1,7 @@
 <template>
-  <div class="counter-warp" style="padding-bottom:120rpx">
+  <div class="counter-warp" style="padding-bottom:120rpx" v-if="!loading">
     <my-comment-item :pageName="pageName" :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
-   <div class="nothing" v-if="lists.length < 1"></div>
+    <div class="nothing" v-if="lists.length < 1"></div>
   </div>
 </template>
 
@@ -16,7 +16,8 @@
         pageName: 'ta-comment',
         lists: [],
         nowPage: 1,
-        id: 0
+        id: 0,
+        loading: true
       }
     },
 
@@ -34,6 +35,10 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
+              if (item.debateTopic.length > 80) {
+                item.debateTopic = item.debateTopic.substr(0, 80) + '...'
+              }
+
               if (this.nowPage < 1) {
                 self.lists.push(item)
               }
@@ -47,11 +52,17 @@
           } else {
             console.log(res)
           }
+          this.loading = false
         })
       }
     },
     onShow() {
-
+      this.id = this.$root.$mp.query.id
+      console.log(this.id)
+      this.get_list()
+    },
+    onHide() {
+      this.lists = []
     },
     created() {
 
@@ -60,9 +71,7 @@
       wx.setNavigationBarTitle({
         title: 'ta的评论'
       })
-      this.id = this.$root.$mp.query.id
-      console.log(this.id)
-      this.get_list()
+
     },
     onReachBottom: function () {
       this.nowPage += 1

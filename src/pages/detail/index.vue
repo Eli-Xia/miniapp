@@ -96,12 +96,17 @@
       <div class="say-layer" @click="closeSay" v-if="saying"></div>
       <div class="add-box" :style="'padding-bottom:'+bottom+'rpx'">
         <!-- <div id="say-btn" @click="show_say"></div> -->
-        <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
+        <!-- <div id="fen-btn" v-if="!adding" @click="onShare(detail)"></div>
         <div v-if="adding && !sending" class="submit" @click="sendComment">发表</div>
 
-        <div v-if="adding && sending" class="submit">发表</div>
-        <input @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content" id="">
-
+        <div v-if="adding && sending" class="submit">发表</div> -->
+        <!-- <input @focus="showForm" placeholder-class="phcolor" placeholder="我在等你的神评呢！" v-model="commentData.content" type="text" name="content" class="content" id=""> -->
+        <div id="fen-btn" v-if="!adding" @click="onShare(detail)">
+          <div class="f-btn">分享</div>
+        </div>
+        <div id="ping-btn" @click="showForm(detail.id)">
+          <div class="p-btn">评论</div>
+        </div>
       </div>
 
     </div>
@@ -411,10 +416,13 @@
         })
 
       },
-      showForm() {
+      showForm(id) {
         // this.closeSay()
-        this.defaultText = ''
-        this.adding = true
+        // this.defaultText = ''
+        // this.adding = true
+        let url = '/pages/comment/main?id='+id
+        wx.navigateTo({ url })
+
       },
       setLogin(status) {
         this.showLogin = status
@@ -543,31 +551,9 @@
     onShow() {
 
       this.display = false
-    },
-    onShareAppMessage: function (opts) {
 
-      const self = this
-      console.log('999')
-
-      self.closeShare()
-      let url = '/api/app/dabate-topic/forward'
-      let data = {
-        debateTopicId: self.id
-      }
-      fly.post(url, data)
-      self.closeShare()
-      return {
-        title: '你怎么看？',
-        path: '/pages/index/main?id=' + self.id,
-        imageUrl: self.share_img
-      }
-
-    },
-
-    onLoad() {
-      
       wx.setNavigationBarTitle({
-        title: '帖子详情'
+        title: '辩题详情'
       })
       this.closeShare()
       const self = this
@@ -590,6 +576,30 @@
 
 
       }, 1000)
+    },
+    onShareAppMessage: function (opts) {
+
+      const self = this
+      console.log('999')
+
+      self.closeShare()
+      let url = '/api/app/dabate-topic/forward'
+      let data = {
+        debateTopicId: self.id
+      }
+      fly.post(url, data)
+      self.closeShare()
+      return {
+        title: '你怎么看？',
+        path: '/pages/index/main?id=' + self.id,
+        imageUrl: self.share_img
+      }
+
+    },
+
+    onLoad() {
+
+      
 
     },
 
@@ -931,12 +941,48 @@
 
   .add-box #fen-btn {
     position: absolute;
-    width: 60rpx;
-    height: 60rpx;
-    right: 16rpx;
+    width: 50%;
+    height: 0rpx;
+    right: 0rpx;
     top: 19rpx;
-    background: url(../../../static/img/sharebtn@2x.png);
-    background-size: 100% 100%;
+  }
+
+  .add-box #ping-btn {
+    position: absolute;
+    width: 50%;
+    height: 0rpx;
+    left: 0rpx;
+    top: 19rpx;
+  }
+
+  #ping-btn .p-btn {
+
+    width: 56rpx;
+    height: 32rpx;
+    font-size: 28rpx;
+    color: #999;
+    line-height: 32rpx;
+    margin: 0 auto;
+    background: url(../../../static/img/评论@2x.png) no-repeat;
+    background-size: auto 100%;
+    padding-left: 46rpx;
+    margin-top: 16rpx;
+    margin-left: 142rpx;
+  }
+
+  #fen-btn .f-btn {
+
+    width: 56rpx;
+    height: 30rpx;
+    font-size: 28rpx;
+    color: #999;
+    line-height: 30rpx;
+    margin: 0 auto;
+    background: url(../../../static/img/转发@2x.png) no-repeat;
+    background-size: auto 94%;
+    padding-left: 46rpx;
+    margin-top: 16rpx;
+    margin-right: 142rpx;
   }
 
   #say-add {

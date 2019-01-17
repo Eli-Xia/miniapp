@@ -116,7 +116,7 @@ import { setTimeout } from 'timers';
 
   .add-date {
     font-size: 22rpx;
-    color: rgb(158, 160, 181);
+    color:  #b0b2c4;
   }
 
   .item-bottom {

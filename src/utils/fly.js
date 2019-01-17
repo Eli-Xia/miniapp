@@ -46,7 +46,7 @@ fly.interceptors.request.use((request) => {
 //添加响应拦截器
 fly.interceptors.response.use(
   (response) => {
-    
+    wx.hideLoading()
     console.log('响应->')
     console.log(response.data)
     return response.data; //请求成功之后将返回值返回
