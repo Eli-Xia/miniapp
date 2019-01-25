@@ -9,27 +9,28 @@
         {{ item.likeCount}}
       </div>
 
-       <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
-        {{ item.likeCount}}
-      </div>
-
-        <div v-if="(item.content ==  '该评论已删除' || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+        <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
           {{ item.likeCount}}
       </div>
-          <div class="name-date">
-            <div class="nickname">{{item.nickname}}</div>
-            <div class="add-date">{{item.createTime}}</div>
-          </div>
-        </div>
-        <div class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
-          <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
-        </div>
-        <div class="line"></div>
+
+          <div v-if="(item.content ==  '该评论已删除' || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+            {{ item.likeCount}}
       </div>
+            <div class="name-date">
+              <div class="nickname">{{item.nickname}}</div>
+              <div class="add-date">{{item.createTime}}</div>
+            </div>
+          </div>
+          <div @click="go_detail(item.id)" class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
+            <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
+          </div>
+          <div class="more-comment" v-if="item.replyCount > 0">{{ item.replyCount}}条回复</div>
+            <div class="line"></div>
+          </div>
 </template>
 
 <script>
-import { setTimeout } from 'timers';
+  import { setTimeout } from 'timers';
   export default {
     props: ['item'],
     data() {
@@ -42,15 +43,19 @@ import { setTimeout } from 'timers';
         this.clicked = true
         this.$emit('doLike', id)
 
-        setTimeout(()=>{
+        setTimeout(() => {
           this.clicked = false
-        },1000)
+        }, 1000)
       },
       goTa(id) {
         if (id) {
           let url = '/pages/ta/main?id=' + id
           wx.navigateTo({ url })
         }
+      },
+      go_detail(id) {
+        let url = '/pages/comment-detail/main?id=' + id
+          wx.navigateTo({ url })
       }
     }
   }
@@ -87,10 +92,11 @@ import { setTimeout } from 'timers';
     border: 1rpx solid #9ea0b5;
   }
 
-.is_deleted {
-    background: #F7F7F7!important;
-    color: rgb(176, 178, 196)!important;
+  .is_deleted {
+    background: #F7F7F7 !important;
+    color: rgb(176, 178, 196) !important;
   }
+
   .item-top .name-date {
     float: left;
     margin-left: 11rpx;
@@ -116,7 +122,7 @@ import { setTimeout } from 'timers';
 
   .add-date {
     font-size: 22rpx;
-    color:  #b0b2c4;
+    color: #b0b2c4;
   }
 
   .item-bottom {
@@ -166,5 +172,11 @@ import { setTimeout } from 'timers';
     top: -8rpx;
     background: url(../../static/img/小正.png) no-repeat;
     background-size: 100% 100%;
+  }
+
+  .more-comment {
+    font-size: 22rpx;
+    color: rgb(176, 178, 196);
+    margin: 9rpx auto 22rpx 116rpx;
   }
 </style>

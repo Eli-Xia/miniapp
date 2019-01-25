@@ -420,7 +420,7 @@
         // this.closeSay()
         // this.defaultText = ''
         // this.adding = true
-        let url = '/pages/comment/main?id='+id
+        let url = '/pages/comment/main?id=' + id
         wx.navigateTo({ url })
 
       },
@@ -549,7 +549,6 @@
       this.showFloat = false
     },
     onShow() {
-
       this.display = false
 
       wx.setNavigationBarTitle({
@@ -576,6 +575,7 @@
 
 
       }, 1000)
+
     },
     onShareAppMessage: function (opts) {
 
@@ -599,7 +599,7 @@
 
     onLoad() {
 
-      
+
 
     },
 

@@ -21,9 +21,10 @@
             <div class="add-date">{{item.createTime}}</div>
           </div>
         </div>
-        <div class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
+        <div  @click="go_detail(item.id)" class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
           <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
         </div>
+          <div class="more-comment" v-if="item.replyCount > 0">{{ item.replyCount}}条回复</div>
         <div class="line"></div>
     </div>
 </template>
@@ -50,6 +51,10 @@
           let url = '/pages/ta/main?id=' + id
           wx.navigateTo({ url })
         }
+      },
+       go_detail(id) {
+        let url = '/pages/comment-detail/main?id=' + id
+          wx.navigateTo({ url })
       }
     }
   }
@@ -167,5 +172,11 @@
     top: -8rpx;
     background: url(../../static/img/小反.png) no-repeat;
     background-size: 100% 100%;
+  }
+
+  .more-comment {
+    font-size: 22rpx;
+    color: rgb(176, 178, 196);
+    margin: 9rpx auto 22rpx 100rpx;
   }
 </style>

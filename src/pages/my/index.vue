@@ -109,7 +109,7 @@
             this.msg_count = res.result
 
 
-          } else if (retCode == 2) {
+          } else if (res.retCode == 2) {
 
           } else {
             console.log(res)

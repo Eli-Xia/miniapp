@@ -5,7 +5,7 @@
       <div class="item-top">
 
         <div class="face" @click="goTa(item.userId)">
-           <div class="msg-dot" v-if="item.hasRead == 0"></div> 
+          <div class="msg-dot" v-if="item.hasRead == 0"></div>
           <img :src="item.headImgUrl" />
         </div>
 
@@ -14,18 +14,25 @@
           <div class="add-date">{{item.createTime}}</div>
         </div>
       </div>
-      <div  class="item-mid" @click="goTo(item.debateTopicId)">
-       <p :style="item.commentContent == '该评论已删除'  ? 'color:rgb(176, 178, 196)' :''">{{item.commentContent}}</p>
+      <div class="item-mid" @click="goTo(item.debateTopicId)">
+        <p :style="item.commentContent == '该评论已删除'  ? 'color:rgb(176, 178, 196)' :''"> <span class="r-name" v-if="item.replyCommentContent">回复我的：</span>{{item.commentContent}}</p>
       </div>
 
-      
 
-     
+
+
       <div class="item-bottom" @click="goTo(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
-        <p>{{item.debateTopic}}</p>
+
+        <p v-if="!item.replyCommentContent">{{item.debateTopic}}</p>
+        <div v-if="item.replyCommentContent">
+          <p class="rep-text">{{item.replyCommentContent}}</p>
+          <div class="bianti-box">
+            {{item.debateTopic}}
+          </div>
+        </div>
       </div>
 
-      
+
     </div>
 
 
@@ -184,10 +191,10 @@
 
   .item-mid {
     clear: both;
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: rgb(26, 26, 28);
-    padding: 24rpx 58rpx;
-    line-height: 37rpx;
+    padding: 24rpx 52rpx;
+    line-height: 32rpx;
   }
 
 
@@ -204,11 +211,11 @@
   }
 
   .item-bottom {
-    padding: 25rpx;
+    padding: 22rpx;
     border-radius: 10rpx;
     margin: 0 30rpx;
-    font-size: 30rpx;
-    line-height: 37rpx;
+    font-size: 28rpx;
+    line-height: 32rpx;
     background: rgb(245, 246, 248);
     color: rgb(176, 178, 196);
     overflow-y: hidden;
@@ -252,6 +259,7 @@
     top: 44rpx;
     border-radius: 20rpx;
   }
+
   .msg-dot {
     width: 13rpx;
     height: 13rpx;
@@ -260,5 +268,27 @@
     position: absolute;
     left: -18rpx;
     top: 32rpx;
+  }
+
+  .bianti-box {
+    background: #FFF;
+    border-radius: 10rpx;
+    padding: 23rpx 12rpx;
+    margin-top: 23rpx;
+    font-size: 28rpx;
+    margin-left: -8rpx;
+    margin-right: -8rpx;
+  }
+
+  span.h-name {
+    color: rgb(41, 182, 246);
+  }
+
+  span.r-name {
+    color: rgb(158, 160, 181);
+  }
+
+  .rep-text {
+    color:rgb(26, 26, 28);
   }
 </style>

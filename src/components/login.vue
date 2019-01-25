@@ -191,7 +191,7 @@
 
 <style scoped>
   .login-layer {
-    position: absolute;
+    position: fixed;
     top: 0rpx;
     left: 0rpx;
     right: 0rpx;

@@ -6,7 +6,7 @@
       <div v-if="pageName == 'my-comment'">
         <div class="no-pass" v-if="item.state == 0">该评论不过审</div>
         <div class="like-btn close-btn" @click="dels(item.commentId)">
-          
+
         </div>
       </div>
       <div class="name-date">
@@ -14,25 +14,33 @@
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
-    <div v-if="item.debateTopic != '该辩题已删除'"  class="item-mid" @click="goto(item.debateTopicId)">
+    <div v-if="item.debateTopic != '该辩题已删除'" class="item-mid" >
+      <p v-if="item.replyNickname"><span class="r-name">回复<span class="h-name" @click="gota(item.replyUserId)">{{item.replyNickname}}</span>：</span> <span @click="goto(item.debateTopicId)">{{item.content}}</span></p>
+      <p v-if="!item.replyNickname">{{item.content}}</p>
+    </div>
+
+    <div v-if="item.debateTopic == '该辩题已删除'" class="item-mid">
       <p>{{item.content}}</p>
     </div>
 
-     <div v-if="item.debateTopic == '该辩题已删除'"  class="item-mid">
-      <p>{{item.content}}</p>
+
+
+    <div v-if="item.debateTopic != '该辩题已删除'" class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+      <p v-if="!item.replyNickname">{{item.debateTopic}}</p>
+      <div v-if="item.replyNickname">
+        <p class="rep-text">{{item.replyCommentContent}}</p>
+        <div class="bianti-box">
+          {{item.debateTopic}}
+        </div>
+      </div>
+    </div>
+
+    <div v-if="item.debateTopic == '该辩题已删除'" class="item-bottom" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
+      <p v-if="!item.replyNickname">{{item.debateTopic}}</p>
+      <p v-if="item.replyNickname">{{item.content}}</p>
     </div>
 
 
-
-    <div v-if="item.debateTopic != '该辩题已删除'"  class="item-bottom" @click="goto(item.debateTopicId)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
-      <p>{{item.debateTopic}}</p>
-    </div>
-
-    <div v-if="item.debateTopic == '该辩题已删除'"  class="item-bottom" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
-      <p>{{item.debateTopic}}</p>
-    </div>
-
-    
   </div>
 </template>
 
@@ -44,8 +52,12 @@
         let url = "/pages/detail/main?id=" + id
         wx.navigateTo({ url })
       },
+      gota(id){
+        let url = "/pages/ta/main?id=" + id
+        wx.navigateTo({ url })
+      },
       dels(id) {
-        this.$emit('dels',id)
+        this.$emit('dels', id)
       }
     }
   }
@@ -85,10 +97,10 @@
 
   .item-mid {
     clear: both;
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: rgb(26, 26, 28);
-    padding: 24rpx 58rpx;
-    line-height: 37rpx;
+    padding: 23rpx 53rpx;
+    line-height: 30rpx;
   }
 
 
@@ -105,11 +117,11 @@
   }
 
   .item-bottom {
-    padding: 25rpx;
+    padding: 23rpx;
     border-radius: 10rpx;
     margin: 0 30rpx;
     font-size: 30rpx;
-    line-height: 37rpx;
+    line-height: 30rpx;
     background: rgb(245, 246, 248);
     color: rgb(176, 178, 196);
     overflow-y: hidden;
@@ -117,7 +129,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
-    max-height: 130srpx;
+    /* max-height: 130rpx; */
   }
 
   .like-btn.close-btn {
@@ -152,5 +164,26 @@
     right: 72rpx;
     top: 44rpx;
     border-radius: 20rpx;
+  }
+
+  .r-name {
+    color: rgb(158, 160, 181);
+  }
+
+  .bianti-box {
+    background: #FFF;
+    border-radius: 10rpx;
+    padding: 23rpx 12rpx;
+    margin-top: 23rpx;
+    font-size: 28rpx;
+    margin-left: -8rpx;
+    margin-right: -8rpx;
+  }
+
+  span.h-name {
+    color: rgb(41, 182, 246);
+  }
+  .rep-text {
+    color:rgb(26, 26, 28);
   }
 </style>

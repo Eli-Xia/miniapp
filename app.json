@@ -16,7 +16,8 @@
     "pages/my-msg-zan/main",
     "pages/my-msg-notify/main",
     "pages/feedback/main",
-    "pages/comment/main"
+    "pages/comment/main",
+    "pages/comment-detail/main"
   ],
   "window": {
     "backgroundTextStyle": "white",
