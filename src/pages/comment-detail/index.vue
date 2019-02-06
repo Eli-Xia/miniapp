@@ -29,8 +29,8 @@
           </div>
         </div>
         <div class="item-mid">
-          <p v-if="item.replyNickname"> <span class="reply-name" v-if="item.replyNickname">回复<span class="r-name" @click="gota(item.replyUserId)">{{item.replyNickname}}</span>：</span> <span @click="get_replay_user(item)">  <span class="reply-name" v-if="item.content == '该评论已删除'">  {{item.content}} </span>  <span  v-if="item.content != '该评论已删除'">  {{item.content}} </span></span></p>
-          <p v-if="!item.replyNickname" @click="get_replay_user(item)"><span class="reply-name" v-if="item.content == '该评论已删除'"> {{item.content}} </span>   <span v-if="item.content != '该评论已删除'"> {{item.content}} </span></p>
+          <p v-if="item.replyNickname"> <span class="reply-name" v-if="item.replyNickname">回复<span class="r-name" @click="gota(item.replyUserId)">{{item.replyNickname}}</span>：</span> <span @click="get_replay_user(item)"> <span class="reply-name" v-if="item.content == '该评论已删除'"> {{item.content}} </span> <span v-if="item.content != '该评论已删除'"> {{item.content}} </span></span></p>
+          <p v-if="!item.replyNickname" @click="get_replay_user(item)"><span class="reply-name" v-if="item.content == '该评论已删除'"> {{item.content}} </span> <span v-if="item.content != '该评论已删除'"> {{item.content}} </span></p>
 
         </div>
         <div class="line"></div>
@@ -46,7 +46,7 @@
 
         <div v-if="sending" class="submit">发表</div>
         <!-- <textarea @blur="set_def" name="" @click="set_height" :style="'height:'+text_height+'rpx'" :placeholder="reply_text" v-model="commentData.content" id="" class="content-text"></textarea> -->
-        <input v-if="!adding" @click="showForm"  placeholder-class="phcolor" :placeholder="reply_text" v-model="commentData.content" type="text" name="content" class="content-c" id="">
+        <input v-if="!adding" @click="showForm" placeholder-class="phcolor" :placeholder="reply_text" v-model="commentData.content" type="text" name="content" class="content-c" id="">
       </div>
     </div>
     <div class="layer" v-if="focus" @click="close()"></div>
@@ -169,11 +169,12 @@
         this.sending = true
         fly.post('/api/app/comment/add/cmment-reply', this.commentData).then(res => {
           if (res.retCode == 0) {
+            this.nowPage = 1
             this.get_list()
             this.adding = false
             this.text_height = 52
             this.commentData.content = ""
-            this.commentData.replyCommentId = 0
+            this.commentData.replyCommentId = this.comment_id
             this.sending = false
             this.showLogin = false
             this.checkLogin = false
@@ -238,7 +239,7 @@
 
     },
     onLoad() {
-       this.loading = true
+      this.loading = true
       wx.setNavigationBarTitle({
         title: '评论详情'
       })

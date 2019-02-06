@@ -1,8 +1,8 @@
 <template>
   <div class="page-warp">
-    <login-btn  :cb="callback" pageName="add-p" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
+    <login-btn :cb="callback" pageName="add-p" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
 
-    <div class="bianti">
+    <div class="bianti" :pass="pss">
       <div class="b-content">
         {{detail['float_text']}}
       </div>
@@ -25,11 +25,11 @@
 
     </div>
     <div class="add-form">
-      <textarea  v-model="commentData.content" name="content" placeholder="我在等你的神评呢!" id="content"></textarea>
+      <textarea @blur="checkForm" name="content" placeholder="我在等你的神评呢!" v-model="commentData.content" id="content" />
 
-      <div class="submit nosend" @click="sendComment">发表</div>
-
-
+      <div v-if="allowSend  && !sending" class="submit nosend" @click="sendComment">发表</div>
+      <div v-if="allowSend &&  sending" class="submit nosend">发表</div>
+      <div v-if="!allowSend" @click="checkForm" class="submit" >发表</div>
     </div>
 
   </div>
@@ -89,14 +89,14 @@
       LoginBtn
     },
     computed: {
-      // pss(){
-      //   if(this.sendData.left && this.sendData.right && this.sendData.content){
-      //     this.allowSend = true
-      //   }else{
-      //     this.allowSend = false
-      //   }
-      //   return 0
-      // }
+      pss(){
+        if(this.commentData.debatViewType && this.commentData.content){
+          this.allowSend = true
+        }else{
+          this.allowSend = false
+        }
+        return 0
+      }
     },
     methods: {
 
@@ -226,7 +226,7 @@
 
             wx.setStorageSync('token', null)
             wx.setStorageSync('isLogin', false)
-
+           this.sending = false
             this.checkLogin = true
             this.hide_input = true
             console.log( this.checkLogin, this.checkLogin = true)
@@ -253,6 +253,8 @@
         debatViewType: 0,
         content: null
       }
+      this.allowSend = false
+      this.sending = false
     },
     onLoad() {
       wx.setNavigationBarTitle({
