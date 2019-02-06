@@ -1,13 +1,19 @@
 <template>
   <div class="counter-warp">
-    <div class="my-card">
-      <div class="like">
-        <div class="like-count">{{info.supportCount}}</div>
-        <div class="like-icon">获赞</div>
+    <div class="my-card" :style="!has_medal ? 'height:195rpx':''">
+
+      <div class="xunzhang-box" v-if="has_medal">
+        <div :key="index" class="xunzhang" :class="'xun_'+item.code+(item.light ? ' light' : ' hui') " v-for="(item,index) in info.lightMedalCodeList">
+        </div>
+        <div class="right-btn" @click="goto('/pages/xunzhang/main')"></div>
       </div>
+
       <div class="face-name">
         <div class="face"><img :src="info.headImgUrl" alt=""></div>
-        <div class="name">{{info.nickname}}</div>
+        <div class="name">
+          <div class="nick">{{info.nickname}}</div>
+          <div class="like-count">获赞{{info.supportCount}}</div>
+        </div>
       </div>
 
     </div>
@@ -39,7 +45,8 @@
         callback: function () {},
         showLogin: false,
         checkLogin: false,
-        id:0
+        id: 0,
+        has_medal: false
       }
     },
 
@@ -54,10 +61,16 @@
         fly.post('/api/app/user/person-info', { id: this.id }).then(res => {
           if (res.retCode == 0) {
             this.info = res.result
-          
+
+            this.info.lightMedalCodeList.map(item => {
+              if (item.light) {
+                this.has_medal = true
+              }
+            })
+
           }
           if (res.retCode == 2) {
-            
+
           }
         }).catch(e => {
           console.log(e)
@@ -76,15 +89,16 @@
       wx.stopPullDownRefresh();
     },
     onShow() {
-     this.id = this.$root.$mp.query.id
-       this.get_user()
+      this.has_medal = false
+      this.id = this.$root.$mp.query.id
+      this.get_user()
     },
     onLoad() {
       wx.setNavigationBarTitle({
         title: 'ta的主页'
       })
 
-      
+
     }
 
 
@@ -93,29 +107,44 @@
 
 <style scoped>
   .my-card {
-    height: 245rpx;
+    height: 235rpx;
     background: #FFF;
     border-radius: 10rpx;
     margin: 30rpx;
+    position: relative;
   }
 
   .my-card .face-name {
     padding-top: 34rpx;
     margin-left: 32rpx;
-    width: 180rpx;
+    float: left;
   }
 
-  .my-card .face {
+  .face-name .face {
     width: 100rpx;
     height: 100rpx;
     padding-bottom: 26rpx;
+    float: left;
   }
 
-  .my-card .name {
-    width: 590rpx;
+  .face-name .name {
+
     height: 190rpx;
-    font-size: 29rpx;
+
+    float: left;
+    padding: 17rpx 25rpx;
     color: rgb(26, 26, 28)
+  }
+
+  .face-name .name .nick {
+    font-size: 30rpx;
+    font-weight: bold;
+  }
+
+  .face-name .name .like-count {
+    font-size: 24rpx;
+    padding-top: 3rpx;
+    color: rgb(176, 178, 196);
   }
 
   .my-card .face img {
@@ -125,17 +154,17 @@
   }
 
   .my-card .like {
-    float: right;
+    float: left;
     padding-right: 40rpx;
     padding-top: 70rpx;
   }
 
   .my-card .like .like-count {
-    font-size: 60rpx;
+    font-size: 10rpx;
     color: rgb(117, 122, 151);
     font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    font-weight: bold;
+    text-align: left;
+
 
   }
 
@@ -187,5 +216,40 @@
     line-height: 40rpx;
     padding-left: 66rpx;
     color: rgb(26, 26, 28);
+  }
+
+  .xunzhang-box {
+    height: 52rpx;
+    position: absolute;
+    bottom: 5rpx;
+    z-index: 100;
+    padding-left: 32rpx;
+    border-top: 1rpx solid rgb(245, 246, 248);
+    left: 0;
+    right: 0;
+    padding-top: 12rpx;
+    background: #FFF;
+  }
+
+  .xun_1 {
+    background: url(../../../static/img/huozanlittle.png)
+  }
+
+  .xun_2 {
+    background: url(../../../static/img/fabianlittle.png)
+  }
+
+  .light {}
+
+  .hui {
+    filter: grayscale(100%);
+  }
+
+  .xunzhang {
+    width: 46rpx;
+    height: 45rpx;
+    float: left;
+    margin-right: 16rpx;
+    background-size: 100%;
   }
 </style>

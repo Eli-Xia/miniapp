@@ -169,6 +169,8 @@
         } else {
           //用户按了拒绝按钮
           console.log('用户按了拒绝按钮')
+          this.showLogin = false
+          this.checkLogin = false
 
         }
       },
@@ -225,7 +227,7 @@
     background: #FFF;
     border-radius: 10rpx;
     margin: 0 60rpx;
-    margin-top: 260rpx;
+    margin-top: 590rpx;
     position: relative;
     height: 300rpx;
     z-index: 2000;

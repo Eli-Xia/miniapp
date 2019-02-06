@@ -199,6 +199,7 @@
             this.detail['qrCodeUrl'] = res.result.qrCodeUrl
             this.detail['userId'] = res.result.userId
             this.detail['debateTag'] = res.result.debateTag
+            this.detail['lightMedalCodeList'] = res.result.lightMedalCodeList
 
 
             this.leftText = res.result.leftViewContent
@@ -240,10 +241,18 @@
         }
         fly.post(url, data).then(res => {
           if (res.retCode == 0) {
-            res.result.map(item => {
+            res.result.map((item, index) => {
               item.createTime = utils.formatTime(new Date(item.createTime))
               item.headImgUrl = item.userHeadImgUrl
               item.nickname = item.userNickname
+              item.lightMedalCodeList.map(it => {
+
+                if (it.light == true) {
+
+                  res.result[index]['has_medal'] = true
+                }
+              })
+
               if (this.nowPage > 1) {
                 this.commentList.push(item)
               }
@@ -1184,7 +1193,7 @@
     left: 42rpx;
     top: 64rpx;
     padding-left: 52rpx;
-    background: url(../../../static/img/小正@3x.png) no-repeat;
+    background: url(../../../static/img/小正@2x.png) no-repeat;
     background-size: auto 100%;
     font-size: 28rpx;
     color: rgb(255, 55, 56);
@@ -1198,7 +1207,7 @@
     right: 42rpx;
     top: 64rpx;
     padding-right: 52rpx;
-    background: url(../../../static/img/小反@3x.png) top right no-repeat;
+    background: url(../../../static/img/小反@2x.png) top right no-repeat;
     background-size: auto 100%;
     font-size: 28rpx;
     text-align: right;

@@ -2,14 +2,21 @@
   <div class="counter-warp">
     <login-btn :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
     <div class="my-card">
-      <div class="like">
-        <div class="like-count">{{info.supportCount}}</div>
-        <div class="like-icon">获赞</div>
+      <div class="xunzhang-box" @click="goto('/pages/xunzhang/main')">
+        <div :key="index" class="xunzhang" :class="'xun_'+item.code+(item.light ? ' light' : ' hui') " v-for="(item,index) in info.lightMedalCodeList">
+        </div>
+        <div class="right-btn" ></div>
       </div>
+
       <div class="face-name">
         <div class="face"><img :src="info.headImgUrl" alt=""></div>
-        <div class="name">{{info.nickname}}</div>
+        <div class="name">
+          <div class="nick">{{info.nickname}}</div>
+          <div class="like-count">获赞{{info.supportCount}}</div>
+        </div>
       </div>
+
+      <!-- 点亮勋章 -->
 
     </div>
 
@@ -55,7 +62,8 @@
         callback: function () {},
         showLogin: false,
         checkLogin: false,
-        msg_count: 0
+        msg_count: 0,
+        xun_list: [{ code: 1, light: true }, { code: 2, light: false }]
       }
     },
 
@@ -71,7 +79,7 @@
         fly.post('/api/app/user/info', {}).then(res => {
           if (res.retCode == 0) {
             this.info = res.result
-            
+
             this.showLogin = false
             this.checkLogin = false
           }
@@ -118,19 +126,24 @@
 
 
       },
+      go_wall() {
+
+      },
       setLogin() {
 
       },
       goto(url) {
         wx.navigateTo({ url })
-
+      },
+      set_css(item) {
+        return `xun_${item.code}_${item.light}`
       }
     },
     onPullDownRefresh() {
       wx.stopPullDownRefresh();
     },
     onShow() {
-        this.get_msg_count()
+      this.get_msg_count()
     },
     onLoad() {
       wx.setNavigationBarTitle({
@@ -146,29 +159,44 @@
 
 <style scoped>
   .my-card {
-    height: 245rpx;
+    height: 235rpx;
     background: #FFF;
     border-radius: 10rpx;
     margin: 30rpx;
+    position: relative;
   }
 
   .my-card .face-name {
     padding-top: 34rpx;
     margin-left: 32rpx;
-    width: 180rpx;
+    float: left;
   }
 
-  .my-card .face {
+  .face-name .face {
     width: 100rpx;
     height: 100rpx;
     padding-bottom: 26rpx;
+    float: left;
   }
 
-  .my-card .name {
-    width: 590rpx;
+  .face-name .name {
+
     height: 190rpx;
-    font-size: 29rpx;
+
+    float: left;
+    padding: 18rpx 20rpx;
     color: rgb(26, 26, 28)
+  }
+
+  .face-name .name .nick {
+    font-size: 29rpx;
+    font-weight: bold;
+  }
+
+  .face-name .name .like-count {
+    font-size: 24rpx;
+    padding-top: 6rpx;
+    color: rgb(176, 178, 196);
   }
 
   .my-card .face img {
@@ -178,17 +206,17 @@
   }
 
   .my-card .like {
-    float: right;
+    float: left;
     padding-right: 40rpx;
     padding-top: 70rpx;
   }
 
   .my-card .like .like-count {
-    font-size: 60rpx;
+    font-size: 10rpx;
     color: rgb(117, 122, 151);
     font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    font-weight: bold;
+    text-align: left;
+
 
   }
 
@@ -280,5 +308,50 @@
     color: #FFF;
     right: 60rpx;
     top: 37rpx;
+  }
+
+  .xunzhang-box {
+    height: 52rpx;
+    position: absolute;
+    bottom: 5rpx;
+    z-index: 100;
+    padding-left: 32rpx;
+    border-top: 1rpx solid rgb(245, 246, 248);
+    left: 0;
+    right: 0;
+    padding-top: 12rpx;
+    background: #FFF;
+  }
+
+  .xun_1 {
+    background: url(../../../static/img/huozanlittle.png)
+  }
+
+  .xun_2 {
+    background: url(../../../static/img/fabianlittle.png)
+  }
+
+  .light {}
+
+  .hui {
+    filter: grayscale(100%);
+  }
+
+  .xunzhang {
+    width: 46rpx;
+    height: 45rpx;
+    float: left;
+    margin-right: 16rpx;
+    background-size: 100%;
+  }
+
+  .right-btn {
+    float: right;
+    height: 25rpx;
+    width: 14rpx;
+    margin-top: 10rpx;
+    background: url(../../../static/img/箭头@2x.png) right 0rpx no-repeat;
+    background-size: 100% 100%;
+    margin-right: 25rpx;
   }
 </style>

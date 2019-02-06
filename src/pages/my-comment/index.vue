@@ -1,7 +1,7 @@
 <template>
   <div class="counter-warp" style="padding-bottom:120rpx">
     <my-comment-item @dels="del" :pageName="pageName" :item="item" v-for="(item,index) in lists" :key="index"></my-comment-item>
-     <div class="nothing" v-if="lists.length < 1"></div>
+    <div class="nothing" v-if="lists.length < 1"></div>
     <!-- <nav-bar :pageName="pageName"></nav-bar> -->
   </div>
 </template>
@@ -33,12 +33,18 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
-              if(item.content.length > 78) {
-                item.content = item.content.substr(0,78)+'...'
+              if (item.content.length > 48) {
+                item.content = item.content.substr(0, 48) + '...'
               }
 
-              if(item.debateTopic.length > 78) {
-                item.debateTopic = item.debateTopic.substr(0,78)+'...'
+              if (item.debateTopic.length > 48) {
+                item.debateTopic = item.debateTopic.substr(0, 48) + '...'
+              }
+
+              if (item.replyCommentContent) {
+                if (item.replyCommentContent.length > 40) {
+                  item.replyCommentContent = item.replyCommentContent.substr(0, 40)+'...'
+                }
               }
               if (this.nowPage < 1) {
                 self.lists.push(item)

@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="name-date">
-        <div class="nickname">{{item.nickname}}</div>
+        <div class="nickname">{{item.nickname}} </div>
         <div class="add-date">{{item.createTime}}</div>
       </div>
     </div>
@@ -59,6 +59,14 @@
       dels(id) {
         this.$emit('dels', id)
       }
+    },
+    onLoad() {
+      // if(this.item.content.length > 40) {
+      //   this.item.content = this.item.content.substr(0,40)+'...'
+      // }
+      // if(this.item.replyCommentContent &&  this.item.replyCommentContent.length > 40){
+      //   this.item.replyCommentContent = this.item.replyCommentContent.substr(0,40)+'...'
+      // }
     }
   }
 </script>

@@ -17,7 +17,8 @@
     "pages/my-msg-notify/main",
     "pages/feedback/main",
     "pages/comment/main",
-    "pages/comment-detail/main"
+    "pages/comment-detail/main",
+    "pages/medal/main"
   ],
   "window": {
     "backgroundTextStyle": "white",

@@ -9,30 +9,36 @@
         {{ item.likeCount}}
       </div>
 
-       <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
-        {{ item.likeCount}}
-      </div>
-
-        <div v-if="(item.content ==  '该评论已删除' || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+        <div v-if="!(item.content ==  '该评论已删除' || item.state == 0) && clicked == true" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
           {{ item.likeCount}}
       </div>
-          <div class="name-date">
-            <div class="nickname">{{item.nickname}}</div>
-            <div class="add-date">{{item.createTime}}</div>
+
+          <div v-if="(item.content ==  '该评论已删除' || item.state == 0)" class="like-btn" :class="item.likeState == 1 ? 'liked': ''">
+            {{ item.likeCount}}
+      </div>
+            <div class="name-date">
+              <div class="name-xun">
+                <div class="nickname"> {{item.nickname}} </div>
+                <div class="medal-box" v-if="item.has_medal">
+                  <div :key="i" class="medal-item" :class="'medal-'+it.code" v-for="(it,i) in item.lightMedalCodeList "></div>
+                </div>
+              </div>
+              <div class="add-date">{{item.createTime}}</div>
+            </div>
+
           </div>
-        </div>
-        <div  @click="go_detail(item.id)" class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
-          <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
-        </div>
+          <div @click="go_detail(item.id)" class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
+            <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
+          </div>
           <div class="more-comment" v-if="item.replyCount > 0">{{ item.replyCount}}条回复</div>
-        <div class="line"></div>
-    </div>
+            <div class="line"></div>
+          </div>
 </template>
 
 <script>
   export default {
     props: ['item'],
-     data() {
+    data() {
       return {
         clicked: false
       }
@@ -42,9 +48,9 @@
         this.clicked = true
         this.$emit('doLike', id)
 
-        setTimeout(()=>{
+        setTimeout(() => {
           this.clicked = false
-        },1000)
+        }, 1000)
       },
       goTa(id) {
         if (id) {
@@ -52,9 +58,9 @@
           wx.navigateTo({ url })
         }
       },
-       go_detail(id) {
+      go_detail(id) {
         let url = '/pages/comment-detail/main?id=' + id
-          wx.navigateTo({ url })
+        wx.navigateTo({ url })
       }
     }
   }
@@ -109,11 +115,33 @@
   }
 
 
+  .medal-box {
+    float: right;
+    margin-right: 8rpx;
+    margin-top: 1xsrpx;
+  }
+
+  .medal-box .medal-item {
+    height: 30rpx;
+    width: 30rpx;
+    float: right;
+    margin-right: 5rpx;
+  }
+
+  .medal-box .medal-item.medal-1 {
+    background: url(../../static/img/huozanlittle.png) no-repeat;
+    background-size: auto 100%;
+  }
+
+  .medal-box .medal-item.medal-2 {
+    background: url(../../static/img/fabianlittle.png) no-repeat;
+    background-size: auto 100%;
+  }
 
   .nickname {
     font-size: 24rpx;
     color: rgb(158, 160, 181);
-
+    float: right;
   }
 
   .add-date {

@@ -1,6 +1,8 @@
 <template>
   <div class="page-warp">
-    <div class="bianti" :pass="pss">
+    <login-btn  :cb="callback" pageName="add-p" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
+
+    <div class="bianti">
       <div class="b-content">
         {{detail['float_text']}}
       </div>
@@ -23,38 +25,37 @@
 
     </div>
     <div class="add-form">
-      <textarea @blur="checkForm" name="content" placeholder="我在等你的神评呢!" v-model="commentData.content" id="content" />
+      <textarea  v-model="commentData.content" name="content" placeholder="我在等你的神评呢!" id="content"></textarea>
 
-      <div v-if="allowSend  && !sending" class="submit nosend" @click="sendComment">发表</div>
-      <div v-if="allowSend &&  sending" class="submit nosend">发表</div>
-      <div v-if="!allowSend" @click="checkForm" class="submit" >发表</div>
+      <div class="submit nosend" @click="sendComment">发表</div>
+
+
     </div>
-    <login-btn  :cb="callback" :showLogin="showLogin" :checkLogin="checkLogin" @setLogin="setLogin"> </login-btn>
-    
+
   </div>
-    
+
 </template>
 <script>
   import fly from '../../utils/fly'
   import '../../utils/Login'
-    import utils from '../../utils'
+  import utils from '../../utils'
   import navBar from '@/components/nav-bar'
   import LoginBtn from '@/components/login'
-import { isLogin,login } from '../../utils/Login';
-import { setTimeout } from 'timers';
+  import { isLogin, login } from '../../utils/Login';
+  import { setTimeout } from 'timers';
 
   export default {
     data() {
       return {
         pageName: 'comment-add',
         // isLogin: false,
-        sendData:{
-          left:null,
-          right:null,
-          content:null
+        sendData: {
+          left: null,
+          right: null,
+          content: null
         },
-        tips:false,
-         detail: {},
+        tips: false,
+        detail: {},
         id: 0,
         leftText: null,
         rightText: null,
@@ -63,134 +64,76 @@ import { setTimeout } from 'timers';
         leftId: 0,
         rightId: 0,
         selectedType: 0,
-        allowSend:false,
-        checkLogin:false,
-        showLogin:false,
-        callback:function(){},
-        sending:false,
-        id:0,
-       commentData: {
+        allowSend: false,
+        checkLogin: false,
+        showLogin: false,
+        callback: function () {},
+        sending: false,
+        id: 0,
+        commentData: {
           debateTopicId: this.id,
           debatViewType: 0,
           content: null
         },
-        open_content:false,
-        long_text:false,
-        short_text:'',
-        open_btn_text:'展开辩题',
-        sending:false,
-        loading:false
-          
+        open_content: false,
+        long_text: false,
+        short_text: '',
+        open_btn_text: '展开辩题',
+        sending: false,
+        loading: false,
+        hide_input: false
+
       }
     },
     components: {
       LoginBtn
     },
-    computed:{
-      pss(){
-        if(this.sendData.left && this.sendData.right && this.sendData.content){
-          this.allowSend = true
-        }else{
-          this.allowSend = false
-        }
-        return 0
-      }
+    computed: {
+      // pss(){
+      //   if(this.sendData.left && this.sendData.right && this.sendData.content){
+      //     this.allowSend = true
+      //   }else{
+      //     this.allowSend = false
+      //   }
+      //   return 0
+      // }
     },
     methods: {
 
       open_box() {
-          this.long_text = !this.long_text 
+        this.long_text = !this.long_text
 
-          if(this.long_text  == false) {
-              this.open_btn_text = '展开辩题'
-              this.detail['float_text'] = this.short_text
-          }else{
-              this.open_btn_text = "收起辩题"
-             this.detail['float_text'] = this.detail['debateTopic'] 
-          }
-      },
-      sendPost() {
-        this.callback = ()=>{
-          this.sendPost()
-        }
-       
-        let postData= {
-          debateTopic: this.sendData.content,
-          addDebateViewList: [
-            { type: 1, content: this.sendData.left },
-            { type: 2, content: this.sendData.right }
-          ]
-        }
-
-        if(this.sendData.left.length > 6 || this.sendData.right.length >6) {
-           wx.showToast({
-                title: '观点不能大于6个',
-                icon: 'none'
-               })
-               this.sending = false
-               return false
-        }
-        //验证数据合法
-        if (!postData.debateTopic || !postData.addDebateViewList[0].content || !postData.addDebateViewList[1].content) {
-           console.log("请填写完整")
+        if (this.long_text == false) {
+          this.open_btn_text = '展开辩题'
+          this.detail['float_text'] = this.short_text
         } else {
-           
-           
-           this.sending = true
-          fly.request("/api/app/dabate-topic/add",postData,{
-            method:"post",
-           
-          }).then(data=>{
-             this.sending = false
-            if(data.retCode ==0) {
-
-               wx.showToast({
-                title: '发表成功',
-                icon: 'right'
-               })
-               this.showLogin = false
-               this.checkLogin = false
-              //发布成功跳转首页
-              setTimeout(()=>{
-                let url ="/pages/index/main"
-                wx.navigateBack()
-              },1000)
-             
-            }
-            if(data.retCode == 2) {
-              //重新登陆
-              console.log('重新登录区哦')
-                wx.setStorageSync('token', null)
-                wx.setStorageSync('isLogin', false)
-                this.checkLogin = true
-            }
-          })
-
-
+          this.open_btn_text = "收起辩题"
+          this.detail['float_text'] = this.detail['debateTopic']
         }
       },
+
       setLogin(loginStatus) {
         this.isLogin = loginStatus
       },
-       seyDebat(id) {
+      seyDebat(id) {
         this.commentData.debatViewType = id
-        this.checkForm()
-        
+        // this.checkForm()
+
       },
       checkForm() {
-          this.tips = false
-          console.log(false)
-          if (!this.commentData.debateTopicId || !this.commentData.debatViewType || !this.commentData.content) {
-         if(!this.commentData.debatViewType) {
-              this.tips = true
-         }else{
-             this.tips = false
-         }
-         this.allowSend = false
-        }else{
+        this.tips = false
+        console.log(false)
+        if (!this.commentData.debateTopicId || !this.commentData.debatViewType || !this.commentData.content) {
+          if (!this.commentData.debatViewType) {
+            this.tips = true
+          } else {
+            this.tips = false
+          }
+          this.allowSend = false
+        } else {
           this.allowSend = true
-           this.tips = false
-          
+          this.tips = false
+
         }
         console.log(this.commentData)
       },
@@ -204,13 +147,13 @@ import { setTimeout } from 'timers';
             this.detail['headImgUrl'] = res.result.sponsorHeadImgUrl
             this.detail['nickname'] = res.result.sponsorNickname
             this.detail['debateTopic'] = res.result.debateTopic
-            
-            if(res.result.debateTopic.length > 18) {
+
+            if (res.result.debateTopic.length > 18) {
               this.detail['float_text'] = res.result.debateTopic.substr(0, 18) + '...'
               this.short_text = res.result.debateTopic.substr(0, 18) + '...'
               this.open_content = true
-            }else{
-              this.detail['float_text'] =  res.result.debateTopic
+            } else {
+              this.detail['float_text'] = res.result.debateTopic
               this.open_content = false
             }
             this.detail['createTime'] = utils.formatTime(new Date(res.result.createTime))
@@ -232,9 +175,9 @@ import { setTimeout } from 'timers';
             this.rightId = res.result.rightViewId
             this.selectedType = res.result.selectedType
 
-            
-              this.loading = false
-            
+
+            this.loading = false
+
 
 
 
@@ -270,7 +213,7 @@ import { setTimeout } from 'timers';
               title: '评论成功！',
               icon: 'right'
             })
-            
+
             this.sending = false
             this.nowPage = 1
             this.commentData.debatViewType = null
@@ -278,15 +221,17 @@ import { setTimeout } from 'timers';
             this.commentData.content = ''
             this.showLogin = false
             this.checkLogin = false
-             wx.navigateBack()
+            wx.navigateBack()
           } else if (res.retCode == 2) {
+
             wx.setStorageSync('token', null)
             wx.setStorageSync('isLogin', false)
-            // this.showLogin = true
-            this.checkLogin = true
 
-            
-            console.log(res)
+            this.checkLogin = true
+            this.hide_input = true
+            console.log( this.checkLogin, this.checkLogin = true)
+
+           
           } else {
             wx.showToast({
               title: retMsg,
@@ -301,12 +246,13 @@ import { setTimeout } from 'timers';
       },
     },
     onShow() {
-     //清空数据
-     this.commentData = {
-          debateTopicId: this.id,
-          debatViewType: 0,
-          content: null
-        }
+      //清空数据
+      this.checkLogin = false
+      this.commentData = {
+        debateTopicId: this.id,
+        debatViewType: 0,
+        content: null
+      }
     },
     onLoad() {
       wx.setNavigationBarTitle({
@@ -317,25 +263,24 @@ import { setTimeout } from 'timers';
       this.commentData.debateTopicId = this.id
       this.get_detail(this.id)
     }
-   
+
   }
 </script>
 
 
 <style scoped>
-
-.page-warp {
+  .page-warp {
     background: #FFF;
     position: absolute;
     height: 100%;
     width: 100%;
-}
+  }
 
   .add {
     padding: 10rpx 30rpx;
     margin-bottom: 10rpx;
     background: #FFF;
-   
+
 
   }
 
@@ -355,7 +300,10 @@ import { setTimeout } from 'timers';
     padding: 2%;
     /* border: 1rpx solid #ddd; */
     color: #444;
-    background: rgb(245, 246 ,248)
+    z-index: 1;
+    position: relative;
+    background: rgb(245, 246, 248);
+
   }
 
   #content:focus {
@@ -410,16 +358,18 @@ import { setTimeout } from 'timers';
     text-align: center;
     margin-top: 30rpx;
   }
+
   .submit.nosend {
     background: rgb(25, 25, 26);
   }
 
   .bianti {
-     
-      border-bottom: 6rpx solid rgb(245, 246, 248); 
-     
+
+    border-bottom: 6rpx solid rgb(245, 246, 248);
+
   }
-   .form-post {
+
+  .form-post {
     padding: 20rpx 30rpx;
     background: #FFF;
     position: fixed;
@@ -974,7 +924,7 @@ import { setTimeout } from 'timers';
     left: 42rpx;
     top: 64rpx;
     padding-left: 52rpx;
-    background: url(../../../static/img/小正@3x.png) no-repeat;
+    background: url(../../../static/img/小正@2x.png) no-repeat;
     background-size: auto 100%;
     font-size: 28rpx;
     color: rgb(255, 55, 56);
@@ -988,7 +938,7 @@ import { setTimeout } from 'timers';
     right: 42rpx;
     top: 64rpx;
     padding-right: 52rpx;
-    background: url(../../../static/img/小反@3x.png) top right no-repeat;
+    background: url(../../../static/img/小反@2x.png) top right no-repeat;
     background-size: auto 100%;
     font-size: 28rpx;
     text-align: right;
@@ -1012,39 +962,54 @@ import { setTimeout } from 'timers';
   }
 
   .b-content {
-      margin: 31rpx;
-      margin-bottom: 20rpx;
-      color: rgb(26, 26, 28);
-      font-size: 34rpx;
+    margin: 31rpx;
+    margin-bottom: 20rpx;
+    color: rgb(26, 26, 28);
+    font-size: 34rpx;
   }
 
   .open-btn {
-      padding: 26rpx;
-      padding-top: 0rpx;
-      margin-top: 0rpx;
-      color: rgb(67, 112, 239);
-      text-align: center;
-      font-size: 28rpx;
+    padding: 26rpx;
+    padding-top: 0rpx;
+    margin-top: 0rpx;
+    color: rgb(67, 112, 239);
+    text-align: center;
+    font-size: 28rpx;
   }
 
   .add-form {
-      padding: 30rpx;
-      padding-top: 0rpx;
-  }
-  span.dou {
-      color: red;
-      animation: douya .2s;
-  }
-  span.budou {
-      color: #666;
+    padding: 30rpx;
+    padding-top: 0rpx;
   }
 
-  @keyframes douya
-{
-  0%   {margin-left: 0rpx}  
-  20%  {margin-left: 8rpx}
-   50%  {margin-left: 0rpx}
-   80%  {margin-left: 8rpx}
-  100% {margin-left: 0rpx}
-}
+  span.dou {
+    color: red;
+    animation: douya .2s;
+  }
+
+  span.budou {
+    color: #666;
+  }
+
+  @keyframes douya {
+    0% {
+      margin-left: 0rpx
+    }
+
+    20% {
+      margin-left: 8rpx
+    }
+
+    50% {
+      margin-left: 0rpx
+    }
+
+    80% {
+      margin-left: 8rpx
+    }
+
+    100% {
+      margin-left: 0rpx
+    }
+  }
 </style>

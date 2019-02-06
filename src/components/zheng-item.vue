@@ -17,9 +17,15 @@
             {{ item.likeCount}}
       </div>
             <div class="name-date">
-              <div class="nickname">{{item.nickname}}</div>
+              <div class="name-xun">
+                <div class="nickname"> {{item.nickname}} </div>
+                <div class="medal-box" v-if="item.has_medal">
+                  <div :key="i" class="medal-item" :class="'medal-'+it.code" v-for="(it,i) in item.lightMedalCodeList "></div>
+                </div>
+              </div>
               <div class="add-date">{{item.createTime}}</div>
             </div>
+
           </div>
           <div @click="go_detail(item.id)" class="item-bottom" :class="(item.content ==  '该评论已删除' || item.state == 0) ? 'is_deleted' : ''">
             <p>{{(item.content ==  '该评论已删除' || item.state == 0) ? '该评论已删除' : item.content}}</p>
@@ -55,7 +61,7 @@
       },
       go_detail(id) {
         let url = '/pages/comment-detail/main?id=' + id
-          wx.navigateTo({ url })
+        wx.navigateTo({ url })
       }
     }
   }
@@ -104,6 +110,29 @@
     margin-top: 8rpx;
   }
 
+  .medal-box {
+    float: left;
+    margin-left: 8rpx;
+    margin-top: 1xsrpx;
+  }
+
+  .medal-box .medal-item {
+    height: 30rpx;
+    width: 30rpx;
+    float: left;
+    margin-right: 5rpx;
+  }
+
+  .medal-box .medal-item.medal-1 {
+    background: url(../../static/img/huozanlittle.png) no-repeat;
+    background-size: auto 100%;
+  }
+
+  .medal-box .medal-item.medal-2 {
+    background: url(../../static/img/fabianlittle.png) no-repeat;
+    background-size: auto 100%;
+  }
+
   .item-mid {
     clear: both;
     font-size: 32rpx;
@@ -117,6 +146,7 @@
   .nickname {
     font-size: 24rpx;
     color: rgb(158, 160, 181);
+    float: left;
 
   }
 

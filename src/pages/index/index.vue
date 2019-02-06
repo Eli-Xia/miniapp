@@ -116,7 +116,7 @@
             pageSize: 20
           })
           .then((response) => {
-             wx.hideLoading();
+            wx.hideLoading();
             if (response.retCode === 0) {
               //渲染列表
 
@@ -156,7 +156,7 @@
           let url = '/pages/detail/main?id=' + query.id
           wx.navigateTo({ url })
         }
-        
+
         if (query.from == 1) {
           //跳走
           let url = 'pages/my-msg-ping/main'
@@ -197,6 +197,13 @@
     },
     onShow() {
       console.log('onshow')
+
+      let add = wx.getStorageSync('add')
+      if (add == 1) {
+        this.nowPage = 1
+        this.get_index_list()
+         wx.setStorageSync('add',0)
+      }
     },
     onHide() {
       console.log('onHide')

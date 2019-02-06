@@ -66,6 +66,8 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
+
+              item.debateTopic = item.debateTopic.substr(0, 40)
               if (this.nowPage < 1) {
                 self.lists.push(item)
               }
@@ -218,12 +220,8 @@
     line-height: 32rpx;
     background: rgb(245, 246, 248);
     color: rgb(176, 178, 196);
-    overflow-y: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    max-height: 128rpx;
+
+
   }
 
   .like-btn.close-btn {
@@ -289,6 +287,6 @@
   }
 
   .rep-text {
-    color:rgb(26, 26, 28);
+    color: rgb(26, 26, 28);
   }
 </style>

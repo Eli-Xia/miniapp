@@ -1,5 +1,8 @@
 <template>
   <div class="item-box">
+    <div :key="index" v-for="(item,index) in star_list" class="xing-btn" :class="answer.one == item.name ? 'hover '+ item.class : item.class" @click="set_one(item.name)">
+      <img :src="'img/'+item.name+'@2x.png'" alt="">
+    </div>
     <div class="item-top">
       <div class="zanzhu" v-if="pageName == 'home' && item.sponsored">赞助</div>
       <div class="hot" v-if="item.hot ==1"></div>
@@ -13,9 +16,16 @@
       </form>
       <div class="face" @click="goTa(item.userId)"><img :src="item.headImgUrl" /></div>
       <div class="name-date" @click="goTa(item.userId)">
-        <div class="nickname">{{item.nickname}}</div>
+        <div class="name-medal">
+          <div class="nickname">{{item.nickname}}</div>
+          <div class="medal-box" v-if="has_medal">
+            <div :key="i" class="medal-item" :class="'medal-'+it.code" v-for="(it,i) in item.lightMedalCodeList "></div>
+          </div>
+        </div>
+
         <div class="add-date">{{item.createTime}}</div>
       </div>
+
     </div>
     <div class="item-mid" :class="pageName == 'detail' ? 'detail' : ''" @click="goto(item.id)" :style="item.debateTopic.length > 60 ? 'margin-bottom:20rpx': ''">
       {{item.debateTopic}}
@@ -52,7 +62,8 @@
   export default {
     data() {
       return {
-        shareId: 0
+        shareId: 0,
+        has_medal: false
       }
     },
     props: ['item', 'pageName'],
@@ -106,7 +117,16 @@
         this.goto(id)
       }
     },
-   
+    onLoad() {
+      if (this.item.lightMedalCodeList) {
+        this.item.lightMedalCodeList.map(it => {
+          if (it.light) {
+            this.has_medal = true
+          }
+        })
+      }
+    }
+
 
   }
 </script>
@@ -187,8 +207,8 @@
   .item-mid.detail {
     max-height: 370rpx !important;
     overflow: auto;
-    padding-bottom: 30rpx;
-    -webkit-line-clamp: 5;
+    padding-bottom: 20rpx;
+    -webkit-line-clamp: 7;
     /* background: #000; */
   }
 
@@ -197,7 +217,7 @@
   .nickname {
     font-size: 24rpx;
     color: rgb(158, 160, 181);
-
+float: left;
   }
 
   .add-date {
@@ -318,5 +338,28 @@
     background: url(../../static/img/fire.png) no-repeat;
 
     background-size: 100% 100%;
+  }
+
+  .medal-box {
+    float: left;
+    margin-left: 8rpx;
+    margin-top: 0rpx;
+  }
+
+  .medal-box .medal-item {
+    height: 30rpx;
+    width: 30rpx;
+    float: left;
+    margin-right: 5rpx;
+  }
+
+  .medal-box .medal-item.medal-1 {
+    background: url(../../static/img/huozanlittle.png) no-repeat;
+    background-size: auto 100%;
+  }
+
+  .medal-box .medal-item.medal-2 {
+    background: url(../../static/img/fabianlittle.png) no-repeat;
+    background-size: auto 100%;
   }
 </style>

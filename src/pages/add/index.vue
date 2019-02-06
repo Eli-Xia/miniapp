@@ -1,7 +1,7 @@
 <template>
   <div class="page-warp">
     <div class="add">
-      <h1 :pass="pss">发起辩题 </h1>
+      <h1 >发起辩题 </h1>
       <textarea name="content" auto-focus placeholder="例：该不该看情侣手机" v-model="sendData.content" id="content" />
       </div>
     <div class="add" style="height:220rpx;">
@@ -105,11 +105,13 @@ import { setTimeout } from 'timers';
                this.showLogin = false
                this.checkLogin = false
                this.allowSend = false
+               //设置本地数据
+                wx.setStorageSync('add', 1)
               //发布成功跳转首页
               setTimeout(()=>{
                 let url ="/pages/index/main"
                 wx.navigateBack()
-              },500)
+              },1000)
              
             }
             if(data.retCode == 2) {
@@ -118,6 +120,7 @@ import { setTimeout } from 'timers';
                 wx.setStorageSync('token', null)
                 wx.setStorageSync('isLogin', false)
                 this.checkLogin = true
+                this.sending = false
             }
           })
 
@@ -129,6 +132,7 @@ import { setTimeout } from 'timers';
       }
     },
     onShow() {
+      this.checkLogin = false
      //清空数据
      this.sendData={
           left:null,

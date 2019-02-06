@@ -35,9 +35,16 @@
           if (res.retCode == 0) {
             res.result.map(item => {
               item.createTime = utils.formatTime(new Date(item.createTime))
-              if (item.debateTopic.length > 80) {
-                item.debateTopic = item.debateTopic.substr(0, 80) + '...'
+              if (item.debateTopic.length > 40) {
+                item.debateTopic = item.debateTopic.substr(0, 40) + '...'
               }
+
+              if (item.replyCommentContent) {
+                if (item.replyCommentContent.length > 40) {
+                  item.replyCommentContent = item.replyCommentContent.substr(0, 40)+'...'
+                }
+              }
+
 
               if (this.nowPage < 1) {
                 self.lists.push(item)
